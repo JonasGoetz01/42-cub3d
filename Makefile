@@ -1,4 +1,4 @@
-NAME	:= cub3d
+NAME	:= cub3D
 
 CFLAGS	:= -Wextra -Wall -Werror -g -fsanitize=address -O1
 
@@ -8,9 +8,14 @@ HEADERS	:= -I ./inc -I $(LIBMLX)/include -I ./lib/libft
 
 LIBS	:= $(LIBMLX)/build/libmlx42.a -ldl -lglfw -pthread -lm
 
-VPATH	:=	src
+VPATH	:=	src \
+			src/geometry \
+			src/loop
 
-SRCS	:=  main.c
+SRCS	:=  main.c \
+			line.c \
+			loop.c \
+			color.c
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
