@@ -10,12 +10,16 @@ LIBS	:= $(LIBMLX)/build/libmlx42.a -ldl -lglfw -pthread -lm
 
 VPATH	:=	src \
 			src/geometry \
-			src/loop
+			src/loop \
+			src/map
 
 SRCS	:=  main.c \
 			line.c \
 			loop.c \
-			color.c
+			color.c \
+			rect.c \
+			initMap.c \
+			showMap.c
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
