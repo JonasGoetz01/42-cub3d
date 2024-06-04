@@ -6,6 +6,7 @@
 typedef struct s_global {
     mlx_t		*mlx;
 	mlx_image_t	*img;
+    t_map       *map;
 } t_global;
 
 #endif
