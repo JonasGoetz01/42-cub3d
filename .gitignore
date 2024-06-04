@@ -1,12 +1,5 @@
 */**/*.o
 */**/*.a
-*/**/*.so
-*/**/*.dylib
-*/**/*.dll
-*/**/*.exe
-*/**/*.bin
-*/**/*.out
-*/**/*.app
-*/**/*.dSYM
+lib/MLX42/build/
 cub3d
 .vscode/
