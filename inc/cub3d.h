@@ -11,6 +11,8 @@
 #include "line.h"
 #include "global.h"
 #include "color.h"
+#include "rect.h"
+#include "map.h"
 
 #define WIDTH 1080
 #define HEIGHT 720
