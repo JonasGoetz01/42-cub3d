@@ -7,6 +7,7 @@
 # include <math.h>
 # include <fcntl.h>
 # include "../lib/MLX42/include/MLX42/MLX42.h"
+# include "../lib/libft/libft.h"
 #include "point.h"
 #include "line.h"
 #include "global.h"
