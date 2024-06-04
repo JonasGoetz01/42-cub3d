@@ -36,6 +36,18 @@ bool isWallRight(t_global *global, int x, int y)
     return (false);
 }
 
+void fillRect(t_global *global, int x, int y, int width, int height, int color)
+{
+    for (int i = x; i < x + width; i++)
+    {
+        for (int j = y; j < y + height; j++)
+        {
+            mlx_put_pixel(global->img, i, j, color);
+        }
+    }
+}
+
+
 void showMap(t_global *global)
 {
     int xfactor = abs(WIDTH / global->map->width);
@@ -51,6 +63,7 @@ void showMap(t_global *global)
         {
             if (global->map->map[y][x] == '1')
             {
+                fillRect(global, x * xfactor, y * yfactor, xfactor, yfactor, get_rgba(255, 255, 255, 255));
                 if (!isWallAbove(global, x, y))
                     line((t_point){x * xfactor, y * yfactor}, (t_point){(x + 1) * xfactor, y * yfactor}, get_rgba(255, 255, 255, 255), global);
                 if (!isWallBelow(global, x, y))
