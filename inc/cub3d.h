@@ -7,8 +7,14 @@
 # include <math.h>
 # include <fcntl.h>
 # include "../lib/MLX42/include/MLX42/MLX42.h"
+#include "point.h"
+#include "line.h"
+#include "global.h"
+#include "color.h"
 
 #define WIDTH 1080
 #define HEIGHT 720
+
+void    loop(void *param);
 
 #endif
