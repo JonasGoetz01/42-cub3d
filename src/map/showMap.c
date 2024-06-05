@@ -77,8 +77,8 @@ void showMap(t_global *global)
                 if (!isWallRight(global, x, y))
                     line((t_point){(x + 1) * global->xfactor, y * global->yfactor}, (t_point){(x + 1) * global->xfactor, (y + 1) * global->yfactor}, get_rgba(255, 255, 255, 255), global);
             }
-            circle_point(global->player->pos.x * global->xfactor, global->player->pos.y * global->yfactor, 5, global, get_rgba(255, 0, 0, 255));
             render_rays(global);
+            circle_point(global->player->pos.x * global->xfactor, global->player->pos.y * global->yfactor, 5, global, get_rgba(255, 0, 0, 255));
         }
     }
     // printf("xfactor: %d\n", xfactor);

@@ -21,7 +21,7 @@ t_player *new_player(t_point pos, t_point dir)
 
     for (i = 0; i < NUM_RAYS; i++)
     {
-        player->rays[i] = new_ray(player->pos, i * 360 / NUM_RAYS);
+        player->rays[i] = new_ray(i * 360 / NUM_RAYS);
     }
     
     return (player);
