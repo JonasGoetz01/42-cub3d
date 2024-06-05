@@ -51,15 +51,15 @@ void fillRect(t_global *global, int x, int y, int width, int height, int color)
 void showMap(t_global *global)
 {
     
-    int xfactor = abs(WIDTH / global->map->width);
-    int yfactor = abs(HEIGHT / global->map->height);
-    if (xfactor > yfactor)
-        xfactor = yfactor;
+    global->xfactor = abs(WIDTH / global->map->width);
+    global->yfactor = abs(HEIGHT / global->map->height);
+    if (global->xfactor > global->yfactor)
+        global->xfactor = global->yfactor;
     else
-        yfactor = xfactor;
+        global->yfactor = global->xfactor;
 
-    t_point player_pos = (t_point){26 * xfactor, 11 * yfactor};
-    t_circle player = (t_circle){&player_pos, 5};
+    // t_point player_pos = (t_point){26 * xfactor, 11 * yfactor};
+    // t_circle player = (t_circle){&player_pos, 5};
     
     for (int y = 0; y < global->map->height; y++)
     {
@@ -67,17 +67,20 @@ void showMap(t_global *global)
         {
             if (global->map->map[y][x] == '1')
             {
-                fillRect(global, x * xfactor, y * yfactor, xfactor, yfactor, get_rgba(255, 255, 255, 255));
+                fillRect(global, x * global->xfactor, y * global->yfactor, global->xfactor, global->yfactor, get_rgba(255, 255, 255, 255));
                 if (!isWallAbove(global, x, y))
-                    line((t_point){x * xfactor, y * yfactor}, (t_point){(x + 1) * xfactor, y * yfactor}, get_rgba(255, 255, 255, 255), global);
+                    line((t_point){x * global->xfactor, y * global->yfactor}, (t_point){(x + 1) * global->xfactor, y * global->yfactor}, get_rgba(255, 255, 255, 255), global);
                 if (!isWallBelow(global, x, y))
-                    line((t_point){x * xfactor, (y + 1) * yfactor}, (t_point){(x + 1) * xfactor, (y + 1) * yfactor}, get_rgba(255, 255, 255, 255), global);
+                    line((t_point){x * global->xfactor, (y + 1) * global->yfactor}, (t_point){(x + 1) * global->xfactor, (y + 1) * global->yfactor}, get_rgba(255, 255, 255, 255), global);
                 if (!isWallLeft(global, x, y))
-                    line((t_point){x * xfactor, y * yfactor}, (t_point){x * xfactor, (y + 1) * yfactor}, get_rgba(255, 255, 255, 255), global);
+                    line((t_point){x * global->xfactor, y * global->yfactor}, (t_point){x * global->xfactor, (y + 1) * global->yfactor}, get_rgba(255, 255, 255, 255), global);
                 if (!isWallRight(global, x, y))
-                    line((t_point){(x + 1) * xfactor, y * yfactor}, (t_point){(x + 1) * xfactor, (y + 1) * yfactor}, get_rgba(255, 255, 255, 255), global);
+                    line((t_point){(x + 1) * global->xfactor, y * global->yfactor}, (t_point){(x + 1) * global->xfactor, (y + 1) * global->yfactor}, get_rgba(255, 255, 255, 255), global);
             }
-            circle(&player, global, get_rgba(255, 0, 0, 255));
+            circle_point(global->player->pos.x * global->xfactor, global->player->pos.y * global->yfactor, 5, global, get_rgba(255, 0, 0, 255));
+            render_rays(global);
         }
     }
+    // printf("xfactor: %d\n", xfactor);
+    // printf("yfactor: %d\n", yfactor);
 }
