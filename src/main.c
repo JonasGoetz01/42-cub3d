@@ -7,8 +7,17 @@ int	main(int argc, char **argv)
 
 	(void)argc;
     (void)argv;
-	global.mlx = mlx_init(WIDTH, HEIGHT, "cub3d", true);
-	global.img = mlx_new_image(global.mlx, WIDTH, HEIGHT);
+	if (!(global.mlx = mlx_init(WIDTH, HEIGHT, "cub3d", true)))
+	{
+		printf("%s\n", mlx_strerror(mlx_errno));
+		return(EXIT_FAILURE);
+	}
+	if (!(global.img = mlx_new_image(global.mlx, WIDTH, HEIGHT)))
+	{
+		mlx_close_window(global.mlx);
+		printf("%s\n", mlx_strerror(mlx_errno));
+		return(EXIT_FAILURE);
+	}
 	global.map = &map;
 	// mlx_key_hook(mlx, quit, &mbt);
 	// mlx_scroll_hook(mlx, scroll, &mbt);
