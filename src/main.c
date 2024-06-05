@@ -19,7 +19,7 @@ int	main(int argc, char **argv)
 		return(EXIT_FAILURE);
 	}
 	global.map = &map;
-	// mlx_key_hook(mlx, quit, &mbt);
+	mlx_key_hook(global.mlx, keyHook, &global);
 	// mlx_scroll_hook(mlx, scroll, &mbt);
 	// mlx_resize_hook(mlx, resize, &mbt);
 	// mlx_cursor_hook(mlx, mouse_event, &mbt);
@@ -27,5 +27,6 @@ int	main(int argc, char **argv)
 	initMap(&global);
 	mlx_loop_hook(global.mlx, loop, &global);
 	mlx_loop(global.mlx);
+	mlx_terminate(global.mlx);
 	return (0);
 }
