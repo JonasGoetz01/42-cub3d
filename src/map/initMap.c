@@ -47,6 +47,7 @@ void    initMap(t_global *global)
         "11111111 1111111 111111111111    ",
         NULL
     };
+    // index y 11 x 26 (player)
 
     global->map->map = malloc(sizeof(char *) * 15);
     for (int i = 0; i < 14; i++)

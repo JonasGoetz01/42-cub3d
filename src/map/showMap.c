@@ -50,6 +50,7 @@ void fillRect(t_global *global, int x, int y, int width, int height, int color)
 
 void showMap(t_global *global)
 {
+    
     int xfactor = abs(WIDTH / global->map->width);
     int yfactor = abs(HEIGHT / global->map->height);
     if (xfactor > yfactor)
@@ -57,6 +58,9 @@ void showMap(t_global *global)
     else
         yfactor = xfactor;
 
+    t_point player_pos = (t_point){26 * xfactor, 11 * yfactor};
+    t_circle player = (t_circle){&player_pos, 5};
+    
     for (int y = 0; y < global->map->height; y++)
     {
         for (int x = 0; x < global->map->width; x++)
@@ -73,6 +77,7 @@ void showMap(t_global *global)
                 if (!isWallRight(global, x, y))
                     line((t_point){(x + 1) * xfactor, y * yfactor}, (t_point){(x + 1) * xfactor, (y + 1) * yfactor}, get_rgba(255, 255, 255, 255), global);
             }
+            circle(&player, global, get_rgba(255, 0, 0, 255));
         }
     }
 }
