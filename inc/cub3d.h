@@ -14,6 +14,7 @@
 #include "color.h"
 #include "rect.h"
 #include "map.h"
+#include "hooks.h"
 
 #define WIDTH 1080
 #define HEIGHT 720

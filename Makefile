@@ -7,12 +7,13 @@ LIBMLX	:= ./lib/MLX42
 HEADERS	:= -I ./inc -I $(LIBMLX)/include -I ./lib/libft
 
 LIBS	:= $(LIBMLX)/build/libmlx42.a -ldl -lglfw -pthread -lm
-#LIBS	+= -L"/opt/homebrew/Cellar/glfw/3.4/lib/"
+LIBS	+= -L"/opt/homebrew/Cellar/glfw/3.4/lib/"
 
 VPATH	:=	src \
 			src/geometry \
 			src/loop \
-			src/map
+			src/map \
+			src/hooks
 
 SRCS	:=  main.c \
 			line.c \
@@ -20,7 +21,8 @@ SRCS	:=  main.c \
 			color.c \
 			rect.c \
 			initMap.c \
-			showMap.c
+			showMap.c \
+			key.c
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
