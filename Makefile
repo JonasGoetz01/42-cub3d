@@ -22,7 +22,8 @@ SRCS	:=  main.c \
 			rect.c \
 			initMap.c \
 			showMap.c \
-			key.c
+			key.c \
+			circle.c
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
