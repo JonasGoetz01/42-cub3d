@@ -16,9 +16,13 @@
 #include "map.h"
 #include "hooks.h"
 #include "circle.h"
+#include "ray.h"
+#include "player.h"
 
 #define WIDTH 1080
 #define HEIGHT 720
+#define NUM_RAYS 30
+#define FOV 60
 
 void    loop(void *param);
 
