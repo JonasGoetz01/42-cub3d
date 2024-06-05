@@ -15,6 +15,7 @@
 #include "rect.h"
 #include "map.h"
 #include "hooks.h"
+#include "circle.h"
 
 #define WIDTH 1080
 #define HEIGHT 720
