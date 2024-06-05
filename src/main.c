@@ -20,11 +20,10 @@ int	main(int argc, char **argv)
 	}
 	global.map = &map;
 	mlx_key_hook(global.mlx, keyHook, &global);
-	// mlx_scroll_hook(mlx, scroll, &mbt);
-	// mlx_resize_hook(mlx, resize, &mbt);
-	// mlx_cursor_hook(mlx, mouse_event, &mbt);
-	// mlx_mouse_hook(mlx, mouse_click_event, &mbt);
 	initMap(&global);
+	global.player = new_player((t_point){26, 11}, (t_point){0, 0});
+	global.xfactor = abs(WIDTH / global.map->width);
+    global.yfactor = abs(HEIGHT / global.map->height);
 	mlx_loop_hook(global.mlx, loop, &global);
 	mlx_loop(global.mlx);
 	mlx_terminate(global.mlx);
