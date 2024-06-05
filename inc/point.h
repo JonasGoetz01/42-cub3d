@@ -3,8 +3,8 @@
 
 typedef struct s_point
 {
-    int x;
-    int y;
+    double x;
+    double y;
 } t_point;
 
 #endif
