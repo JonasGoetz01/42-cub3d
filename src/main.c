@@ -21,9 +21,15 @@ int	main(int argc, char **argv)
 	global.map = &map;
 	mlx_key_hook(global.mlx, keyHook, &global);
 	initMap(&global);
-	global.player = new_player((t_point){26, 11}, (t_point){0, 0});
-	global.xfactor = abs(WIDTH / global.map->width);
-    global.yfactor = abs(HEIGHT / global.map->height);
+	global.player = (t_player *)malloc(sizeof(t_player));
+	if (!global.player)
+	{
+		mlx_close_window(global.mlx);
+		printf("Error\n");
+		return (EXIT_FAILURE);
+	}
+	global.player->pos = (t_vec2d){26, 11};
+	global.player->dir = (t_vec2d){0, 1};
 	mlx_loop_hook(global.mlx, loop, &global);
 	mlx_loop(global.mlx);
 	mlx_terminate(global.mlx);
