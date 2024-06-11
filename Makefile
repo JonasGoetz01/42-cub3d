@@ -14,7 +14,8 @@ VPATH	:=	src \
 			src/loop \
 			src/map \
 			src/hooks \
-			src/player
+			src/player \
+			src/3dview
 
 SRCS	:=  main.c \
 			loop.c \
@@ -24,7 +25,8 @@ SRCS	:=  main.c \
 			player.c \
 			geometry.c \
 			resize.c \
-			cursor.c
+			cursor.c \
+			image.c
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))

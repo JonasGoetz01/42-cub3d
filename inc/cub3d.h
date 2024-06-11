@@ -17,7 +17,7 @@
 #define BPP sizeof(int32_t)
 #define MOVE_SPEED 3.0f
 #define MINIMAP_SCALE 0.3f
-#define SHOW_MINIMAP 1
+#define SHOW_MINIMAP 0
 #define SHOW_RAYS 1
 #define SHOW_COLLISIONS 1
 
@@ -69,5 +69,7 @@ void    raycast(t_global *global);
 void    resize(int32_t width, int32_t height, void* param);
 t_vec2d get_player_position(t_global *global);
 void    cursor(double xpos, double ypos, void* param);
+void    show_sky_and_floor(t_global *global);
+void    make_background_transparent(t_global *global);
 
 #endif
