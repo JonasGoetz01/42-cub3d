@@ -30,7 +30,7 @@ int	main(int argc, char **argv)
 	global.map = &map;
 	mlx_key_hook(global.mlx, keyHook, &global);
 	initMap(&global);
-	global.player = new_player(&global, (t_vec2d){26 * global.scale_factor, 11 * global.scale_factor}, (t_vec2d){0, -1});
+	global.player = new_player(&global, (t_vec2d){get_player_position(&global).x * global.scale_factor, get_player_position(&global).y * global.scale_factor}, (t_vec2d){0, -1});
 	mlx_loop_hook(global.mlx, loop, &global);
 	mlx_resize_hook(global.mlx, resize, &global);
 	mlx_cursor_hook(global.mlx, cursor, &global);
