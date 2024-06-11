@@ -21,7 +21,8 @@ SRCS	:=  main.c \
 			initMap.c \
 			showMap.c \
 			key.c \
-			player.c
+			player.c \
+			geometry.c
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
@@ -36,7 +37,7 @@ libft:
 libmlx:
 	cmake $(LIBMLX) -B $(LIBMLX)/build && make -C $(LIBMLX)/build -j4
 
-$(OBJDIR)/%.o: %.c
+$(OBJDIR)/%.o: %.c ./inc/cub3d.h ./inc/geometry.h
 	@mkdir -p $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
