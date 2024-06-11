@@ -52,3 +52,33 @@ void draw_line(t_global *global, t_vec2d a, t_vec2d b) {
     }
 }
 
+void draw_circle(t_global *global, t_circle *circle, int color) {
+    int radius = (int)circle->radius;
+    int x = radius - 1;
+    int y = 0;
+    int dx = 1;
+    int dy = 1;
+    int err = dx - (radius << 1);
+
+    while (x >= y) {
+        mlx_put_pixel(global->img, (int)circle->center.x + x, (int)circle->center.y + y, color);
+        mlx_put_pixel(global->img, (int)circle->center.x + y, (int)circle->center.y + x, color);
+        mlx_put_pixel(global->img, (int)circle->center.x - y, (int)circle->center.y + x, color);
+        mlx_put_pixel(global->img, (int)circle->center.x - x, (int)circle->center.y + y, color);
+        mlx_put_pixel(global->img, (int)circle->center.x - x, (int)circle->center.y - y, color);
+        mlx_put_pixel(global->img, (int)circle->center.x - y, (int)circle->center.y - x, color);
+        mlx_put_pixel(global->img, (int)circle->center.x + y, (int)circle->center.y - x, color);
+        mlx_put_pixel(global->img, (int)circle->center.x + x, (int)circle->center.y - y, color);
+
+        if (err <= 0) {
+            y++;
+            err += dy;
+            dy += 2;
+        }
+        if (err > 0) {
+            x--;
+            dx += 2;
+            err += dx - (radius << 1);
+        }
+    }
+}
