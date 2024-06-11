@@ -9,6 +9,7 @@ int	main(int argc, char **argv)
     (void)argv;
 	global.window_height = HEIGHT;
 	global.window_width = WIDTH;
+	global.minimap_scale = 0.25;
 	if (!(global.mlx = mlx_init(global.window_width, global.window_height, "cub3d", true)))
 	{
 		printf("%s\n", mlx_strerror(mlx_errno));

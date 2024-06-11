@@ -80,7 +80,7 @@ void    initMap(t_global *global)
     global->map->width = get_map_width(global->map->map);
 
     map_to_line_segments(global, &lines, &line_count);
-    global->scale_factor = calculate_scale_factor(global->map->width, global->map->height, WIDTH, HEIGHT);
+    global->scale_factor = calculate_scale_factor(global->map->width, global->map->height, WIDTH * global->minimap_scale, HEIGHT * global->minimap_scale);
     scale_line_segments(lines, line_count, global->scale_factor);
     global->line_count = line_count;
     global->lines = lines;

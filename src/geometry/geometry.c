@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/11 19:39:56 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/06/11 19:46:26 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void draw_line(t_global *global, t_vec2d a, t_vec2d b) {
     int i;
 
     for (i = 0; i <= steps; i++) {
-        if (x >= 0 && x < global->window_width && y >= 0 && y < global->window_height) {
+        if (x >= 0 && x < global->minimap->width && y >= 0 && y < global->minimap->height) {
             mlx_put_pixel(global->minimap, (int)x, (int)y, get_rgba(255, 255, 255, 255));
         }
         x += x_inc;

@@ -12,22 +12,22 @@ void    keyHook(mlx_key_data_t keydata, void* param)
     }
     if (keydata.key == MLX_KEY_W)
     {
-        t_vec2d new_pos = {global->player->pos.x + global->player->dir.x * MOVE_SPEED, global->player->pos.y + global->player->dir.y * MOVE_SPEED};
+        t_vec2d new_pos = {global->player->pos.x + global->player->dir.x * MOVE_SPEED * global->minimap_scale, global->player->pos.y + global->player->dir.y * MOVE_SPEED * global->minimap_scale};
         update_position(global, new_pos);
     }
     if (keydata.key == MLX_KEY_S)
     {
-        t_vec2d new_pos = {global->player->pos.x - global->player->dir.x * MOVE_SPEED, global->player->pos.y - global->player->dir.y * MOVE_SPEED};
+        t_vec2d new_pos = {global->player->pos.x - global->player->dir.x * MOVE_SPEED * global->minimap_scale, global->player->pos.y - global->player->dir.y * MOVE_SPEED * global->minimap_scale};
         update_position(global, new_pos);
     }
     if (keydata.key == MLX_KEY_D)
     {
-        t_vec2d new_pos = {global->player->pos.x - global->player->dir.y * MOVE_SPEED, global->player->pos.y + global->player->dir.x * MOVE_SPEED};
+        t_vec2d new_pos = {global->player->pos.x - global->player->dir.y * MOVE_SPEED * global->minimap_scale, global->player->pos.y + global->player->dir.x * MOVE_SPEED * global->minimap_scale};
         update_position(global, new_pos);
     }
     if (keydata.key == MLX_KEY_A)
     {
-        t_vec2d new_pos = {global->player->pos.x + global->player->dir.y * MOVE_SPEED, global->player->pos.y - global->player->dir.x * MOVE_SPEED};
+        t_vec2d new_pos = {global->player->pos.x + global->player->dir.y * MOVE_SPEED * global->minimap_scale, global->player->pos.y - global->player->dir.x * MOVE_SPEED * global->minimap_scale};
         update_position(global, new_pos);
     }
     if (keydata.key == MLX_KEY_E)
