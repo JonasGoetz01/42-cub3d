@@ -12,8 +12,8 @@
 
 #define WIDTH 1080
 #define HEIGHT 720
-#define NUM_RAYS 30
-#define FOV 60
+#define FOV 60.0f * (M_PI / 180.0f) // Convert degrees to radians
+#define NUM_RAYS 5 // Example number of rays
 #define BPP sizeof(int32_t)
 
 typedef struct s_map
@@ -36,11 +36,22 @@ typedef struct s_global
     mlx_image_t *img;
     t_map *map;
     t_player *player;
+    int line_count;
+    float scale_factor;
+    t_line *lines;
 } t_global;
 
 void    loop(void *param);
 void    keyHook(mlx_key_data_t keydata, void* param);
 void    initMap(t_global *global);
-void map_to_line_segments(t_global *global, t_line **lines, int *line_count);
+void    map_to_line_segments(t_global *global, t_line **lines, int *line_count);
+void    draw_line(t_global *global, t_vec2d a, t_vec2d b);
+void    showMap(t_global *global);
+float   calculate_scale_factor(int map_width, int map_height, int window_width, int window_height);
+void    scale_line_segments(t_line *lines, int line_count, float scale_factor);
+void    draw_circle(t_global *global, t_circle *circle, int color);
+int     get_rgba(int r, int g, int b, int a);
+void    draw_ray(t_global *global, t_ray *ray);
+t_player *new_player(t_vec2d pos, t_vec2d dir);
 
 #endif
