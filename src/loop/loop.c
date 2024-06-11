@@ -13,7 +13,16 @@ void loop(void *param)
     make_background_transparent(global);
     showMap(global);
     show_sky_and_floor(global);
+    render_3d(global);
     if(SHOW_MINIMAP)
+    {
+        // mlx_grow_instances(global->minimap, 0);
         mlx_image_to_window(global->mlx, global->minimap, 100, 100);
+        if (global->minimap->count > 0)
+            mlx_set_instance_depth(global->minimap->instances, 1);
+    }
+    // mlx_grow_instances(global->img, 0);
     mlx_image_to_window(global->mlx, global->img, 0, 0);
+    if (global->img->count > 0)
+        mlx_set_instance_depth(global->img->instances, 0);
 }

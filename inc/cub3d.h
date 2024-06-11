@@ -71,5 +71,7 @@ t_vec2d get_player_position(t_global *global);
 void    cursor(double xpos, double ypos, void* param);
 void    show_sky_and_floor(t_global *global);
 void    make_background_transparent(t_global *global);
+void    render_3d(t_global *global);
+void    draw_bar(t_global *global, int x, int y, int width, int height, int color);
 
 #endif

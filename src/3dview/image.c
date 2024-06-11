@@ -45,3 +45,13 @@ void    show_sky_and_floor(t_global *global)
         y++;
     }
 }
+
+void    render_3d(t_global *global)
+{
+    for (int i = 0; i < NUM_RAYS; i++)
+    {
+        // t_ray *ray = &global->player->rays[i];
+        int height = global->img->height / 2;
+        draw_bar(global, i * global->img->width / NUM_RAYS, (global->img->height / 2) - (height / 2), global->img->width / NUM_RAYS, global->img->height / 2, get_rgba(255, 255, 255, 255));
+    }
+}

@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/11 19:46:26 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/06/11 22:36:42 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,18 @@ void raycast(t_global *global)
                 min_distance = distance;
                 global->player->rays[i].closest_collision = &global->player->rays[i].collisions[j];
             }
+        }
+    }
+}
+
+//draw a bar from the center of the screen "width" pixels wide and "height" pixels tall
+void    draw_bar(t_global *global, int x, int y, int width, int height, int color)
+{
+    for (int i = 0; i < width; i++)
+    {
+        for (int j = 0; j < height; j++)
+        {
+            mlx_put_pixel(global->img, x + i, y + j, color);
         }
     }
 }
