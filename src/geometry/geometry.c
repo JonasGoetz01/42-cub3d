@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/11 14:14:48 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/06/11 14:39:48 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,35 +66,35 @@ void draw_circle(t_global *global, t_circle *circle, int color) {
         // Check bounds for each pixel before drawing
         if ((int)circle->center.x + x >= 0 && (int)circle->center.x + x < img_width &&
             (int)circle->center.y + y >= 0 && (int)circle->center.y + y < img_height)
-        mlx_put_pixel(global->img, (int)circle->center.x + x, (int)circle->center.y + y, color);
+            mlx_put_pixel(global->img, (int)circle->center.x + x, (int)circle->center.y + y, color);
 
         if ((int)circle->center.x + y >= 0 && (int)circle->center.x + y < img_width &&
             (int)circle->center.y + x >= 0 && (int)circle->center.y + x < img_height)
-        mlx_put_pixel(global->img, (int)circle->center.x + y, (int)circle->center.y + x, color);
+            mlx_put_pixel(global->img, (int)circle->center.x + y, (int)circle->center.y + x, color);
 
         if ((int)circle->center.x - y >= 0 && (int)circle->center.x - y < img_width &&
             (int)circle->center.y + x >= 0 && (int)circle->center.y + x < img_height)
-        mlx_put_pixel(global->img, (int)circle->center.x - y, (int)circle->center.y + x, color);
+            mlx_put_pixel(global->img, (int)circle->center.x - y, (int)circle->center.y + x, color);
 
         if ((int)circle->center.x - x >= 0 && (int)circle->center.x - x < img_width &&
             (int)circle->center.y + y >= 0 && (int)circle->center.y + y < img_height)
-        mlx_put_pixel(global->img, (int)circle->center.x - x, (int)circle->center.y + y, color);
+            mlx_put_pixel(global->img, (int)circle->center.x - x, (int)circle->center.y + y, color);
 
         if ((int)circle->center.x - x >= 0 && (int)circle->center.x - x < img_width &&
             (int)circle->center.y - y >= 0 && (int)circle->center.y - y < img_height)
-        mlx_put_pixel(global->img, (int)circle->center.x - x, (int)circle->center.y - y, color);
+            mlx_put_pixel(global->img, (int)circle->center.x - x, (int)circle->center.y - y, color);
 
         if ((int)circle->center.x - y >= 0 && (int)circle->center.x - y < img_width &&
             (int)circle->center.y - x >= 0 && (int)circle->center.y - x < img_height)
-        mlx_put_pixel(global->img, (int)circle->center.x - y, (int)circle->center.y - x, color);
+            mlx_put_pixel(global->img, (int)circle->center.x - y, (int)circle->center.y - x, color);
 
         if ((int)circle->center.x + y >= 0 && (int)circle->center.x + y < img_width &&
             (int)circle->center.y - x >= 0 && (int)circle->center.y - x < img_height)
-        mlx_put_pixel(global->img, (int)circle->center.x + y, (int)circle->center.y - x, color);
+            mlx_put_pixel(global->img, (int)circle->center.x + y, (int)circle->center.y - x, color);
 
         if ((int)circle->center.x + x >= 0 && (int)circle->center.x + x < img_width &&
             (int)circle->center.y - y >= 0 && (int)circle->center.y - y < img_height)
-        mlx_put_pixel(global->img, (int)circle->center.x + x, (int)circle->center.y - y, color);
+            mlx_put_pixel(global->img, (int)circle->center.x + x, (int)circle->center.y - y, color);
 
         if (err <= 0) {
             y++;
@@ -118,3 +118,29 @@ void draw_ray(t_global *global, t_ray *ray) {
     };
     draw_line(global, ray->origin, end);
 }
+
+//check if a line is intersecting with a line segment and if so return the point of intersection
+t_vec2d ray_line_collision(t_ray *ray, t_line *line)
+{
+    float x1 = ray->origin.x;
+    float y1 = ray->origin.y;
+    float x2 = ray->origin.x + ray->direction.x;
+    float y2 = ray->origin.y + ray->direction.y;
+    float x3 = line->a.x;
+    float y3 = line->a.y;
+    float x4 = line->b.x;
+    float y4 = line->b.y;
+
+    float denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+    if (denominator == 0)
+        return ((t_vec2d){-1, -1}); // No collision
+
+    float t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
+    float u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / denominator;
+
+    if (t >= 0 && u >= 0 && u <= 1)
+        return ((t_vec2d){x1 + t * (x2 - x1), y1 + t * (y2 - y1)});
+
+    return ((t_vec2d){-1, -1}); // No collision
+}
+
