@@ -92,11 +92,14 @@ void showMap(t_global *global)
     raycast(global);
     for (int i = 0; i < NUM_RAYS; i++)
     {
-        draw_ray(global, &global->player->rays[i]);
+        if(SHOW_RAYS)
+            draw_ray(global, &global->player->rays[i]);
         for (int j = 0; j < global->player->rays[i].collision_count; j++)
         {
-            draw_circle(global, &(t_circle){global->player->rays[i].collisions[j], 3}, get_rgba(0, 255, 0, 255));
+            if(SHOW_COLLISIONS)
+                draw_circle(global, &(t_circle){global->player->rays[i].collisions[j], 3}, get_rgba(0, 255, 0, 255));
         }
-        draw_circle(global, &(t_circle){*(global->player->rays[i].closest_collision), 3}, get_rgba(0, 0, 255, 255));
+        if(SHOW_COLLISIONS)
+            draw_circle(global, &(t_circle){*(global->player->rays[i].closest_collision), 3}, get_rgba(0, 0, 255, 255));
     }   
 }

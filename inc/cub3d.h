@@ -16,6 +16,10 @@
 #define NUM_RAYS 60 // Example number of rays
 #define BPP sizeof(int32_t)
 #define MOVE_SPEED 3.0f
+#define MINIMAP_SCALE 0.15f
+#define SHOW_MINIMAP 1
+#define SHOW_RAYS 0
+#define SHOW_COLLISIONS 0
 
 typedef struct s_map
 {
