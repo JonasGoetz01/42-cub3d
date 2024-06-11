@@ -24,6 +24,8 @@ t_player *new_player(t_vec2d pos, t_vec2d dir) {
         ray_angle = atan2f(player->dir.y, player->dir.x) - (FOV / 2.0f) + (i * angle_increment);
         player->rays[i].origin = player->pos;
         player->rays[i].direction = (t_vec2d){cosf(ray_angle), sinf(ray_angle)};
+        player->rays[i].collisions = NULL;
+        player->rays[i].collision_count = 0;
     }
     
     return (player);
