@@ -82,3 +82,13 @@ void draw_circle(t_global *global, t_circle *circle, int color) {
         }
     }
 }
+
+//draw a line from the origin of the ray to the border of the image
+void draw_ray(t_global *global, t_ray *ray) {
+    // Scale the direction vector to a sufficient length (e.g., 1000 units)
+    t_vec2d end = {
+        ray->origin.x + ray->direction.x * 1000,
+        ray->origin.y + ray->direction.y * 1000
+    };
+    draw_line(global, ray->origin, end);
+}
