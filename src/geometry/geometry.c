@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/11 22:36:42 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/06/11 23:18:00 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,13 +181,19 @@ void raycast(t_global *global)
 }
 
 //draw a bar from the center of the screen "width" pixels wide and "height" pixels tall
-void    draw_bar(t_global *global, int x, int y, int width, int height, int color)
+void draw_bar(t_global *global, int x, int y, int width, int height, int color)
 {
     for (int i = 0; i < width; i++)
     {
+        if (x + i < 0 || (uint32_t)x + (uint32_t)i >= global->img->width)
+            continue;
         for (int j = 0; j < height; j++)
         {
-            mlx_put_pixel(global->img, x + i, y + j, color);
+            int draw_y = y + j;
+            if (draw_y >= 0 && (uint32_t)draw_y < global->img->height)
+            {
+                mlx_put_pixel(global->img, x + i, draw_y, color);
+            }
         }
     }
 }
