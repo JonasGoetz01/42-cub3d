@@ -17,6 +17,9 @@ typedef struct s_ray
 {
     t_vec2d origin;
     t_vec2d direction;
+    t_vec2d *collisions;
+    int collision_count;
+    t_vec2d *closest_collision;
 } t_ray;
 
 typedef struct s_circle
