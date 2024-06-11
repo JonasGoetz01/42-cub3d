@@ -36,59 +36,40 @@ bool isWallRight(t_global *global, int x, int y)
     return (false);
 }
 
-void fillRect(t_global *global, int x, int y, int width, int height, int color)
-{
-    for (int i = x; i < x + width; i++)
-    {
-        for (int j = y; j < y + height; j++)
-        {
-            mlx_put_pixel(global->img, i, j, color);
+void add_line_segment(t_line **lines, int *count, t_vec2d a, t_vec2d b) {
+    *lines = realloc(*lines, (*count + 1) * sizeof(t_line));
+    (*lines)[*count].a = a;
+    (*lines)[*count].b = b;
+    (*count)++;
+}
+
+void map_to_line_segments(t_global *global, t_line **lines, int *line_count) {
+    int x, y;
+    *lines = NULL;
+    *line_count = 0;
+
+    for (y = 0; y < global->map->height; y++) {
+        for (x = 0; x < global->map->width; x++) {
+            if (global->map->map[y][x] == '1') {
+                t_vec2d top_left = {x, y};
+                t_vec2d top_right = {x + 1, y};
+                t_vec2d bottom_left = {x, y + 1};
+                t_vec2d bottom_right = {x + 1, y + 1};
+
+                if (!isWallAbove(global, x, y)) {
+                    add_line_segment(lines, line_count, top_left, top_right);
+                }
+                if (!isWallBelow(global, x, y)) {
+                    add_line_segment(lines, line_count, bottom_left, bottom_right);
+                }
+                if (!isWallLeft(global, x, y)) {
+                    add_line_segment(lines, line_count, top_left, bottom_left);
+                }
+                if (!isWallRight(global, x, y)) {
+                    add_line_segment(lines, line_count, top_right, bottom_right);
+                }
+            }
         }
     }
 }
 
-
-void showMap(t_global *global)
-{
-    
-    global->xfactor = abs(WIDTH / global->map->width);
-    global->yfactor = abs(HEIGHT / global->map->height);
-    if (global->xfactor > global->yfactor)
-        global->xfactor = global->yfactor;
-    else
-        global->yfactor = global->xfactor;
-
-    // t_point player_pos = (t_point){26 * xfactor, 11 * yfactor};
-    // t_circle player = (t_circle){&player_pos, 5};
-    
-    for (int y = 0; y < global->map->height; y++)
-    {
-        for (int x = 0; x < global->map->width; x++)
-        {
-            if (global->map->map[y][x] == '1')
-            {
-                fillRect(global, x * global->xfactor, y * global->yfactor, global->xfactor, global->yfactor, get_rgba(255, 255, 255, 255));
-                if (!isWallAbove(global, x, y))
-                    line((t_point){x * global->xfactor, y * global->yfactor}, (t_point){(x + 1) * global->xfactor, y * global->yfactor}, get_rgba(255, 255, 255, 255), global);
-                if (!isWallBelow(global, x, y))
-                    line((t_point){x * global->xfactor, (y + 1) * global->yfactor}, (t_point){(x + 1) * global->xfactor, (y + 1) * global->yfactor}, get_rgba(255, 255, 255, 255), global);
-                if (!isWallLeft(global, x, y))
-                    line((t_point){x * global->xfactor, y * global->yfactor}, (t_point){x * global->xfactor, (y + 1) * global->yfactor}, get_rgba(255, 255, 255, 255), global);
-                if (!isWallRight(global, x, y))
-                    line((t_point){(x + 1) * global->xfactor, y * global->yfactor}, (t_point){(x + 1) * global->xfactor, (y + 1) * global->yfactor}, get_rgba(255, 255, 255, 255), global);
-            }
-            render_rays(global);
-            for (int i = 0; i < NUM_RAYS; i++)
-            {
-                t_ray *ray = global->player->rays[i];
-                // ray_cast(global, ray);
-                printf("ray->hit.x: %f\n", ray->hit.x);
-                printf("ray->hit.y: %f\n", ray->hit.y);
-                circle_point(ray->hit.x * global->xfactor, ray->hit.y * global->yfactor, 2, global, get_rgba(0, 255, 0, 255));
-            }
-            circle_point(global->player->pos.x * global->xfactor, global->player->pos.y * global->yfactor, 5, global, get_rgba(255, 0, 0, 255));
-        }
-    }
-    // printf("xfactor: %d\n", xfactor);
-    // printf("yfactor: %d\n", yfactor);
-}
