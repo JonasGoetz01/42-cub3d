@@ -19,7 +19,6 @@ t_player *new_player(t_vec2d pos, t_vec2d dir) {
         return (NULL);
     }
 
-    // Calculate angle increment including the edges of the FOV
     angle_increment = FOV / (NUM_RAYS - 1);
     for (i = 0; i < NUM_RAYS; i++) {
         ray_angle = atan2f(player->dir.y, player->dir.x) - (FOV / 2.0f) + (i * angle_increment);
@@ -30,7 +29,6 @@ t_player *new_player(t_vec2d pos, t_vec2d dir) {
     return (player);
 }
 
-// update the players position and all the rays
 void update_position(t_global *global, t_vec2d pos) {
     global->player->pos = pos;
     for (int i = 0; i < NUM_RAYS; i++) {
