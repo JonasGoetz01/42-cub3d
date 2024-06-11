@@ -13,5 +13,6 @@ typedef struct  s_ray
 
 void    render_rays(t_global *global);
 t_ray   *new_ray(double angle);
+void    ray_cast(t_global *global, t_ray *ray);
 
 #endif
