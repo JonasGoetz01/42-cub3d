@@ -86,5 +86,12 @@ void showMap(t_global *global)
     for (int i = 0; i < NUM_RAYS; i++)
     {
         draw_ray(global, &global->player->rays[i]);
+        for (int j = 0; j < global->line_count; j++)
+        {
+            t_vec2d intersection;
+            intersection = ray_line_collision(&global->player->rays[i], &global->lines[j]);
+            if (intersection.x != -1)
+                draw_circle(global, &(t_circle){intersection, 5}, get_rgba(0, 255, 0, 255));
+        }
     }   
 }
