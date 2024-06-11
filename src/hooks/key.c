@@ -12,30 +12,28 @@ void    keyHook(mlx_key_data_t keydata, void* param)
     }
     if (keydata.key == MLX_KEY_W)
     {
-        global->player->pos.y -= MOVE_SPEED;
-        update_position(global, global->player->pos);
+        t_vec2d new_pos = {global->player->pos.x + global->player->dir.x * MOVE_SPEED, global->player->pos.y + global->player->dir.y * MOVE_SPEED};
+        update_position(global, new_pos);
     }
     if (keydata.key == MLX_KEY_S)
     {
-        global->player->pos.y += MOVE_SPEED;
-        update_position(global, global->player->pos);
-    }
-    if (keydata.key == MLX_KEY_A)
-    {
-        global->player->pos.x -= MOVE_SPEED;
-        update_position(global, global->player->pos);
+        t_vec2d new_pos = {global->player->pos.x - global->player->dir.x * MOVE_SPEED, global->player->pos.y - global->player->dir.y * MOVE_SPEED};
+        update_position(global, new_pos);
     }
     if (keydata.key == MLX_KEY_D)
     {
-        global->player->pos.x += MOVE_SPEED;
-        update_position(global, global->player->pos);
+        t_vec2d new_pos = {global->player->pos.x - global->player->dir.y * MOVE_SPEED, global->player->pos.y + global->player->dir.x * MOVE_SPEED};
+        update_position(global, new_pos);
     }
-
+    if (keydata.key == MLX_KEY_A)
+    {
+        t_vec2d new_pos = {global->player->pos.x + global->player->dir.y * MOVE_SPEED, global->player->pos.y - global->player->dir.x * MOVE_SPEED};
+        update_position(global, new_pos);
+    }
     if (keydata.key == MLX_KEY_E)
     {
         rotate_player(global, 0.1f);
     }
-
     if (keydata.key == MLX_KEY_Q)
     {
         rotate_player(global, -0.1f);
