@@ -1,9 +1,8 @@
 #include "../../inc/cub3d.h"
 
-t_player *new_player(t_point pos, t_point dir)
+t_player *new_player(t_vec2d pos, t_vec2d dir)
 {
     t_player *player;
-    int i;
 
     player = malloc(sizeof(t_player));
     if (!player)
@@ -19,10 +18,10 @@ t_player *new_player(t_point pos, t_point dir)
         return (NULL);
     }
 
-    for (i = 0; i < NUM_RAYS; i++)
-    {
-        player->rays[i] = new_ray(i * 360 / NUM_RAYS);
-    }
+    // for (i = 0; i < NUM_RAYS; i++)
+    // {
+    //     player->rays[i] = new_ray(i * 360 / NUM_RAYS);
+    // }
     
     return (player);
 }
