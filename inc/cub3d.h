@@ -57,5 +57,6 @@ t_player *new_player(t_vec2d pos, t_vec2d dir);
 t_vec2d ray_line_collision(t_ray *ray, t_line *line);
 void    update_position(t_global *global, t_vec2d pos);
 void    rotate_player(t_global *global, float angle);
+void    raycast(t_global *global);
 
 #endif
