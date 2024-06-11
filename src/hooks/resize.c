@@ -5,8 +5,8 @@ void    resize(int32_t width, int32_t height, void* param)
     t_global *global = (t_global*)param;
     global->window_width = width;
     global->window_height = height;
-    mlx_delete_image(global->mlx, global->img);
-    if (!(global->img = mlx_new_image(global->mlx, global->window_width, global->window_height)))
+    mlx_delete_image(global->mlx, global->minimap);
+    if (!(global->minimap = mlx_new_image(global->mlx, global->window_width, global->window_height)))
     {
         mlx_close_window(global->mlx);
         printf("%s\n", mlx_strerror(mlx_errno));

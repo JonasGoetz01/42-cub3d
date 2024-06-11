@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/11 19:13:43 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/06/11 19:39:56 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void draw_line(t_global *global, t_vec2d a, t_vec2d b) {
 
     for (i = 0; i <= steps; i++) {
         if (x >= 0 && x < global->window_width && y >= 0 && y < global->window_height) {
-            mlx_put_pixel(global->img, (int)x, (int)y, get_rgba(255, 255, 255, 255));
+            mlx_put_pixel(global->minimap, (int)x, (int)y, get_rgba(255, 255, 255, 255));
         }
         x += x_inc;
         y += y_inc;
@@ -65,35 +65,35 @@ void draw_circle(t_global *global, t_circle *circle, int color) {
     while (x >= y) {
         if ((int)circle->center.x + x >= 0 && (int)circle->center.x + x < img_width &&
             (int)circle->center.y + y >= 0 && (int)circle->center.y + y < img_height)
-            mlx_put_pixel(global->img, (int)circle->center.x + x, (int)circle->center.y + y, color);
+            mlx_put_pixel(global->minimap, (int)circle->center.x + x, (int)circle->center.y + y, color);
 
         if ((int)circle->center.x + y >= 0 && (int)circle->center.x + y < img_width &&
             (int)circle->center.y + x >= 0 && (int)circle->center.y + x < img_height)
-            mlx_put_pixel(global->img, (int)circle->center.x + y, (int)circle->center.y + x, color);
+            mlx_put_pixel(global->minimap, (int)circle->center.x + y, (int)circle->center.y + x, color);
 
         if ((int)circle->center.x - y >= 0 && (int)circle->center.x - y < img_width &&
             (int)circle->center.y + x >= 0 && (int)circle->center.y + x < img_height)
-            mlx_put_pixel(global->img, (int)circle->center.x - y, (int)circle->center.y + x, color);
+            mlx_put_pixel(global->minimap, (int)circle->center.x - y, (int)circle->center.y + x, color);
 
         if ((int)circle->center.x - x >= 0 && (int)circle->center.x - x < img_width &&
             (int)circle->center.y + y >= 0 && (int)circle->center.y + y < img_height)
-            mlx_put_pixel(global->img, (int)circle->center.x - x, (int)circle->center.y + y, color);
+            mlx_put_pixel(global->minimap, (int)circle->center.x - x, (int)circle->center.y + y, color);
 
         if ((int)circle->center.x - x >= 0 && (int)circle->center.x - x < img_width &&
             (int)circle->center.y - y >= 0 && (int)circle->center.y - y < img_height)
-            mlx_put_pixel(global->img, (int)circle->center.x - x, (int)circle->center.y - y, color);
+            mlx_put_pixel(global->minimap, (int)circle->center.x - x, (int)circle->center.y - y, color);
 
         if ((int)circle->center.x - y >= 0 && (int)circle->center.x - y < img_width &&
             (int)circle->center.y - x >= 0 && (int)circle->center.y - x < img_height)
-            mlx_put_pixel(global->img, (int)circle->center.x - y, (int)circle->center.y - x, color);
+            mlx_put_pixel(global->minimap, (int)circle->center.x - y, (int)circle->center.y - x, color);
 
         if ((int)circle->center.x + y >= 0 && (int)circle->center.x + y < img_width &&
             (int)circle->center.y - x >= 0 && (int)circle->center.y - x < img_height)
-            mlx_put_pixel(global->img, (int)circle->center.x + y, (int)circle->center.y - x, color);
+            mlx_put_pixel(global->minimap, (int)circle->center.x + y, (int)circle->center.y - x, color);
 
         if ((int)circle->center.x + x >= 0 && (int)circle->center.x + x < img_width &&
             (int)circle->center.y - y >= 0 && (int)circle->center.y - y < img_height)
-            mlx_put_pixel(global->img, (int)circle->center.x + x, (int)circle->center.y - y, color);
+            mlx_put_pixel(global->minimap, (int)circle->center.x + x, (int)circle->center.y - y, color);
 
         if (err <= 0) {
             y++;

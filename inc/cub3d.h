@@ -34,7 +34,7 @@ typedef struct s_player
 typedef struct s_global
 {
     mlx_t *mlx;
-    mlx_image_t *img;
+    mlx_image_t *minimap;
     t_map *map;
     t_player *player;
     int line_count;
