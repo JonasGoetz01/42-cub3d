@@ -78,6 +78,14 @@ void showMap(t_global *global)
                     line((t_point){(x + 1) * global->xfactor, y * global->yfactor}, (t_point){(x + 1) * global->xfactor, (y + 1) * global->yfactor}, get_rgba(255, 255, 255, 255), global);
             }
             render_rays(global);
+            for (int i = 0; i < NUM_RAYS; i++)
+            {
+                t_ray *ray = global->player->rays[i];
+                // ray_cast(global, ray);
+                printf("ray->hit.x: %f\n", ray->hit.x);
+                printf("ray->hit.y: %f\n", ray->hit.y);
+                circle_point(ray->hit.x * global->xfactor, ray->hit.y * global->yfactor, 2, global, get_rgba(0, 255, 0, 255));
+            }
             circle_point(global->player->pos.x * global->xfactor, global->player->pos.y * global->yfactor, 5, global, get_rgba(255, 0, 0, 255));
         }
     }
