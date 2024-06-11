@@ -59,15 +59,41 @@ void draw_circle(t_global *global, t_circle *circle, int color) {
     int dx = 1;
     int dy = 1;
     int err = dx - (radius << 1);
+    int img_width = (int)global->img->width;
+    int img_height = (int)global->img->height;
 
     while (x >= y) {
+        // Check bounds for each pixel before drawing
+        if ((int)circle->center.x + x >= 0 && (int)circle->center.x + x < img_width &&
+            (int)circle->center.y + y >= 0 && (int)circle->center.y + y < img_height)
         mlx_put_pixel(global->img, (int)circle->center.x + x, (int)circle->center.y + y, color);
+
+        if ((int)circle->center.x + y >= 0 && (int)circle->center.x + y < img_width &&
+            (int)circle->center.y + x >= 0 && (int)circle->center.y + x < img_height)
         mlx_put_pixel(global->img, (int)circle->center.x + y, (int)circle->center.y + x, color);
+
+        if ((int)circle->center.x - y >= 0 && (int)circle->center.x - y < img_width &&
+            (int)circle->center.y + x >= 0 && (int)circle->center.y + x < img_height)
         mlx_put_pixel(global->img, (int)circle->center.x - y, (int)circle->center.y + x, color);
+
+        if ((int)circle->center.x - x >= 0 && (int)circle->center.x - x < img_width &&
+            (int)circle->center.y + y >= 0 && (int)circle->center.y + y < img_height)
         mlx_put_pixel(global->img, (int)circle->center.x - x, (int)circle->center.y + y, color);
+
+        if ((int)circle->center.x - x >= 0 && (int)circle->center.x - x < img_width &&
+            (int)circle->center.y - y >= 0 && (int)circle->center.y - y < img_height)
         mlx_put_pixel(global->img, (int)circle->center.x - x, (int)circle->center.y - y, color);
+
+        if ((int)circle->center.x - y >= 0 && (int)circle->center.x - y < img_width &&
+            (int)circle->center.y - x >= 0 && (int)circle->center.y - x < img_height)
         mlx_put_pixel(global->img, (int)circle->center.x - y, (int)circle->center.y - x, color);
+
+        if ((int)circle->center.x + y >= 0 && (int)circle->center.x + y < img_width &&
+            (int)circle->center.y - x >= 0 && (int)circle->center.y - x < img_height)
         mlx_put_pixel(global->img, (int)circle->center.x + y, (int)circle->center.y - x, color);
+
+        if ((int)circle->center.x + x >= 0 && (int)circle->center.x + x < img_width &&
+            (int)circle->center.y - y >= 0 && (int)circle->center.y - y < img_height)
         mlx_put_pixel(global->img, (int)circle->center.x + x, (int)circle->center.y - y, color);
 
         if (err <= 0) {
