@@ -73,3 +73,18 @@ void map_to_line_segments(t_global *global, t_line **lines, int *line_count) {
     }
 }
 
+void showMap(t_global *global)
+{
+    int i;
+
+    i = 0;
+    while (i < global->line_count) {
+        draw_line(global, global->lines[i].a, global->lines[i].b);
+        i++;
+    }
+    draw_circle(global, &(t_circle){global->player->pos, 5}, get_rgba(255, 0, 0, 255));
+    for (int i = 0; i < NUM_RAYS; i++)
+    {
+        draw_ray(global, &global->player->rays[i]);
+    }   
+}
