@@ -23,3 +23,12 @@ float calculate_scale_factor(int map_width, int map_height, int window_width, in
 
     return (scale_x < scale_y) ? scale_x : scale_y;
 }
+
+void scale_line_segments(t_line *lines, int line_count, float scale_factor) {
+    for (int i = 0; i < line_count; i++) {
+        lines[i].a.x *= scale_factor;
+        lines[i].a.y *= scale_factor;
+        lines[i].b.x *= scale_factor;
+        lines[i].b.y *= scale_factor;
+    }
+}
