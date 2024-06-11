@@ -17,16 +17,11 @@ VPATH	:=	src \
 			src/player
 
 SRCS	:=  main.c \
-			line.c \
 			loop.c \
-			color.c \
-			rect.c \
 			initMap.c \
 			showMap.c \
 			key.c \
-			circle.c \
-			player.c \
-			ray.c
+			player.c
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
