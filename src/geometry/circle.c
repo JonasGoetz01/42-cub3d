@@ -44,14 +44,18 @@ void    circle_point(int x, int y, int radius, t_global *global, uint32_t color)
 
     while (x1 >= y1)
     {
-        mlx_put_pixel(global->img, x + x1, y + y1, color);
-        mlx_put_pixel(global->img, x + y1, y + x1, color);
-        mlx_put_pixel(global->img, x - y1, y + x1, color);
-        mlx_put_pixel(global->img, x - x1, y + y1, color);
-        mlx_put_pixel(global->img, x - x1, y - y1, color);
-        mlx_put_pixel(global->img, x - y1, y - x1, color);
-        mlx_put_pixel(global->img, x + y1, y - x1, color);
-        mlx_put_pixel(global->img, x + x1, y - y1, color);
+        if ((x + x1 >= 0 && x + x1 < WIDTH && y + y1 >= 0 && y + y1 < HEIGHT) 
+            && (x - y1 >= 0 && x - y1 < WIDTH && y - x1 >= 0 && y - x1 < HEIGHT))
+        {
+            mlx_put_pixel(global->img, x + x1, y + y1, color);
+            mlx_put_pixel(global->img, x + y1, y + x1, color);
+            mlx_put_pixel(global->img, x - y1, y + x1, color);
+            mlx_put_pixel(global->img, x - x1, y + y1, color);
+            mlx_put_pixel(global->img, x - x1, y - y1, color);
+            mlx_put_pixel(global->img, x - y1, y - x1, color);
+            mlx_put_pixel(global->img, x + y1, y - x1, color);
+            mlx_put_pixel(global->img, x + x1, y - y1, color);
+        }
 
         if (err <= 0)
         {
