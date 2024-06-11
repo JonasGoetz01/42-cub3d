@@ -83,15 +83,20 @@ void showMap(t_global *global)
         i++;
     }
     draw_circle(global, &(t_circle){global->player->pos, 5}, get_rgba(255, 0, 0, 255));
+    for (i = 0; i < NUM_RAYS; i++) {
+        if (global->player->rays[i].collisions)
+            free(global->player->rays[i].collisions);
+        global->player->rays[i].collisions = NULL;
+        global->player->rays[i].collision_count = 0;
+    }
+    raycast(global);
     for (int i = 0; i < NUM_RAYS; i++)
     {
         draw_ray(global, &global->player->rays[i]);
-        for (int j = 0; j < global->line_count; j++)
+        for (int j = 0; j < global->player->rays[i].collision_count; j++)
         {
-            t_vec2d intersection;
-            intersection = ray_line_collision(&global->player->rays[i], &global->lines[j]);
-            if (intersection.x != -1)
-                draw_circle(global, &(t_circle){intersection, 5}, get_rgba(0, 255, 0, 255));
+            draw_circle(global, &(t_circle){global->player->rays[i].collisions[j], 3}, get_rgba(0, 255, 0, 255));
         }
+        draw_circle(global, &(t_circle){*(global->player->rays[i].closest_collision), 3}, get_rgba(0, 0, 255, 255));
     }   
 }
