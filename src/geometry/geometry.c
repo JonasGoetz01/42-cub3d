@@ -32,3 +32,23 @@ void scale_line_segments(t_line *lines, int line_count, float scale_factor) {
         lines[i].b.y *= scale_factor;
     }
 }
+
+void draw_line(t_global *global, t_vec2d a, t_vec2d b) {
+    int dx = b.x - a.x;
+    int dy = b.y - a.y;
+    int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+    float x_inc = dx / (float)steps;
+    float y_inc = dy / (float)steps;
+    float x = a.x;
+    float y = a.y;
+    int i;
+
+    for (i = 0; i <= steps; i++) {
+        if (x >= 0 && x < global->img->width && y >= 0 && y < global->img->height) {
+            mlx_put_pixel(global->img, (int)x, (int)y, get_rgba(255, 255, 255, 255));
+        }
+        x += x_inc;
+        y += y_inc;
+    }
+}
+
