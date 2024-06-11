@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/11 14:39:48 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/06/11 15:28:48 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,5 +142,52 @@ t_vec2d ray_line_collision(t_ray *ray, t_line *line)
         return ((t_vec2d){x1 + t * (x2 - x1), y1 + t * (y2 - y1)});
 
     return ((t_vec2d){-1, -1}); // No collision
+}
+
+t_vec2d* new_collision(t_vec2d *collisions, int *collision_count, t_vec2d collision) {
+    t_vec2d *new_collisions;
+
+    new_collisions = realloc(collisions, (*collision_count + 1) * sizeof(t_vec2d));
+    if (!new_collisions) {
+        // Handle reallocation failure
+        return NULL;
+    }
+
+    new_collisions[*collision_count] = collision;
+    (*collision_count)++;
+    return new_collisions;
+}
+
+
+void raycast(t_global *global)
+{
+    for (int i = 0; i < NUM_RAYS; i++)
+    {
+        for (int j = 0; j < global->line_count; j++)
+        {
+            t_vec2d intersection;
+            intersection = ray_line_collision(&global->player->rays[i], &global->lines[j]);
+            if (intersection.x != -1)
+            {
+                t_vec2d *new_collisions = new_collision(global->player->rays[i].collisions, &global->player->rays[i].collision_count, intersection);
+                if (!new_collisions) {
+                    // Handle memory allocation failure
+                    return;
+                }
+                global->player->rays[i].collisions = new_collisions;
+            }
+        }
+        //find the closest collision
+        float min_distance = 1000000;
+        for (int j = 0; j < global->player->rays[i].collision_count; j++)
+        {
+            float distance = sqrtf(powf(global->player->pos.x - global->player->rays[i].collisions[j].x, 2) + powf(global->player->pos.y - global->player->rays[i].collisions[j].y, 2));
+            if (distance < min_distance)
+            {
+                min_distance = distance;
+                global->player->rays[i].closest_collision = &global->player->rays[i].collisions[j];
+            }
+        }
+    }
 }
 
