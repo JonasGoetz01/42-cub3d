@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/11 15:28:48 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/06/11 17:30:45 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void draw_line(t_global *global, t_vec2d a, t_vec2d b) {
     int i;
 
     for (i = 0; i <= steps; i++) {
-        if (x >= 0 && x < global->img->width && y >= 0 && y < global->img->height) {
+        if (x >= 0 && x < global->window_width && y >= 0 && y < global->window_height) {
             mlx_put_pixel(global->img, (int)x, (int)y, get_rgba(255, 255, 255, 255));
         }
         x += x_inc;
@@ -59,8 +59,8 @@ void draw_circle(t_global *global, t_circle *circle, int color) {
     int dx = 1;
     int dy = 1;
     int err = dx - (radius << 1);
-    int img_width = (int)global->img->width;
-    int img_height = (int)global->img->height;
+    int img_width = (int)global->window_width;
+    int img_height = (int)global->window_height;
 
     while (x >= y) {
         // Check bounds for each pixel before drawing

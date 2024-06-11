@@ -22,7 +22,8 @@ SRCS	:=  main.c \
 			showMap.c \
 			key.c \
 			player.c \
-			geometry.c
+			geometry.c \
+			resize.c
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))

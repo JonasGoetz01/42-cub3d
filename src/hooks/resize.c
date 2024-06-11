@@ -1,0 +1,18 @@
+#include "../../inc/cub3d.h"
+
+void    resize(int32_t width, int32_t height, void* param)
+{
+    t_global *global = (t_global*)param;
+    global->window_width = width;
+    global->window_height = height;
+    mlx_delete_image(global->mlx, global->img);
+    if (!(global->img = mlx_new_image(global->mlx, global->window_width, global->window_height)))
+    {
+        mlx_close_window(global->mlx);
+        printf("%s\n", mlx_strerror(mlx_errno));
+        exit(EXIT_FAILURE);
+    }
+    global->scale_factor = calculate_scale_factor(global->map->width, global->map->height, global->window_width, global->window_height);
+    map_to_line_segments(global, &global->lines, &global->line_count);
+    scale_line_segments(global->lines, global->line_count, global->scale_factor);
+}

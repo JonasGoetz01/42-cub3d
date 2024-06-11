@@ -25,6 +25,7 @@ int	main(int argc, char **argv)
 	initMap(&global);
 	global.player = new_player((t_vec2d){26 * global.scale_factor, 11 * global.scale_factor}, (t_vec2d){0, -1});
 	mlx_loop_hook(global.mlx, loop, &global);
+	mlx_resize_hook(global.mlx, resize, &global);
 	mlx_loop(global.mlx);
 	mlx_terminate(global.mlx);
 	return (0);
