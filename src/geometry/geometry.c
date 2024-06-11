@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   geometry.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
+/*   By: jogo <jogo@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/11 23:18:00 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/06/12 00:43:58 by jogo             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ t_vec2d* new_collision(t_vec2d *collisions, int *collision_count, t_vec2d collis
 
 void raycast(t_global *global)
 {
-    for (int i = 0; i < NUM_RAYS; i++)
+    for (int i = 0; i < (int)global->img->width; i++)
     {
         for (int j = 0; j < global->line_count; j++)
         {

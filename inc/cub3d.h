@@ -13,7 +13,6 @@
 #define WIDTH 1080
 #define HEIGHT 720
 #define FOV 60.0f * (M_PI / 180.0f) // Convert degrees to radians
-#define NUM_RAYS 60 // Example number of rays
 #define BPP sizeof(int32_t)
 #define MOVE_SPEED 3.0f
 #define MINIMAP_SCALE 0.3f
@@ -61,7 +60,7 @@ void    scale_line_segments(t_line *lines, int line_count, float scale_factor);
 void    draw_circle(t_global *global, t_circle *circle, int color);
 int     get_rgba(int r, int g, int b, int a);
 void    draw_ray(t_global *global, t_ray *ray);
-t_player *new_player(t_vec2d pos, t_vec2d dir);
+t_player *new_player(t_global *global, t_vec2d pos, t_vec2d dir);
 t_vec2d ray_line_collision(t_ray *ray, t_line *line);
 void    update_position(t_global *global, t_vec2d pos);
 void    rotate_player(t_global *global, float angle);

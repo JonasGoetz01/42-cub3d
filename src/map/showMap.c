@@ -83,14 +83,14 @@ void showMap(t_global *global)
         i++;
     }
     draw_circle(global, &(t_circle){global->player->pos, 5}, get_rgba(255, 0, 0, 255));
-    for (i = 0; i < NUM_RAYS; i++) {
+    for (i = 0; i < (int)global->img->width; i++) {
         if (global->player->rays[i].collisions)
             free(global->player->rays[i].collisions);
         global->player->rays[i].collisions = NULL;
         global->player->rays[i].collision_count = 0;
     }
     raycast(global);
-    for (int i = 0; i < NUM_RAYS; i++)
+    for (uint32_t i = 0; i < global->img->width; i++)
     {
         if(SHOW_RAYS)
             draw_ray(global, &global->player->rays[i]);

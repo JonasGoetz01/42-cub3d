@@ -7,7 +7,7 @@ LIBMLX	:= ./lib/MLX42
 HEADERS	:= -I ./inc -I $(LIBMLX)/include -I ./lib/libft
 
 LIBS	:= $(LIBMLX)/build/libmlx42.a -ldl -lglfw -pthread -lm
-# LIBS	+= -L"/opt/homebrew/Cellar/glfw/3.4/lib/"
+LIBS	+= -L"/opt/homebrew/Cellar/glfw/3.4/lib/"
 
 VPATH	:=	src \
 			src/geometry \

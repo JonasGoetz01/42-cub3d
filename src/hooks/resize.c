@@ -21,5 +21,5 @@ void    resize(int32_t width, int32_t height, void* param)
     player_pos.y *= global->scale_factor;
     t_vec2d player_dir = global->player->dir;
     free(global->player);
-    global->player = new_player(player_pos, player_dir);
+    global->player = new_player(global, player_pos, player_dir);
 }

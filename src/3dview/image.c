@@ -72,8 +72,8 @@ float   get_distance(t_vec2d a, t_vec2d b)
 
 void render_3d(t_global *global)
 {
-    int bar_width = global->img->width / NUM_RAYS;
-    for (int i = 0; i < NUM_RAYS; i++)
+    int bar_width = global->img->width / global->img->width;
+    for (int i = 0; i < (int)global->img->width; i++)
     {
         float distance = get_distance(global->player->pos, *(global->player->rays[i].closest_collision));
         int bar_height = map_distance_to_height(distance, global);
