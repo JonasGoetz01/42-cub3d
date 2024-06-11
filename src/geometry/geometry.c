@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/11 19:04:53 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/06/11 19:13:43 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ void draw_circle(t_global *global, t_circle *circle, int color) {
     int img_height = (int)global->window_height;
 
     while (x >= y) {
-        // Check bounds for each pixel before drawing
         if ((int)circle->center.x + x >= 0 && (int)circle->center.x + x < img_width &&
             (int)circle->center.y + y >= 0 && (int)circle->center.y + y < img_height)
             mlx_put_pixel(global->img, (int)circle->center.x + x, (int)circle->center.y + y, color);
@@ -109,9 +108,7 @@ void draw_circle(t_global *global, t_circle *circle, int color) {
     }
 }
 
-//draw a line from the origin of the ray to the border of the image
 void draw_ray(t_global *global, t_ray *ray) {
-    // Scale the direction vector to a sufficient length (e.g., 1000 units)
     t_vec2d end = {
         ray->origin.x + ray->direction.x * 1000,
         ray->origin.y + ray->direction.y * 1000
@@ -119,7 +116,6 @@ void draw_ray(t_global *global, t_ray *ray) {
     draw_line(global, ray->origin, end);
 }
 
-//check if a line is intersecting with a line segment and if so return the point of intersection
 t_vec2d ray_line_collision(t_ray *ray, t_line *line)
 {
     float x1 = ray->origin.x;
@@ -133,26 +129,22 @@ t_vec2d ray_line_collision(t_ray *ray, t_line *line)
 
     float denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
     if (denominator == 0)
-        return ((t_vec2d){-1, -1}); // No collision
+        return ((t_vec2d){-1, -1});
 
     float t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
     float u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / denominator;
-
+    
     if (t >= 0 && u >= 0 && u <= 1)
         return ((t_vec2d){x1 + t * (x2 - x1), y1 + t * (y2 - y1)});
-
-    return ((t_vec2d){-1, -1}); // No collision
+    return ((t_vec2d){-1, -1});
 }
 
 t_vec2d* new_collision(t_vec2d *collisions, int *collision_count, t_vec2d collision) {
     t_vec2d *new_collisions;
 
     new_collisions = realloc(collisions, (*collision_count + 1) * sizeof(t_vec2d));
-    if (!new_collisions) {
-        // Handle reallocation failure
+    if (!new_collisions)
         return NULL;
-    }
-
     new_collisions[*collision_count] = collision;
     (*collision_count)++;
     return new_collisions;
@@ -170,14 +162,11 @@ void raycast(t_global *global)
             if (intersection.x != -1)
             {
                 t_vec2d *new_collisions = new_collision(global->player->rays[i].collisions, &global->player->rays[i].collision_count, intersection);
-                if (!new_collisions) {
-                    // Handle memory allocation failure
+                if (!new_collisions)
                     return;
-                }
                 global->player->rays[i].collisions = new_collisions;
             }
         }
-        //find the closest collision
         float min_distance = 1000000;
         for (int j = 0; j < global->player->rays[i].collision_count; j++)
         {
@@ -190,4 +179,3 @@ void raycast(t_global *global)
         }
     }
 }
-

@@ -9,7 +9,6 @@ int get_map_height(char **map)
     return (i);
 }
 
-// get the width of the map (not all the rows have the same length)
 int get_map_width(char **map)
 {
     int i = 0;
