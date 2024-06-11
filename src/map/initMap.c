@@ -79,8 +79,6 @@ void    initMap(t_global *global)
     global->map->map[14] = NULL;
     global->map->height = get_map_height(global->map->map);
     global->map->width = get_map_width(global->map->map);
-    printf("height: %d\n", global->map->height);
-    printf("width: %d\n", global->map->width);
 
     map_to_line_segments(global, &lines, &line_count);
     global->scale_factor = calculate_scale_factor(global->map->width, global->map->height, WIDTH, HEIGHT);
