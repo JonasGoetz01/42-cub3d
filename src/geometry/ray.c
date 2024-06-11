@@ -16,7 +16,7 @@ void    free_ray(t_ray *ray)
 
 // void    ray_cast(t_global *global, t_ray *ray)
 // {
-
+    
 // }
 
 // draw a line from the origin to the border of the image
