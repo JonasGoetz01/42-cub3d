@@ -28,6 +28,25 @@ int get_map_width(char **map)
     return (max);
 }
 
+t_vec2d get_player_position(t_global *global)
+{
+    t_vec2d player_pos = {0, 0};
+
+    for (int y = 0; y < global->map->height; y++)
+    {
+        for (int x = 0; x < global->map->width; x++)
+        {
+            if (global->map->map[y][x] == 'N' || global->map->map[y][x] == 'E' || global->map->map[y][x] == 'W' || global->map->map[y][x] == 'S')
+            {
+                player_pos.x = x;
+                player_pos.y = y;
+                return (player_pos);
+            }
+        }
+    }
+    return (player_pos);
+}
+
 void    initMap(t_global *global)
 {
     t_line *lines;

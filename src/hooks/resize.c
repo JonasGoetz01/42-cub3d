@@ -15,4 +15,11 @@ void    resize(int32_t width, int32_t height, void* param)
     global->scale_factor = calculate_scale_factor(global->map->width, global->map->height, global->window_width, global->window_height);
     map_to_line_segments(global, &global->lines, &global->line_count);
     scale_line_segments(global->lines, global->line_count, global->scale_factor);
+
+    t_vec2d player_pos = get_player_position(global);
+    player_pos.x *= global->scale_factor;
+    player_pos.y *= global->scale_factor;
+    t_vec2d player_dir = global->player->dir;
+    free(global->player);
+    global->player = new_player(player_pos, player_dir);
 }
