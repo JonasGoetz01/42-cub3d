@@ -40,6 +40,8 @@ typedef struct s_global
     int line_count;
     float scale_factor;
     t_line *lines;
+    int window_width;
+    int window_height;
 } t_global;
 
 void    loop(void *param);
