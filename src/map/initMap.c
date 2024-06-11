@@ -30,6 +30,9 @@ int get_map_width(char **map)
 
 void    initMap(t_global *global)
 {
+    t_line *lines;
+    int line_count;
+
     char *map[] = {
         "        1111111111111111111111111",
         "        1000000000110000000000001",
@@ -59,4 +62,10 @@ void    initMap(t_global *global)
     global->map->width = get_map_width(global->map->map);
     printf("height: %d\n", global->map->height);
     printf("width: %d\n", global->map->width);
+
+    map_to_line_segments(global, &lines, &line_count);
+    global->scale_factor = calculate_scale_factor(global->map->width, global->map->height, WIDTH, HEIGHT);
+    scale_line_segments(lines, line_count, global->scale_factor);
+    global->line_count = line_count;
+    global->lines = lines;
 }
