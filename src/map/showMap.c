@@ -36,10 +36,11 @@ bool isWallRight(t_global *global, int x, int y)
     return (false);
 }
 
-void add_line_segment(t_line **lines, int *count, t_vec2d a, t_vec2d b) {
+void add_line_segment(t_line **lines, int *count, t_vec2d a, t_vec2d b, t_alignment alignment) {
     *lines = realloc(*lines, (*count + 1) * sizeof(t_line));
     (*lines)[*count].a = a;
     (*lines)[*count].b = b;
+    (*lines)[*count].alignment = alignment;
     (*count)++;
 }
 
@@ -57,16 +58,16 @@ void map_to_line_segments(t_global *global, t_line **lines, int *line_count) {
                 t_vec2d bottom_right = {x + 1, y + 1};
 
                 if (!isWallAbove(global, x, y)) {
-                    add_line_segment(lines, line_count, top_left, top_right);
+                    add_line_segment(lines, line_count, top_left, top_right, HORIZONTAL);
                 }
                 if (!isWallBelow(global, x, y)) {
-                    add_line_segment(lines, line_count, bottom_left, bottom_right);
+                    add_line_segment(lines, line_count, bottom_left, bottom_right, HORIZONTAL);
                 }
                 if (!isWallLeft(global, x, y)) {
-                    add_line_segment(lines, line_count, top_left, bottom_left);
+                    add_line_segment(lines, line_count, top_left, bottom_left, VERTICAL);
                 }
                 if (!isWallRight(global, x, y)) {
-                    add_line_segment(lines, line_count, top_right, bottom_right);
+                    add_line_segment(lines, line_count, top_right, bottom_right, VERTICAL);
                 }
             }
         }

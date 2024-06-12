@@ -80,7 +80,10 @@ void render_3d(t_global *global)
         int center_y = global->img->height / 2;
         int top_y = center_y - (bar_height / 2);
         int x = i * bar_width;
-
-        draw_bar(global, x, top_y, bar_width, bar_height, get_rgba(255, 255, 255, 255));
+        if (global->player->rays[i].closest_collision->line->alignment == HORIZONTAL)
+            draw_bar(global, x, top_y, bar_width, bar_height, get_rgba(100, 100, 100, 255));
+        else
+            draw_bar(global, x, top_y, bar_width, bar_height, get_rgba(105, 255, 105, 255));
+    
     }
 }
