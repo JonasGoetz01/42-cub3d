@@ -73,13 +73,13 @@ bool line_line_collision(t_line *a, t_line *b) {
     return (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1);
 }
 
-void update_position(t_global *global, t_vec2d dir) {
+void update_position(t_global *global, t_vec2d dir, float speed) {
     t_vec2d new_pos;
     t_vec2d temp_pos;
     bool collision = false;
 
-    new_pos.x = global->player->pos.x + dir.x * MOVE_SPEED * global->minimap_scale;
-    new_pos.y = global->player->pos.y + dir.y * MOVE_SPEED * global->minimap_scale;
+    new_pos.x = global->player->pos.x + dir.x * speed * global->minimap_scale;
+    new_pos.y = global->player->pos.y + dir.y * speed * global->minimap_scale;
     for (int i = 0; i < global->line_count; i++) {
         t_line temp_line = {global->player->pos, new_pos, VERTICAL};
         if (line_line_collision(&global->lines[i], &temp_line)) {
@@ -88,7 +88,7 @@ void update_position(t_global *global, t_vec2d dir) {
         }
     }
     if (collision) {
-        temp_pos.x = global->player->pos.x + dir.x * MOVE_SPEED * global->minimap_scale;
+        temp_pos.x = global->player->pos.x + dir.x * speed * global->minimap_scale;
         temp_pos.y = global->player->pos.y;
         for (int i = 0; i < global->line_count; i++) {
             t_line temp_line = {global->player->pos, temp_pos, VERTICAL};
@@ -98,7 +98,7 @@ void update_position(t_global *global, t_vec2d dir) {
             }
         }
         new_pos = temp_pos;
-        temp_pos.y = global->player->pos.y + dir.y * MOVE_SPEED * global->minimap_scale;
+        temp_pos.y = global->player->pos.y + dir.y * speed * global->minimap_scale;
         for (int i = 0; i < global->line_count; i++) {
             t_line temp_line = {global->player->pos, temp_pos, VERTICAL};
             if (line_line_collision(&global->lines[i], &temp_line)) {

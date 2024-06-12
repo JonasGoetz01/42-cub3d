@@ -2,13 +2,17 @@
 
 void keyHook(void *param) {
     t_global *global;
-    t_vec2d dir = {0.0f, 0.0f};  // Initialize the direction vector
+    t_vec2d dir = {0.0f, 0.0f};
+    float move_speed = MOVE_SPEED;
 
     global = (t_global *)param;
 
     if (mlx_is_key_down(global->mlx, MLX_KEY_ESCAPE)) {
         mlx_close_window(global->mlx);
         return;
+    }
+    if (mlx_is_key_down(global->mlx, MLX_KEY_LEFT_SHIFT)) {
+        move_speed *= 2;
     }
     if (mlx_is_key_down(global->mlx, MLX_KEY_W)) {
         dir.x += global->player->dir.x;
@@ -37,5 +41,5 @@ void keyHook(void *param) {
         dir.x /= length;
         dir.y /= length;
     }
-    update_position(global, dir);
+    update_position(global, dir, move_speed);
 }

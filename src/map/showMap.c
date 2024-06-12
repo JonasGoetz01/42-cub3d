@@ -74,13 +74,32 @@ void map_to_line_segments(t_global *global, t_line **lines, int *line_count) {
     }
 }
 
+void draw_fov_lines(t_global *global)
+{
+    float angle;
+    t_vec2d start, left_end, right_end;
+    t_player *player;
+
+    player = global->player;
+    start = player->pos;
+    angle = atan2(player->dir.y, player->dir.x) - (FOV / 2);
+    left_end.x = start.x + cos(angle) * 10;
+    left_end.y = start.y + sin(angle) * 10;
+    angle = atan2(player->dir.y, player->dir.x) + (FOV / 2);
+    right_end.x = start.x + cos(angle) * 10;
+    right_end.y = start.y + sin(angle) * 10;
+    draw_line(global, start, left_end, get_rgba(255, 255, 255, 255)); // white color
+    draw_line(global, start, right_end, get_rgba(255, 255, 255, 255)); // white color
+}
+
+
 void showMap(t_global *global)
 {
     int i;
 
     i = 0;
     while (i < global->line_count) {
-        draw_line(global, global->lines[i].a, global->lines[i].b);
+        draw_line(global, global->lines[i].a, global->lines[i].b, get_rgba(255, 255, 255, 255));
         i++;
     }
     draw_circle(global, &(t_circle){global->player->pos, 5}, get_rgba(255, 0, 0, 255));
@@ -104,5 +123,7 @@ void showMap(t_global *global)
         }
         if(SHOW_COLLISIONS)
             draw_circle(global, &(t_circle){global->player->rays[i].closest_collision->point, 3}, get_rgba(0, 0, 255, 255));
-    }   
+    }
+    if(SHOW_FOV)
+        draw_fov_lines(global);
 }

@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/12 14:47:31 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/06/12 18:36:09 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void scale_line_segments(t_line *lines, int line_count, float scale_factor) {
     }
 }
 
-void draw_line(t_global *global, t_vec2d a, t_vec2d b) {
+void draw_line(t_global *global, t_vec2d a, t_vec2d b, int color) {
     int dx = b.x - a.x;
     int dy = b.y - a.y;
     int steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
@@ -45,7 +45,7 @@ void draw_line(t_global *global, t_vec2d a, t_vec2d b) {
 
     for (i = 0; i <= steps; i++) {
         if (x >= 0 && x < global->minimap->width && y >= 0 && y < global->minimap->height) {
-            mlx_put_pixel(global->minimap, (int)x, (int)y, get_rgba(255, 255, 255, 255));
+            mlx_put_pixel(global->minimap, (int)x, (int)y, color);
         }
         x += x_inc;
         y += y_inc;
@@ -113,7 +113,7 @@ void draw_ray(t_global *global, t_ray *ray) {
         ray->origin.x + ray->direction.x * 1000,
         ray->origin.y + ray->direction.y * 1000
     };
-    draw_line(global, ray->origin, end);
+    draw_line(global, ray->origin, end, get_rgba(255, 255, 255, 255));
 }
 
 t_vec2d ray_line_collision(t_ray *ray, t_line *line, t_face *face)
