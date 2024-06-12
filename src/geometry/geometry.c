@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   geometry.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jogo <jogo@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/12 00:43:58 by jogo             ###   ########.fr       */
+/*   Updated: 2024/06/12 14:29:47 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,13 +139,14 @@ t_vec2d ray_line_collision(t_ray *ray, t_line *line)
     return ((t_vec2d){-1, -1});
 }
 
-t_vec2d* new_collision(t_vec2d *collisions, int *collision_count, t_vec2d collision) {
-    t_vec2d *new_collisions;
+t_collision* new_collision(t_collision *collisions, int *collision_count, t_vec2d point, t_line *line) {
+    t_collision *new_collisions;
 
-    new_collisions = realloc(collisions, (*collision_count + 1) * sizeof(t_vec2d));
+    new_collisions = realloc(collisions, (*collision_count + 1) * sizeof(t_collision));
     if (!new_collisions)
         return NULL;
-    new_collisions[*collision_count] = collision;
+    new_collisions[*collision_count].point = point;
+    new_collisions[*collision_count].line = line;
     (*collision_count)++;
     return new_collisions;
 }
@@ -161,7 +162,7 @@ void raycast(t_global *global)
             intersection = ray_line_collision(&global->player->rays[i], &global->lines[j]);
             if (intersection.x != -1)
             {
-                t_vec2d *new_collisions = new_collision(global->player->rays[i].collisions, &global->player->rays[i].collision_count, intersection);
+                t_collision *new_collisions = new_collision(global->player->rays[i].collisions, &global->player->rays[i].collision_count, intersection, &global->lines[j]);
                 if (!new_collisions)
                     return;
                 global->player->rays[i].collisions = new_collisions;
@@ -170,7 +171,7 @@ void raycast(t_global *global)
         float min_distance = 1000000;
         for (int j = 0; j < global->player->rays[i].collision_count; j++)
         {
-            float distance = sqrtf(powf(global->player->pos.x - global->player->rays[i].collisions[j].x, 2) + powf(global->player->pos.y - global->player->rays[i].collisions[j].y, 2));
+            float distance = sqrtf(powf(global->player->pos.x - global->player->rays[i].collisions[j].point.x, 2) + powf(global->player->pos.y - global->player->rays[i].collisions[j].point.y, 2));
             if (distance < min_distance)
             {
                 min_distance = distance;

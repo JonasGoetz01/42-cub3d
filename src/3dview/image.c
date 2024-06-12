@@ -75,7 +75,7 @@ void render_3d(t_global *global)
     int bar_width = global->img->width / global->img->width;
     for (int i = 0; i < (int)global->img->width; i++)
     {
-        float distance = get_distance(global->player->pos, *(global->player->rays[i].closest_collision));
+        float distance = get_distance(global->player->pos, global->player->rays[i].closest_collision->point);
         int bar_height = map_distance_to_height(distance, global);
         int center_y = global->img->height / 2;
         int top_y = center_y - (bar_height / 2);

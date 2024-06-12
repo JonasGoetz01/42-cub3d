@@ -85,7 +85,9 @@ void showMap(t_global *global)
     draw_circle(global, &(t_circle){global->player->pos, 5}, get_rgba(255, 0, 0, 255));
     for (i = 0; i < (int)global->img->width; i++) {
         if (global->player->rays[i].collisions)
+        {
             free(global->player->rays[i].collisions);
+        }
         global->player->rays[i].collisions = NULL;
         global->player->rays[i].collision_count = 0;
     }
@@ -97,9 +99,9 @@ void showMap(t_global *global)
         for (int j = 0; j < global->player->rays[i].collision_count; j++)
         {
             if(SHOW_COLLISIONS)
-                draw_circle(global, &(t_circle){global->player->rays[i].collisions[j], 3}, get_rgba(0, 255, 0, 255));
+                draw_circle(global, &(t_circle){global->player->rays[i].collisions[j].point, 3}, get_rgba(0, 255, 0, 255));
         }
         if(SHOW_COLLISIONS)
-            draw_circle(global, &(t_circle){*(global->player->rays[i].closest_collision), 3}, get_rgba(0, 0, 255, 255));
+            draw_circle(global, &(t_circle){global->player->rays[i].closest_collision->point, 3}, get_rgba(0, 0, 255, 255));
     }   
 }
