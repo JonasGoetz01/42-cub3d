@@ -10,6 +10,7 @@ int	main(int argc, char **argv)
 	global.window_height = HEIGHT;
 	global.window_width = WIDTH;
 	global.minimap_scale = MINIMAP_SCALE;
+	global.time = get_current_millis();
 	if (!(global.mlx = mlx_init(global.window_width, global.window_height, "cub3d", true)))
 	{
 		printf("%s\n", mlx_strerror(mlx_errno));
@@ -28,7 +29,7 @@ int	main(int argc, char **argv)
 		return(EXIT_FAILURE);
 	}
 	global.map = &map;
-	mlx_key_hook(global.mlx, keyHook, &global);
+	mlx_loop_hook(global.mlx, keyHook, &global);
 	initMap(&global);
 	global.player = new_player(&global, (t_vec2d){get_player_position(&global).x * global.scale_factor, get_player_position(&global).y * global.scale_factor}, (t_vec2d){0, -1});
 	mlx_loop_hook(global.mlx, loop, &global);
