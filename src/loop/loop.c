@@ -3,9 +3,20 @@
 void loop(void *param)
 {
 	t_global *global;
+    static int fps_timer = 0;
 
-    global = NULL;
     global = (t_global *)param;
+    unsigned long current_time = get_current_millis();
+    unsigned long elapsed_time = current_time - global->time;
+    global->time = current_time;
+    if(fps_timer % 10 == 0)
+    {
+        int fps = 1000 / elapsed_time;
+        printf("\rFPS: %d", fps);
+        fflush(stdout);
+        fps_timer = 0;
+    }
+    fps_timer++;
     mlx_delete_image(global->mlx, global->minimap);
     mlx_delete_image(global->mlx, global->img);
     global->minimap = mlx_new_image(global->mlx, global->window_width * global->minimap_scale, global->window_height * global->minimap_scale);
