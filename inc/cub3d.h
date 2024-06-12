@@ -17,8 +17,8 @@
 #define MOVE_SPEED 3.0f
 #define MINIMAP_SCALE 0.3f
 #define SHOW_MINIMAP 0
-#define SHOW_RAYS 1
-#define SHOW_COLLISIONS 1
+#define SHOW_RAYS 0
+#define SHOW_COLLISIONS 0
 
 typedef struct s_map
 {
