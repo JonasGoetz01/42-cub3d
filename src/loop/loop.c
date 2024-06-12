@@ -6,8 +6,8 @@ void loop(void *param)
     static int fps_timer = 0;
 
     global = (t_global *)param;
-    unsigned long current_time = get_current_millis();
-    unsigned long elapsed_time = current_time - global->time;
+    double current_time = get_current_millis();
+    double elapsed_time = current_time - global->time;
     global->time = current_time;
     if(fps_timer % 10 == 0)
     {

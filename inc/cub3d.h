@@ -41,7 +41,7 @@ typedef struct s_player
 
 typedef struct s_global
 {
-    unsigned long time;
+    double time;
     mlx_t *mlx;
     mlx_image_t *minimap;
     mlx_image_t *img;
@@ -78,6 +78,6 @@ void    show_sky_and_floor(t_global *global);
 void    make_background_transparent(t_global *global);
 void    render_3d(t_global *global);
 void    draw_bar(t_global *global, int x, int y, int width, int height, int color);
-unsigned long get_current_millis(void);
+double get_current_millis(void);
 
 #endif
