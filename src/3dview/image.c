@@ -70,20 +70,39 @@ float   get_distance(t_vec2d a, t_vec2d b)
     return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)));
 }
 
+int get_wall_color(t_face face)
+{
+    if (face == NORTH)
+        return NORTH_COLOR;
+    if (face == SOUTH)
+        return SOUTH_COLOR;
+    if (face == EAST)
+        return EAST_COLOR;
+    if (face == WEST)
+        return WEST_COLOR;
+    return get_rgba(255, 255, 255, 255); // Default color if something goes wrong
+}
+
 void render_3d(t_global *global)
 {
     int bar_width = global->img->width / global->img->width;
+
     for (int i = 0; i < (int)global->img->width; i++)
     {
-        float distance = get_distance(global->player->pos, global->player->rays[i].closest_collision->point);
-        int bar_height = map_distance_to_height(distance, global);
-        int center_y = global->img->height / 2;
-        int top_y = center_y - (bar_height / 2);
-        int x = i * bar_width;
-        if (global->player->rays[i].closest_collision->line->alignment == HORIZONTAL)
-            draw_bar(global, x, top_y, bar_width, bar_height, get_rgba(100, 100, 100, 255));
-        else
-            draw_bar(global, x, top_y, bar_width, bar_height, get_rgba(105, 255, 105, 255));
-    
+        t_ray *ray = &global->player->rays[i];
+        t_collision *closest_collision = ray->closest_collision;
+
+        if (closest_collision)
+        {
+            float distance = get_distance(global->player->pos, closest_collision->point);
+            int bar_height = map_distance_to_height(distance, global);
+            int center_y = global->img->height / 2;
+            int top_y = center_y - (bar_height / 2);
+            int x = i * bar_width;
+
+            int color = get_wall_color(closest_collision->face);
+            draw_bar(global, x, top_y, bar_width, bar_height, color);
+        }
     }
 }
+
