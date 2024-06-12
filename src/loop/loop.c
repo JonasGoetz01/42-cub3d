@@ -14,6 +14,8 @@ void loop(void *param)
     showMap(global);
     show_sky_and_floor(global);
     render_3d(global);
+    mlx_image_to_window(global->mlx, global->minimap, 0, 0);
+    mlx_image_to_window(global->mlx, global->img, 0, 0);
     if(SHOW_MINIMAP)
     {
         // mlx_grow_instances(global->minimap, 0);

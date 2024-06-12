@@ -11,7 +11,7 @@ void    make_background_transparent(t_global *global)
         x = 0;
         while (x < global->minimap->width)
         {
-            mlx_put_pixel(global->minimap, x, y, get_rgba(0, 0, 0, 0));
+            mlx_put_pixel(global->minimap, x, y, get_rgba(0, 0, 0, 100));
             x++;
         }
         y++;
