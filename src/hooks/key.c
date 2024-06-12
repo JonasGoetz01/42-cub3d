@@ -2,6 +2,7 @@
 
 void keyHook(void *param) {
     t_global *global;
+    t_vec2d dir = {0.0f, 0.0f};  // Initialize the direction vector
 
     global = (t_global *)param;
 
@@ -10,19 +11,20 @@ void keyHook(void *param) {
         return;
     }
     if (mlx_is_key_down(global->mlx, MLX_KEY_W)) {
-        update_position(global, global->player->dir);
+        dir.x += global->player->dir.x;
+        dir.y += global->player->dir.y;
     }
     if (mlx_is_key_down(global->mlx, MLX_KEY_S)) {
-        t_vec2d dir = {-global->player->dir.x, -global->player->dir.y};
-        update_position(global, dir);
+        dir.x -= global->player->dir.x;
+        dir.y -= global->player->dir.y;
     }
     if (mlx_is_key_down(global->mlx, MLX_KEY_A)) {
-        t_vec2d dir = {global->player->dir.y, -global->player->dir.x};
-        update_position(global, dir);
+        dir.x += global->player->dir.y;
+        dir.y -= global->player->dir.x;
     }
     if (mlx_is_key_down(global->mlx, MLX_KEY_D)) {
-        t_vec2d dir = {-global->player->dir.y, global->player->dir.x};
-        update_position(global, dir);
+        dir.x -= global->player->dir.y;
+        dir.y += global->player->dir.x;
     }
     if (mlx_is_key_down(global->mlx, MLX_KEY_E)) {
         rotate_player(global, 0.1f);
@@ -30,5 +32,10 @@ void keyHook(void *param) {
     if (mlx_is_key_down(global->mlx, MLX_KEY_Q)) {
         rotate_player(global, -0.1f);
     }
+    float length = sqrt(dir.x * dir.x + dir.y * dir.y);
+    if (length != 0) {
+        dir.x /= length;
+        dir.y /= length;
+    }
+    update_position(global, dir);
 }
-
