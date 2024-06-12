@@ -31,12 +31,19 @@ t_player *new_player(t_global *global, t_vec2d pos, t_vec2d dir) {
     return (player);
 }
 
-void update_position(t_global *global, t_vec2d pos) {
-    global->player->pos = pos;
+void update_position(t_global *global, t_vec2d dir) {
+    t_vec2d new_pos;
+
+    new_pos.x = global->player->pos.x + dir.x * MOVE_SPEED * global->minimap_scale;
+    new_pos.y = global->player->pos.y + dir.y * MOVE_SPEED * global->minimap_scale;
+
+    global->player->pos = new_pos;
+
     for (int i = 0; i < (int)global->img->width; i++) {
-        global->player->rays[i].origin = pos;
+        global->player->rays[i].origin = new_pos;
     }
 }
+
 
 void rotate_player(t_global *global, float angle) {
     float cos_angle = cosf(angle);
