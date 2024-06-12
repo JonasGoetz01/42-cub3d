@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/12 14:29:47 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/06/12 14:47:31 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ void draw_ray(t_global *global, t_ray *ray) {
     draw_line(global, ray->origin, end);
 }
 
-t_vec2d ray_line_collision(t_ray *ray, t_line *line)
+t_vec2d ray_line_collision(t_ray *ray, t_line *line, t_face *face)
 {
     float x1 = ray->origin.x;
     float y1 = ray->origin.y;
@@ -133,13 +133,32 @@ t_vec2d ray_line_collision(t_ray *ray, t_line *line)
 
     float t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
     float u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / denominator;
-    
+
     if (t >= 0 && u >= 0 && u <= 1)
-        return ((t_vec2d){x1 + t * (x2 - x1), y1 + t * (y2 - y1)});
+    {
+        t_vec2d collision_point = {x1 + t * (x2 - x1), y1 + t * (y2 - y1)};
+        if (line->alignment == HORIZONTAL)
+        {
+            if (ray->origin.y < collision_point.y)
+                *face = SOUTH;
+            else
+                *face = NORTH;
+        }
+        else // VERTICAL
+        {
+            if (ray->origin.x < collision_point.x)
+                *face = EAST;
+            else
+                *face = WEST;
+        }
+        return collision_point;
+    }
     return ((t_vec2d){-1, -1});
 }
 
-t_collision* new_collision(t_collision *collisions, int *collision_count, t_vec2d point, t_line *line) {
+
+t_collision *new_collision(t_collision *collisions, int *collision_count, t_vec2d point, t_line *line, t_face face)
+{
     t_collision *new_collisions;
 
     new_collisions = realloc(collisions, (*collision_count + 1) * sizeof(t_collision));
@@ -147,9 +166,11 @@ t_collision* new_collision(t_collision *collisions, int *collision_count, t_vec2
         return NULL;
     new_collisions[*collision_count].point = point;
     new_collisions[*collision_count].line = line;
+    new_collisions[*collision_count].face = face;
     (*collision_count)++;
     return new_collisions;
 }
+
 
 
 void raycast(t_global *global)
@@ -159,10 +180,11 @@ void raycast(t_global *global)
         for (int j = 0; j < global->line_count; j++)
         {
             t_vec2d intersection;
-            intersection = ray_line_collision(&global->player->rays[i], &global->lines[j]);
+            t_face face;
+            intersection = ray_line_collision(&global->player->rays[i], &global->lines[j], &face);
             if (intersection.x != -1)
             {
-                t_collision *new_collisions = new_collision(global->player->rays[i].collisions, &global->player->rays[i].collision_count, intersection, &global->lines[j]);
+                t_collision *new_collisions = new_collision(global->player->rays[i].collisions, &global->player->rays[i].collision_count, intersection, &global->lines[j], face);
                 if (!new_collisions)
                     return;
                 global->player->rays[i].collisions = new_collisions;
@@ -180,6 +202,7 @@ void raycast(t_global *global)
         }
     }
 }
+
 
 //draw a bar from the center of the screen "width" pixels wide and "height" pixels tall
 void draw_bar(t_global *global, int x, int y, int width, int height, int color)
