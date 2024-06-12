@@ -66,58 +66,54 @@ bool line_line_collision(t_line *a, t_line *b) {
 
     float denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
     if (denominator == 0) {
-        return false;  // Lines are parallel
+        return false;
     }
-
     float ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
     float ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
-
     return (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1);
 }
 
 void update_position(t_global *global, t_vec2d dir) {
     t_vec2d new_pos;
-    t_vec2d new_dir = dir;  // Start with the initial direction
+    t_vec2d temp_pos;
     bool collision = false;
 
-    // Calculate the initial new position
     new_pos.x = global->player->pos.x + dir.x * MOVE_SPEED * global->minimap_scale;
     new_pos.y = global->player->pos.y + dir.y * MOVE_SPEED * global->minimap_scale;
-
-    // Check for collisions with each line
     for (int i = 0; i < global->line_count; i++) {
-        t_line temp_line = {global->player->pos, new_pos, global->lines[i].alignment};
+        t_line temp_line = {global->player->pos, new_pos, VERTICAL};
         if (line_line_collision(&global->lines[i], &temp_line)) {
-            new_dir = calculate_perpendicular_direction(temp_line, global->lines[i]);
-            new_pos.x = global->player->pos.x + new_dir.x * MOVE_SPEED * global->minimap_scale;
-            new_pos.y = global->player->pos.y + new_dir.y * MOVE_SPEED * global->minimap_scale;
             collision = true;
             break;
         }
     }
-
-    // If no collision, use the initially calculated new position
-    if (!collision) {
-        new_pos.x = global->player->pos.x + dir.x * MOVE_SPEED * global->minimap_scale;
-        new_pos.y = global->player->pos.y + dir.y * MOVE_SPEED * global->minimap_scale;
-    }
-
-    // Ensure new position is valid (not colliding)
-    for (int i = 0; i < global->line_count; i++) {
-        t_line temp_line = {global->player->pos, new_pos, global->lines[i].alignment};
-        if (line_line_collision(&global->lines[i], &temp_line)) {
-            return;  // If still colliding, don't update position
+    if (collision) {
+        temp_pos.x = global->player->pos.x + dir.x * MOVE_SPEED * global->minimap_scale;
+        temp_pos.y = global->player->pos.y;
+        for (int i = 0; i < global->line_count; i++) {
+            t_line temp_line = {global->player->pos, temp_pos, VERTICAL};
+            if (line_line_collision(&global->lines[i], &temp_line)) {
+                temp_pos.x = global->player->pos.x;
+                break;
+            }
         }
+        new_pos = temp_pos;
+        temp_pos.y = global->player->pos.y + dir.y * MOVE_SPEED * global->minimap_scale;
+        for (int i = 0; i < global->line_count; i++) {
+            t_line temp_line = {global->player->pos, temp_pos, VERTICAL};
+            if (line_line_collision(&global->lines[i], &temp_line)) {
+                temp_pos.y = global->player->pos.y;
+                break;
+            }
+        }
+        new_pos.y = temp_pos.y;
     }
-
-    // Update player position
     global->player->pos = new_pos;
-
-    // Update the origin of each ray
     for (int i = 0; i < (int)global->img->width; i++) {
         global->player->rays[i].origin = new_pos;
     }
 }
+
 
 void rotate_player(t_global *global, float angle) {
     float cos_angle = cosf(angle);
