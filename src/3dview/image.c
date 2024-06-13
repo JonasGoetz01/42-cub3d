@@ -95,7 +95,6 @@ void render_3d(t_global *global)
     int top_y;
     int x;
     float hit_percentage;
-    int alpha;
     int color;
     int texture_x, texture_y;
     mlx_texture_t *texture;
