@@ -85,23 +85,58 @@ int get_wall_color(t_face face)
 
 void render_3d(t_global *global)
 {
-    int bar_width = global->img->width / global->img->width;
+    int bar_width;
+    int i;
+    t_ray *ray;
+    t_collision *closest_collision;
+    float distance;
+    int bar_height;
+    int center_y;
+    int top_y;
+    int x;
+    float hit_percentage;
+    int alpha;
+    int color;
+    int texture_x, texture_y;
+    mlx_texture_t *texture;
 
-    for (int i = 0; i < (int)global->img->width; i++)
+    bar_width = global->img->width / global->img->width;
+    mlx_texture_t *texture_north = mlx_load_png("textures/cobblestone.png");
+    mlx_texture_t *texture_south = mlx_load_png("textures/dirt.png");
+    mlx_texture_t *texture_east = mlx_load_png("textures/polished_granite.png");
+    mlx_texture_t *texture_west = mlx_load_png("textures/piston_bottom.png");
+
+    i = 0;
+    while (i < (int)global->img->width)
     {
-        t_ray *ray = &global->player->rays[i];
-        t_collision *closest_collision = ray->closest_collision;
+        ray = &global->player->rays[i];
+        closest_collision = ray->closest_collision;
 
         if (closest_collision)
         {
-            float distance = get_distance(global->player->pos, closest_collision->point);
-            int bar_height = map_distance_to_height(distance, global);
-            int center_y = global->img->height / 2;
-            int top_y = center_y - (bar_height / 2);
-            int x = i * bar_width;
-            float hit_percentage;
-            // based on the closest_collision->line and closest_collision->point calculate the percentage on the hitpoint on the line
-            // use this percentage to calculate the alpha value of the color, 0% in the wall should be 0 alpha, 100% in the wall should be 255 alpha
+            distance = get_distance(global->player->pos, closest_collision->point);
+            bar_height = map_distance_to_height(distance, global);
+            center_y = global->img->height / 2;
+            top_y = center_y - (bar_height / 2);
+            x = i * bar_width;
+            switch (closest_collision->face)
+            {
+                case NORTH:
+                    texture = texture_north;
+                    break;
+                case SOUTH:
+                    texture = texture_south;
+                    break;
+                case EAST:
+                    texture = texture_east;
+                    break;
+                case WEST:
+                    texture = texture_west;
+                    break;
+                default:
+                    texture = texture_north;
+                    break;
+            }
             if (closest_collision->line->alignment == VERTICAL)
             {
                 hit_percentage = (closest_collision->point.y - closest_collision->line->a.y) /
@@ -112,25 +147,22 @@ void render_3d(t_global *global)
                 hit_percentage = (closest_collision->point.x - closest_collision->line->a.x) /
                                  (closest_collision->line->b.x - closest_collision->line->a.x);
             }
-            int alpha = (int)(255 * hit_percentage);
-            int color = get_wall_color(closest_collision->face);
-            color = get_rgba((color >> 24) & 0xFF, (color >> 16) & 0xFF, (color >> 8) & 0xFF, alpha);
-            // mlx_texture_t *texture = mlx_load_png("textures/cobblestone.png");
-            
-            for (int i = 0; i < bar_width; i++)
+            texture_x = (int)(hit_percentage * (texture->width - 1));
+            for (int j = 0; j < bar_height; j++)
             {
-                if (x + i < 0 || (uint32_t)x + (uint32_t)i >= global->img->width)
-                    continue;
-                for (int j = 0; j < bar_height; j++)
+                texture_y = (int)(((float)j / bar_height) * (texture->height - 1));
+                uint8_t *pixel = &texture->pixels[(texture_y * texture->width + texture_x) * texture->bytes_per_pixel];
+                color = get_rgba(pixel[0], pixel[1], pixel[2], 255);
+                for (int k = 0; k < bar_width; k++)
                 {
+                    if (x + k < 0 || (uint32_t)x + (uint32_t)k >= global->img->width)
+                        continue;
                     int draw_y = top_y + j;
                     if (draw_y >= 0 && (uint32_t)draw_y < global->img->height)
-                    {
-                        mlx_put_pixel(global->img, x + i, draw_y, color);
-                    }
+                        mlx_put_pixel(global->img, x + k, draw_y, color);
                 }
             }
         }
+        i++;
     }
 }
-
