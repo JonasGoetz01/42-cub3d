@@ -99,9 +99,37 @@ void render_3d(t_global *global)
             int center_y = global->img->height / 2;
             int top_y = center_y - (bar_height / 2);
             int x = i * bar_width;
-
+            float hit_percentage;
+            // based on the closest_collision->line and closest_collision->point calculate the percentage on the hitpoint on the line
+            // use this percentage to calculate the alpha value of the color, 0% in the wall should be 0 alpha, 100% in the wall should be 255 alpha
+            if (closest_collision->line->alignment == VERTICAL)
+            {
+                hit_percentage = (closest_collision->point.y - closest_collision->line->a.y) /
+                                 (closest_collision->line->b.y - closest_collision->line->a.y);
+            }
+            else
+            {
+                hit_percentage = (closest_collision->point.x - closest_collision->line->a.x) /
+                                 (closest_collision->line->b.x - closest_collision->line->a.x);
+            }
+            int alpha = (int)(255 * hit_percentage);
             int color = get_wall_color(closest_collision->face);
-            draw_bar(global, x, top_y, bar_width, bar_height, color);
+            color = get_rgba((color >> 24) & 0xFF, (color >> 16) & 0xFF, (color >> 8) & 0xFF, alpha);
+            // mlx_texture_t *texture = mlx_load_png("textures/cobblestone.png");
+            
+            for (int i = 0; i < bar_width; i++)
+            {
+                if (x + i < 0 || (uint32_t)x + (uint32_t)i >= global->img->width)
+                    continue;
+                for (int j = 0; j < bar_height; j++)
+                {
+                    int draw_y = top_y + j;
+                    if (draw_y >= 0 && (uint32_t)draw_y < global->img->height)
+                    {
+                        mlx_put_pixel(global->img, x + i, draw_y, color);
+                    }
+                }
+            }
         }
     }
 }
