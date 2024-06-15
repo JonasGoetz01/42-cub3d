@@ -27,6 +27,17 @@ t_player *new_player(t_global *global, t_vec2d pos, t_vec2d dir) {
         player->rays[i].collisions = NULL;
         player->rays[i].collision_count = 0;
     }
+
+    player->opponent_rays = malloc(sizeof(t_ray) * global->opponent_count);
+    for (i = 0; i < global->opponent_count; i++) {
+        global->opponent[i].visible = false;
+        global->opponent[i].dead = false;
+        ray_angle = atan2f(global->opponent[i].pos.y - player->pos.y, global->opponent[i].pos.x - player->pos.x);
+        player->opponent_rays[i].origin = player->pos;
+        player->opponent_rays[i].direction = (t_vec2d){cosf(ray_angle), sinf(ray_angle)};
+        player->opponent_rays[i].collisions = NULL;
+        player->opponent_rays[i].collision_count = 0;
+    }
     
     return (player);
 }
@@ -112,6 +123,24 @@ void update_position(t_global *global, t_vec2d dir, float speed) {
     for (int i = 0; i < (int)global->img->width; i++) {
         global->player->rays[i].origin = new_pos;
     }
+    for (int i = 0; i < global->opponent_count; i++) {
+        global->player->opponent_rays[i].origin = new_pos;
+        global->player->opponent_rays[i].direction = (t_vec2d){cosf(atan2f(global->opponent[i].pos.y - new_pos.y, global->opponent[i].pos.x - new_pos.x)), sinf(atan2f(global->opponent[i].pos.y - new_pos.y, global->opponent[i].pos.x - new_pos.x))};
+    }
+    
+    
+    float base_angle = atan2f(global->player->dir.y, global->player->dir.x) - (FOV / 2.0f);
+    for (int i = 0; i < global->opponent_count; i++) {
+        float angle = atan2f(global->opponent[i].pos.y - global->player->pos.y, global->opponent[i].pos.x - global->player->pos.x);
+        if (angle < base_angle || angle > base_angle + FOV) {
+            global->player->opponent_rays[i].direction = global->player->dir;
+        }
+    }
+    for (int j = 0; j < global->opponent_count; j++)
+    {
+        global->player->opponent_rays[j].closest_collision = NULL;
+        global->player->opponent_rays[j].collisions = NULL;
+    }
 }
 
 
@@ -131,5 +160,18 @@ void rotate_player(t_global *global, float angle) {
     for (int i = 0; i < (int)global->img->width; i++) {
         float ray_angle = base_angle + (i * angle_increment);
         global->player->rays[i].direction = (t_vec2d){cosf(ray_angle), sinf(ray_angle)};
+    }
+
+    // if the opponent ray is outside the FOV, set the direction to the player direction
+    for (int i = 0; i < global->opponent_count; i++) {
+        float angle = atan2f(global->opponent[i].pos.y - global->player->pos.y, global->opponent[i].pos.x - global->player->pos.x);
+        if (angle < base_angle || angle > base_angle + FOV) {
+            global->player->opponent_rays[i].direction = global->player->dir;
+        }
+    }
+    for (int j = 0; j < global->opponent_count; j++)
+    {
+        global->player->opponent_rays[j].closest_collision = NULL;
+        global->player->opponent_rays[j].collisions = NULL;
     }
 }
