@@ -133,7 +133,7 @@ void update_position(t_global *global, t_vec2d dir, float speed) {
     for (int i = 0; i < global->opponent_count; i++) {
         float angle = atan2f(global->opponent[i].pos.y - global->player->pos.y, global->opponent[i].pos.x - global->player->pos.x);
         if (angle < base_angle || angle > base_angle + FOV) {
-            global->player->opponent_rays[i].direction = global->player->dir;
+            global->player->opponent_rays[i].direction = (t_vec2d){0, 0};
         }
     }
     for (int j = 0; j < global->opponent_count; j++)

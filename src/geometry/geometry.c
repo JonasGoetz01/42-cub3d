@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/06/15 19:13:12 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/06/15 19:20:14 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,27 +227,30 @@ void raycast(t_global *global)
         float min_distance = 1000000;
         for (int k = 0; k < global->player->opponent_rays[j].collision_count; k++)
         {
-            float distance = sqrtf(powf(global->player->pos.x - global->player->opponent_rays[j].collisions[k].point.x, 2) + powf(global->player->pos.y - global->player->opponent_rays[j].collisions[k].point.y, 2));
-            if (distance < min_distance)
+            if(global->player->opponent_rays[j].direction.x != 0 && global->player->opponent_rays[j].direction.y != 0)
             {
-                min_distance = distance;
-                global->player->opponent_rays[j].closest_collision = &global->player->opponent_rays[j].collisions[k];
-            }
-
-
-            float base_angle = atan2f(global->player->dir.y, global->player->dir.x) - (FOV / 2.0f);
-            for (int i = 0; i < global->opponent_count; i++) {
-                float angle = atan2f(global->opponent[i].pos.y - global->player->pos.y, global->opponent[i].pos.x - global->player->pos.x);
-                if (!(angle < base_angle || angle > base_angle + FOV)) {
-                    //distance to the opponent
-                    distance = sqrtf(powf(global->opponent[j].pos.x - global->player->pos.x, 2) + powf(global->opponent[j].pos.y - global->player->pos.y, 2));
-                    if (distance < min_distance)
-                    {
-                        min_distance = distance;
-                        global->player->opponent_rays[j].closest_collision = &(t_collision){global->opponent[j].pos, NULL, NORTH};
-                    }       
+                float distance = sqrtf(powf(global->player->pos.x - global->player->opponent_rays[j].collisions[k].point.x, 2) + powf(global->player->pos.y - global->player->opponent_rays[j].collisions[k].point.y, 2));
+                if (distance < min_distance)
+                {
+                    min_distance = distance;
+                    global->player->opponent_rays[j].closest_collision = &global->player->opponent_rays[j].collisions[k];
+                }
+                float base_angle = atan2f(global->player->dir.y, global->player->dir.x) - (FOV / 2.0f);
+                for (int i = 0; i < global->opponent_count; i++) {
+                    float angle = atan2f(global->opponent[i].pos.y - global->player->pos.y, global->opponent[i].pos.x - global->player->pos.x);
+                    if (!(angle < base_angle || angle > base_angle + FOV)) {
+                        //distance to the opponent
+                        distance = sqrtf(powf(global->opponent[j].pos.x - global->player->pos.x, 2) + powf(global->opponent[j].pos.y - global->player->pos.y, 2));
+                        if (distance < min_distance)
+                        {
+                            min_distance = distance;
+                            global->player->opponent_rays[j].closest_collision = &(t_collision){global->opponent[j].pos, NULL, NORTH};
+                        }       
+                    }
                 }
             }
+
+
         }
         if (min_distance < 0.5)
             global->opponent[j].visible = true;
