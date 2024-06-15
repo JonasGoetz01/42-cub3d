@@ -67,6 +67,37 @@ t_vec2d get_player_direction(t_global *global)
     return (player_pos);
 }
 
+void    get_opponents(t_global *global)
+{
+    int count = 0;
+
+    for (int y = 0; y < global->map->height; y++)
+    {
+        for (int x = 0; x < global->map->width; x++)
+        {
+            if (global->map->map[y][x] == 'O')
+                count++;
+        }
+    }
+    global->opponent_count = count;
+    global->opponent = malloc(sizeof(t_opponent) * count);
+    count = 0;
+    for (int y = 0; y < global->map->height; y++)
+    {
+        for (int x = 0; x < global->map->width; x++)
+        {
+            if (global->map->map[y][x] == 'O')
+            {
+                global->opponent[count].pos.x = x * global->scale_factor;
+                global->opponent[count].pos.y = y * global->scale_factor;
+                global->opponent[count].visible = false;
+                global->opponent[count].dead = false;
+                count++;
+            }
+        }
+    }
+}
+
 void    initMap(t_global *global)
 {
     t_line *lines;
@@ -76,14 +107,14 @@ void    initMap(t_global *global)
         "        1111111111111111111111111",
         "        1000000000110000000000001",
         "        1011000001110000000000001",
-        "        100100000000000000O000001",
+        "        1001000000000000000000001",
         "111111111011000001110000000000001",
         "100000000011000001110111111111111",
         "11110111111111011100000010001    ",
         "11110111111111011101010010001    ",
         "11000000110101011100000010001    ",
         "10000000000000001100000010001    ",
-        "10000000W00000001101010010001    ",
+        "1000O000W00000001101010010001    ",
         "1100000111010101111101111000111  ",
         "11110111 1110101 101111010001    ",
         "11111111 1111111 111111111111    ",
@@ -105,4 +136,5 @@ void    initMap(t_global *global)
     scale_line_segments(lines, line_count, global->scale_factor);
     global->line_count = line_count;
     global->lines = lines;
+    get_opponents(global);
 }
