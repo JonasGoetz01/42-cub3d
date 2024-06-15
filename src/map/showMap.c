@@ -124,6 +124,12 @@ void showMap(t_global *global)
         if(SHOW_COLLISIONS)
             draw_circle(global, &(t_circle){global->player->rays[i].closest_collision->point, 3}, get_rgba(0, 0, 255, 255));
     }
+    for (int i = 0; i < global->opponent_count; i++)
+    {
+        draw_ray(global, &global->player->opponent_rays[i]);
+        draw_circle(global, &(t_circle){global->player->opponent_rays[i].closest_collision->point, 2}, get_rgba(255, 0, 0, 255));
+        draw_circle(global, &(t_circle){global->opponent[i].pos, 5}, get_rgba(255, 255, 0, 255));
+    }
     if(SHOW_FOV)
         draw_fov_lines(global);
 }
