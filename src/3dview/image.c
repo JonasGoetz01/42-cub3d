@@ -119,9 +119,8 @@ void	render_3d(t_global *global)
 	if (!texture_west)
 		texture_west = mlx_load_png("textures/piston_bottom.png");
 	player_angle = atan2(global->player->dir.y, global->player->dir.x);
-	i = 0;
 	bar_width = 1;
-	while (i < (int)global->img->width)
+	for (i = 0; i < (int)global->img->width; i++)
 	{
 		ray = &global->player->rays[i];
 		closest_collision = ray->closest_collision;
@@ -130,7 +129,6 @@ void	render_3d(t_global *global)
 			distance = get_distance(global->player->pos,
 					closest_collision->point);
 			distance = fmax(distance, 0.1f);
-			// Calculate the angle of the ray relative to the player's direction
 			ray_angle = atan2(ray->direction.y, ray->direction.x);
 			angle_diff = ray_angle - player_angle;
 			perpendicular_distance = distance * cos(angle_diff);
@@ -172,7 +170,7 @@ void	render_3d(t_global *global)
 						- closest_collision->line->a.x);
 			}
 			hit_percentage = fmax(fmin(hit_percentage, 1.0f), 0.0f);
-				// Clamp hit_percentage to [0, 1]
+			// Clamp hit_percentage to [0, 1]
 			texture_x = (int)(hit_percentage * (texture->width - 1));
 			for (int j = 0; j < bar_height; j++)
 			{
@@ -192,6 +190,5 @@ void	render_3d(t_global *global)
 			}
 			z_buffer[i] = perpendicular_distance;
 		}
-		i++;
 	}
 }
