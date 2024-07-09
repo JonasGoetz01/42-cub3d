@@ -6,6 +6,7 @@
 # include <unistd.h>
 # include <math.h>
 # include <fcntl.h>
+# include <stdbool.h>
 # include "../lib/MLX42/include/MLX42/MLX42.h"
 # include "../lib/libft/libft.h"
 #include "geometry.h"
@@ -33,6 +34,21 @@ typedef struct s_map
     int height;
 } t_map;
 
+typedef struct s_texture
+{
+    char *north;
+    char *south;
+    char *east;
+    char *west;
+} t_texture;
+
+typedef struct s_color
+{
+    int r;
+    int g;
+    int b;
+} t_color;
+
 typedef struct s_player
 {
     t_vec2d pos;
@@ -56,6 +72,9 @@ typedef struct s_global
     mlx_image_t *minimap;
     mlx_image_t *img;
     t_map *map;
+    t_texture *texture;
+    t_color floor;
+    t_color ceiling;
     t_player *player;
     int line_count;
     float scale_factor;
@@ -92,5 +111,8 @@ void    make_background_transparent(t_global *global);
 void    render_3d(t_global *global);
 void    draw_bar(t_global *global, int x, int y, int width, int height, int color);
 double  get_current_millis(void);
+
+int parse_and_validate(char *file, t_global *global);
+bool valid_file(char *file, int flag);
 
 #endif

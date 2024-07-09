@@ -5,8 +5,21 @@ int	main(int argc, char **argv)
 	t_global global;
 	t_map map;
 
+	if (argc != 2)
+	{
+		// error
+		// print usage
+		return (EXIT_FAILURE);
+	}
+	if (parse_and_validate(argv[1], &global))
+	{
+		return (EXIT_FAILURE);
+	}
+	printf("textures: NO: %s, SO: %s, WE: %s, EA: %s\n", global.texture->north, global.texture->south, global.texture->west, global.texture->east);
+	printf("colors: floor: %d, %d, %d; ceiling: %d, %d, %d\n", global.floor.r, global.floor.g, global.floor.b, global.ceiling.r, global.ceiling.g, global.ceiling.b);
+	return (EXIT_SUCCESS);
 	(void)argc;
-    (void)argv;
+	(void)argv;
 	global.window_height = HEIGHT;
 	global.window_width = WIDTH;
 	global.minimap_scale = MINIMAP_SCALE;
