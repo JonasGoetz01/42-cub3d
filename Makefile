@@ -16,7 +16,8 @@ VPATH	:=	src \
 			src/hooks \
 			src/player \
 			src/3dview \
-			src/utils
+			src/utils \
+			src/parsing
 
 SRCS	:=  main.c \
 			loop.c \
@@ -28,7 +29,9 @@ SRCS	:=  main.c \
 			resize.c \
 			cursor.c \
 			image.c \
-			time.c
+			time.c \
+			parse.c \
+			validate_file.c \
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
