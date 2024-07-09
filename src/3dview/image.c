@@ -82,40 +82,45 @@ int	get_wall_color(t_face face)
 
 void	render_3d(t_global *global)
 {
-	int				bar_width;
-	int				i;
-	t_ray			*ray;
-	t_collision		*closest_collision;
-	float			distance;
-	int				bar_height;
-	int				center_y;
-	int				top_y;
-	int				bottom_y;
-	int				x;
-	float			hit_percentage;
-	int				color;
-	mlx_texture_t	*texture;
-	mlx_texture_t	*texture_north;
-	mlx_texture_t	*texture_south;
-	mlx_texture_t	*texture_east;
-	mlx_texture_t	*texture_west;
-	uint8_t			*pixel;
-	int				draw_y;
-	int				texture_x;
-	int				texture_y;
-	float			z_buffer[global->img->width];
-	float			perpendicular_distance;
-	float			ray_angle;
-	float			player_angle;
-	float			angle_diff;
+	int						bar_width;
+	int						i;
+	t_ray					*ray;
+	t_collision				*closest_collision;
+	float					distance;
+	int						bar_height;
+	int						center_y;
+	int						top_y;
+	int						bottom_y;
+	int						x;
+	float					hit_percentage;
+	int						color;
+	mlx_texture_t			*texture;
+	uint8_t					*pixel;
+	int						draw_y;
+	int						texture_x;
+	int						texture_y;
+	float					z_buffer[global->img->width];
+	float					perpendicular_distance;
+	float					ray_angle;
+	float					player_angle;
+	float					angle_diff;
+	static mlx_texture_t	*texture_north = NULL;
+	static mlx_texture_t	*texture_south = NULL;
+	static mlx_texture_t	*texture_east = NULL;
+	static mlx_texture_t	*texture_west = NULL;
 
-	bar_width = global->img->width / global->img->width;
-	texture_north = mlx_load_png("textures/cobblestone.png");
-	texture_south = mlx_load_png("textures/dirt.png");
-	texture_east = mlx_load_png("textures/polished_granite.png");
-	texture_west = mlx_load_png("textures/piston_bottom.png");
+	// Load textures once
+	if (!texture_north)
+		texture_north = mlx_load_png("textures/cobblestone.png");
+	if (!texture_south)
+		texture_south = mlx_load_png("textures/dirt.png");
+	if (!texture_east)
+		texture_east = mlx_load_png("textures/polished_granite.png");
+	if (!texture_west)
+		texture_west = mlx_load_png("textures/piston_bottom.png");
 	player_angle = atan2(global->player->dir.y, global->player->dir.x);
 	i = 0;
+	bar_width = 1;
 	while (i < (int)global->img->width)
 	{
 		ray = &global->player->rays[i];
@@ -125,7 +130,6 @@ void	render_3d(t_global *global)
 			distance = get_distance(global->player->pos,
 					closest_collision->point);
 			distance = fmax(distance, 0.1f);
-			// Clamp the distance to a minimum value to avoid very small distances
 			// Calculate the angle of the ray relative to the player's direction
 			ray_angle = atan2(ray->direction.y, ray->direction.x);
 			angle_diff = ray_angle - player_angle;
@@ -168,7 +172,7 @@ void	render_3d(t_global *global)
 						- closest_collision->line->a.x);
 			}
 			hit_percentage = fmax(fmin(hit_percentage, 1.0f), 0.0f);
-			// Clamp hit_percentage to [0, 1]
+				// Clamp hit_percentage to [0, 1]
 			texture_x = (int)(hit_percentage * (texture->width - 1));
 			for (int j = 0; j < bar_height; j++)
 			{
@@ -178,28 +182,16 @@ void	render_3d(t_global *global)
 						+ texture_x) * texture->bytes_per_pixel];
 				color = get_rgba(pixel[0], pixel[1], pixel[2], 255);
 				draw_y = top_y + j;
-				// Ensure drawing is within the viewport
 				if (draw_y >= 0 && (uint32_t)draw_y < global->img->height)
 				{
-					for (int k = 0; k < bar_width; k++)
+					if (x >= 0 && (uint32_t)x < global->img->width)
 					{
-						if (x + k >= 0 && (uint32_t)(x
-								+ k) < global->img->width)
-						{
-							mlx_put_pixel(global->img, x + k, draw_y, color);
-						}
+						mlx_put_pixel(global->img, x, draw_y, color);
 					}
 				}
 			}
-			// Store distance in z-buffer for depth management (optional,
-			// if needed for further enhancements)
 			z_buffer[i] = perpendicular_distance;
 		}
 		i++;
 	}
-	// Free the textures after rendering
-	mlx_delete_texture(texture_north);
-	mlx_delete_texture(texture_south);
-	mlx_delete_texture(texture_east);
-	mlx_delete_texture(texture_west);
 }
