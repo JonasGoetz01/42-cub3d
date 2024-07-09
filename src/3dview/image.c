@@ -1,9 +1,9 @@
 #include "../../inc/cub3d.h"
 
-void    make_background_transparent(t_global *global)
+void	make_background_transparent(t_global *global)
 {
-    uint32_t x;
-    uint32_t y;
+	uint32_t	x;
+	uint32_t	y;
 
     y = 0;
     while (y < global->minimap->height)
@@ -18,10 +18,10 @@ void    make_background_transparent(t_global *global)
     }
 }
 
-void    show_sky_and_floor(t_global *global)
+void	show_sky_and_floor(t_global *global)
 {
-    int x;
-    int y;
+	int	x;
+	int	y;
 
     y = 0;
     while (y < global->window_height / 2)
@@ -46,41 +46,38 @@ void    show_sky_and_floor(t_global *global)
     }
 }
 
-float map_distance_to_height(float distance, t_global *global)
+float	map_distance_to_height(float distance, t_global *global)
 {
-    float height;
-    int window_height;
+	float	height;
+	int		window_height;
 
     window_height = global->window_height;
-
     if (distance == 0)
         height = window_height;
     else
         height = (global->scale_factor / distance) * window_height;
-
-    if (height > window_height)
-        height = window_height;
-
-    return height;
+	// if (height > window_height)
+	// 	height = window_height;
+	return (height);
 }
 
-
-float   get_distance(t_vec2d a, t_vec2d b)
+float	get_distance(t_vec2d a, t_vec2d b)
 {
     return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)));
 }
 
-int get_wall_color(t_face face)
+int	get_wall_color(t_face face)
 {
     if (face == NORTH)
-        return NORTH_COLOR;
+		return (NORTH_COLOR);
     if (face == SOUTH)
-        return SOUTH_COLOR;
+		return (SOUTH_COLOR);
     if (face == EAST)
-        return EAST_COLOR;
+		return (EAST_COLOR);
     if (face == WEST)
-        return WEST_COLOR;
-    return get_rgba(255, 255, 255, 255); // Default color if something goes wrong
+		return (WEST_COLOR);
+	return (get_rgba(255, 255, 255, 255));
+	// Default color if something goes wrong
 }
 
 void render_3d(t_global *global)
