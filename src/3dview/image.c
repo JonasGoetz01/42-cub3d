@@ -18,6 +18,7 @@ void	make_background_transparent(t_global *global)
 	}
 }
 
+// @TODO sieht sehr scheiße aus, muss nochmal überarbeitet werden
 void	show_sky_and_floor(t_global *global)
 {
 	int						x;
