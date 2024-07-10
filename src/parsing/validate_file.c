@@ -6,19 +6,17 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 16:20:59 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/09 19:51:58 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/10 15:52:50 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
 
-// change error messages to be more specific
-
-bool check_extension(char *file, int flag)
+bool	check_extension(char *file, int flag)
 {
 	if (flag)
 	{
-		if (ft_strncmp(file + ft_strlen(file) - 4, ".xpm", 4))
+		if (ft_strncmp(file + ft_strlen(file) - 4, ".png", 4))
 		{
 			printf("Error: Invalid texture file extension\n");
 			return (false);
@@ -35,10 +33,10 @@ bool check_extension(char *file, int flag)
 	return (true);
 }
 
-bool check_dir(char *file)
+bool	check_dir(char *file)
 {
-	int fd;
-	
+	int	fd;
+
 	fd = open(file, O_DIRECTORY);
 	if (fd >= 0)
 	{
@@ -49,9 +47,9 @@ bool check_dir(char *file)
 	return (false);
 }
 
-bool valid_file(char *file, int flag)
+bool	valid_file(char *file, int flag)
 {
-	int fd;
+	int	fd;
 
 	if (check_dir(file))
 		return (false);

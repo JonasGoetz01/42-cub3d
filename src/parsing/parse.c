@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/10 14:28:53 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/10 15:40:41 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,95 +17,14 @@
 // step 3: read input file done
 // step 4: validate texture paths and colors done
 // step 5: parse textures and colors done
-// step 6: validate map pending
-// step 7: parse map done
+// step 6: parse map done
+// step 7: validate map done
 
 // clean exit function that frees all mallocs
-// error function that prints certain error message
+// error function that prints certain error message?
 // error messages will be modified later on to be more specific
 
-int	ft_strcmp(const char *s1, const char *s2) // add to libft?
-{
-	char	*str1;
-	char	*str2;
-	int		i;
-
-	i = 0;
-	str1 = (char *)s1;
-	str2 = (char *)s2;
-	while (str1[i] && str2[i] && str1[i] == str2[i])
-		i++;
-	return (str1[i] - str2[i]);
-}
-
-int strlen_tab_to_space(char *str)
-{
-	int i;
-
-	i = 0;
-	while (*str)
-	{
-		if (*str == '\t')
-			i += 4;
-		else
-			i++;
-		str++;
-	}
-	return (i);
-}
-
-char	*strdup_tab_to_space(const char *s1, int len)
-{
-	int		i;
-	char	*str;
-
-	i = 0;
-	str = malloc(len + 1);
-	if (str == NULL)
-		return (NULL);
-	while (*s1)
-	{
-		if (*s1 == '\t')
-		{
-			str[i++] = ' ';
-			str[i++] = ' ';
-			str[i++] = ' ';
-			str[i++] = ' ';
-		}
-		else
-			str[i++] = *s1;
-		s1++;
-	}
-	while (i < len)
-		str[i++] = ' ';
-	str[i] = '\0';
-	return (str);
-}
-
-
-bool check_arg_amount(char **split, int amount)
-{
-	int i;
-
-	i = 0;
-	while (split[i])
-		i++;
-	if (i != amount)
-		return (false);
-	return (true);
-}
-
-bool valid_range(int color)
-{
-	if (color < 0 || color > 255)
-	{
-		// error
-		return (false);
-	}
-	return (true);
-}
-
-bool parse_texture(char *identifier, char *path, t_global *global)
+bool	parse_texture(char *identifier, char *path, t_global *global)
 {
 	if (!valid_file(path, 1))
 		return (false);
@@ -120,7 +39,7 @@ bool parse_texture(char *identifier, char *path, t_global *global)
 	return (true);
 }
 
-bool parse_color_long(char **split, t_global *global)
+bool	parse_color_long(char **split, t_global *global)
 {
 	char	**colors;
 	int		tmp[3];
@@ -154,9 +73,9 @@ bool parse_color_long(char **split, t_global *global)
 	return (true);
 }
 
-bool parse_color_short(char **split, t_global *global)
+bool	parse_color_short(char **split, t_global *global)
 {
-	int tmp[3];
+	int	tmp[3];
 
 	tmp[0] = ft_atoi(split[1]);
 	tmp[1] = ft_atoi(split[2]);
@@ -181,15 +100,14 @@ bool parse_color_short(char **split, t_global *global)
 	return (true);
 }
 
-bool precise_comma_check(char **color)
+bool	precise_comma_check(char **color)
 {
-	int i;
-	int j;
+	int	i;
+	int	j;
 
 	i = 0;
 	if (check_arg_amount(color, 4))
 	{
-		// comma check for three seperate arguments for r, g, b
 		while (color[++i])
 		{
 			j = ft_strlen(color[i]);
@@ -203,7 +121,6 @@ bool precise_comma_check(char **color)
 	}
 	else
 	{
-		// comma check for one argument for r, g, b
 		while (color[++i])
 		{
 			j = 0;
@@ -222,10 +139,10 @@ bool precise_comma_check(char **color)
 	return (true);
 }
 
-bool color_format(char **color)
+bool	color_format(char **color)
 {
-	int i[2];
-	int comma;
+	int	i[2];
+	int	comma;
 
 	i[0] = 1;
 	comma = 0;
@@ -249,7 +166,7 @@ bool color_format(char **color)
 	return (precise_comma_check(color));
 }
 
-bool parse_line(char *line, t_global *global)
+bool	parse_line(char *line, t_global *global)
 {
 	char	**split;
 
@@ -287,7 +204,7 @@ bool parse_line(char *line, t_global *global)
 	}
 }
 
-bool parse_map(char *line, t_global *global)
+bool	parse_map(char *line, t_global *global)
 {
 	global->map->map[global->map->count] = strdup_tab_to_space(line, global->map->width);
 	global->map->count++;
@@ -298,14 +215,14 @@ bool parse_map(char *line, t_global *global)
 	return (true);
 }
 
-int parse_file(char *file, t_global *global)
+int	parse_file(char *file, t_global *global)
 {
-	int fd;
-	int i;
-	char *line;
-	char *tmp;
-	int in_map;
-	
+	int		fd;
+	int		i;
+	char	*line;
+	char	*tmp;
+	int		in_map;
+
 	i = 0;
 	in_map = 0;
 	fd = open(file, O_RDONLY);
@@ -348,15 +265,15 @@ int parse_file(char *file, t_global *global)
 	return (0);
 }
 
-int map_size(char *file, t_global *global)
+int	map_size(char *file, t_global *global)
 {
-	char *line;
-	char *tmp;
-	int fd;
-	int height;
-	int max_width;
-	int in_map;
-	int i;
+	char	*line;
+	char	*tmp;
+	int		fd;
+	int		height;
+	int		max_width;
+	int		in_map;
+	int		i;
 
 	in_map = 0;
 	height = 0;
@@ -402,11 +319,11 @@ int map_size(char *file, t_global *global)
 	return (0);
 }
 
-int parse_and_validate(char *file, t_global *global)
+int	parse_and_validate(char *file, t_global *global)
 {
-	t_line *lines;
-    int line_count;
-	
+	t_line	*lines;
+	int		line_count;
+
 	if (!valid_file(file, 0))
 		return (1);
 	global->texture = malloc(sizeof(t_texture));
@@ -435,10 +352,10 @@ int parse_and_validate(char *file, t_global *global)
 		return (1);
 	}
 	map_to_line_segments(global, &lines, &line_count); // only temporarily in this function
-    global->scale_factor = calculate_scale_factor(global->map->width, global->map->height, WIDTH * global->minimap_scale, HEIGHT * global->minimap_scale);
-    scale_line_segments(lines, line_count, global->scale_factor);
-    global->line_count = line_count;
-    global->lines = lines;
-    get_opponents(global);
+	global->scale_factor = calculate_scale_factor(global->map->width, global->map->height, WIDTH * global->minimap_scale, HEIGHT * global->minimap_scale);
+	scale_line_segments(lines, line_count, global->scale_factor);
+	global->line_count = line_count;
+	global->lines = lines;
+	get_opponents(global);
 	return (0);
 }

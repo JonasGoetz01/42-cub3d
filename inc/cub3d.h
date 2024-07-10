@@ -27,6 +27,16 @@
 #define EAST_COLOR get_rgba(100, 10, 10, 255) // brown
 #define WEST_COLOR get_rgba(140, 20, 100, 255) // purple
 
+# define NC      "\033[0m"
+# define RED     "\033[31m"
+# define GREEN   "\033[32m"
+# define YELLOW  "\033[33m"
+# define BLUE    "\033[34m"
+# define MAGENTA "\033[35m"
+# define CYAN    "\033[36m"
+# define BOLD    "\033[1m"
+# define LINE    "\033[4m"
+
 typedef struct s_map
 {
     char **map;
@@ -114,8 +124,14 @@ void    draw_bar(t_global *global, int x, int y, int width, int height, int colo
 double  get_current_millis(void);
 void    get_opponents(t_global *global);
 
-int parse_and_validate(char *file, t_global *global);
-bool valid_file(char *file, int flag);
-bool valid_map(char **map, int height);
+int		parse_and_validate(char *file, t_global *global);
+bool	valid_file(char *file, int flag);
+bool	valid_map(char **map, int height);
+
+int		ft_strcmp(const char *s1, const char *s2);
+int		strlen_tab_to_space(char *str);
+char	*strdup_tab_to_space(const char *s1, int len);
+bool	check_arg_amount(char **split, int amount);
+bool	valid_range(int color);
 
 #endif

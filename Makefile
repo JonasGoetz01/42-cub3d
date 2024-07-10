@@ -33,6 +33,7 @@ SRCS	:=  main.c \
 			parse.c \
 			validate_file.c \
 			validate_map.c \
+			parse_utils.c \
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))

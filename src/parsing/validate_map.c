@@ -6,30 +6,30 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/10 14:28:03 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/10 15:37:51 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
 
-bool check_space_vicinity(char **map, int x, int y, int width, int height)
+bool	check_space_vicinity(char **map, int x, int y, int width, int height)
 {
-	if (y > 0 && map[y-1][x] != '1' && map[y-1][x] != ' ')
+	if (y > 0 && map[y - 1][x] != '1' && map[y - 1][x] != ' ')
 		return (false);
-	if (y < height - 1 && map[y+1][x] != '1' && map[y+1][x] != ' ')
+	if (y < height - 1 && map[y + 1][x] != '1' && map[y + 1][x] != ' ')
 		return (false);
-	if (x > 0 && map[y][x-1] != '1' && map[y][x-1] != ' ')
+	if (x > 0 && map[y][x - 1] != '1' && map[y][x - 1] != ' ')
 		return (false);
-	if (x < width - 1 && map[y][x+1] != '1' && map[y][x+1] != ' ')
+	if (x < width - 1 && map[y][x + 1] != '1' && map[y][x + 1] != ' ')
 		return (false);
 	return (true);
 }
 
-bool valid_characters(char **map, int height)
+bool	valid_characters(char **map, int height)
 {
-	int y;
-	int x;
-	int player;
+	int	y;
+	int	x;
+	int	player;
 
 	y = 0;
 	player = 0;
@@ -38,13 +38,15 @@ bool valid_characters(char **map, int height)
 		x = 0;
 		while (map[y][x])
 		{
-			if (map[y][x] != '0' && map[y][x] != '1' && map[y][x] != 'O' && map[y][x] != 'N'
-				&& map[y][x] != 'S' && map[y][x] != 'E' && map[y][x] != 'W' && map[y][x] != ' ')
+			if (map[y][x] != '0' && map[y][x] != '1' && map[y][x] != 'O'
+				&& map[y][x] != 'N' && map[y][x] != 'S' && map[y][x] != 'E'
+				&& map[y][x] != 'W' && map[y][x] != ' ')
 			{
 				// error
 				return (false);
 			}
-			if (map[y][x] == 'N' || map[y][x] == 'S' || map[y][x] == 'E' || map[y][x] == 'W')
+			if (map[y][x] == 'N' || map[y][x] == 'S'
+				|| map[y][x] == 'E' || map[y][x] == 'W')
 				player++;
 			if (player > 1)
 			{
@@ -58,11 +60,11 @@ bool valid_characters(char **map, int height)
 	return (true);
 }
 
-bool valid_map(char **map, int height)
+bool	valid_map(char **map, int height)
 {
-	int y;
-	int x;
-	int width;
+	int	y;
+	int	x;
+	int	width;
 
 	y = 0;
 	while (y < height)
@@ -77,7 +79,7 @@ bool valid_map(char **map, int height)
 		}
 		y++;
 	}
-	if (!valid_characters(map, height)) // implement
+	if (!valid_characters(map, height))
 		return (false);
 	return (true);
 }
