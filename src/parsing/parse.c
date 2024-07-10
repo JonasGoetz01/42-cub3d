@@ -6,19 +6,19 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/10 11:27:14 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/10 14:28:53 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
 
-// step 1: validate input file
-// step 2: read input file to get map size
-// step 3: read input file
-// step 4: validate texture paths and colors
-// step 5: parse textures and colors
-// step 6: validate map
-// step 7: parse map
+// step 1: validate input file done
+// step 2: read input file to get map size done
+// step 3: read input file done
+// step 4: validate texture paths and colors done
+// step 5: parse textures and colors done
+// step 6: validate map pending
+// step 7: parse map done
 
 // clean exit function that frees all mallocs
 // error function that prints certain error message
@@ -263,7 +263,6 @@ bool parse_line(char *line, t_global *global)
 		return (parse_texture(split[0], split[1], global));
 	else if ((ft_strcmp(split[0], "F") == 0 || ft_strcmp(split[0], "C") == 0) && (check_arg_amount(split, 2) || check_arg_amount(split, 4)))
 	{
-		// comma check meaning not more than one comma in between values, no idea how implement this the best way yet
 		if (!color_format(split))
 		{
 			// error
@@ -428,7 +427,14 @@ int parse_and_validate(char *file, t_global *global)
 	}
 	if (parse_file(file, global))
 		return (1);
-	map_to_line_segments(global, &lines, &line_count);
+	if (valid_map(global->map->map, global->map->height))
+		printf("Map is valid.\n");
+	else
+	{
+		printf("Map is invalid.\n");
+		return (1);
+	}
+	map_to_line_segments(global, &lines, &line_count); // only temporarily in this function
     global->scale_factor = calculate_scale_factor(global->map->width, global->map->height, WIDTH * global->minimap_scale, HEIGHT * global->minimap_scale);
     scale_line_segments(lines, line_count, global->scale_factor);
     global->line_count = line_count;

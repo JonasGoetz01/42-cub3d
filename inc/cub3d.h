@@ -116,5 +116,6 @@ void    get_opponents(t_global *global);
 
 int parse_and_validate(char *file, t_global *global);
 bool valid_file(char *file, int flag);
+bool valid_map(char **map, int height);
 
 #endif
