@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/10 15:40:41 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:44:46 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,81 @@
 // clean exit function that frees all mallocs
 // error function that prints certain error message?
 // error messages will be modified later on to be more specific
+
+bool double_identifier(char *identifier, t_global *global)
+{
+	if (ft_strcmp(identifier, "NO") == 0 && global->flags.no)
+		return (true); // add error message
+	else if (ft_strcmp(identifier, "SO") == 0 && global->flags.so)
+		return (true);
+	else if (ft_strcmp(identifier, "WE") == 0 && global->flags.we)
+		return (true);
+	else if (ft_strcmp(identifier, "EA") == 0 && global->flags.ea)
+		return (true);
+	else if (ft_strcmp(identifier, "F") == 0 && global->flags.f)
+		return (true);
+	else if (ft_strcmp(identifier, "C") == 0 && global->flags.c)
+		return (true);
+	return (false);
+}
+
+bool check_identifier(char *line, t_global *global) // free split when return
+{
+	char	**split;
+
+	split = ft_split(line, ' ');
+	if (!split)
+	{
+		// error
+		return (false);
+	}
+	if (double_identifier(split[0], global))
+	{
+		printf("error double identifier\n");
+		return (false);
+	}
+	if (!(check_arg_amount(split, 2) || check_arg_amount(split, 4)))
+	{
+		printf("error arg amount\n");
+		return (false);
+	}
+	if (ft_strcmp(split[0], "NO") == 0)
+	{
+		global->flags.no = 1;
+		return (true);
+	}
+	else if (ft_strcmp(split[0], "SO") == 0)
+	{
+		global->flags.so = 1;
+		return (true);
+	}
+	else if (ft_strcmp(split[0], "WE") == 0)
+	{
+		global->flags.we = 1;
+		return (true);
+	}
+	else if (ft_strcmp(split[0], "EA") == 0)
+	{
+		global->flags.ea = 1;
+		return (true);
+	}
+	else if (ft_strcmp(split[0], "F") == 0)
+	{
+		global->flags.f = 1;
+		return (true);
+	}
+	else if (ft_strcmp(split[0], "C") == 0)
+	{
+		global->flags.c = 1;
+		return (true);
+	}
+	else
+	{
+		printf("error unrecognized identifier\n");
+		// error
+		return (false);
+	}
+}
 
 bool	parse_texture(char *identifier, char *path, t_global *global)
 {
@@ -166,7 +241,7 @@ bool	color_format(char **color)
 	return (precise_comma_check(color));
 }
 
-bool	parse_line(char *line, t_global *global)
+bool	parse_line(char *line, t_global *global) // free split when return
 {
 	char	**split;
 
@@ -181,10 +256,7 @@ bool	parse_line(char *line, t_global *global)
 	else if ((ft_strcmp(split[0], "F") == 0 || ft_strcmp(split[0], "C") == 0) && (check_arg_amount(split, 2) || check_arg_amount(split, 4)))
 	{
 		if (!color_format(split))
-		{
-			// error
 			return (false);
-		}
 		if (check_arg_amount(split, 2))
 			return (parse_color_long(split, global));
 		else if (check_arg_amount(split, 4))
@@ -198,8 +270,8 @@ bool	parse_line(char *line, t_global *global)
 	}
 	else
 	{
-		printf("error identifier\n");
-		// error invalid identifier
+		printf("error unrecognized identifier\n");
+		// error
 		return (false);
 	}
 }
@@ -295,6 +367,8 @@ int	map_size(char *file, t_global *global)
 			continue ;
 		if (i < 6)
 		{
+			if (!check_identifier(line, global))
+				return (free(line), free(tmp), 1);
 			i++;
 		}
 		else
@@ -304,7 +378,7 @@ int	map_size(char *file, t_global *global)
 			{
 				printf("error map size\n");
 				// error
-				return (1);
+				return (free(line), free(tmp), 1);
 			}
 			tmp = ft_strtrim(line, "\n");
 			free(line);
@@ -318,6 +392,8 @@ int	map_size(char *file, t_global *global)
 	global->map->width = max_width;
 	return (0);
 }
+
+// make an init function to allocate memory and set identifier flags to 0
 
 int	parse_and_validate(char *file, t_global *global)
 {
@@ -333,6 +409,7 @@ int	parse_and_validate(char *file, t_global *global)
 		return (1);
 	}
 	global->map = malloc(sizeof(t_map));
+	global->flags = (t_identifier_flag){0, 0, 0, 0, 0, 0};
 	if (map_size(file, global))
 		return (1);
 	global->map->count = 0;

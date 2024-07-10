@@ -65,6 +65,16 @@ typedef struct s_color
     int b;
 } t_color;
 
+typedef struct s_identifier_flag
+{
+    bool no;
+    bool so;
+    bool we;
+    bool ea;
+    bool f;
+    bool c;
+} t_identifier_flag;
+
 typedef struct s_player
 {
 	t_vec2d		pos;
@@ -91,6 +101,7 @@ typedef struct s_global
     t_texture *texture;
     t_color floor;
     t_color ceiling;
+    t_identifier_flag flags;
     t_player *player;
     int line_count;
     float scale_factor;
