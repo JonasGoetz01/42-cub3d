@@ -20,26 +20,73 @@ void	make_background_transparent(t_global *global)
 
 void	show_sky_and_floor(t_global *global)
 {
-	int	x;
-	int	y;
+	int						x;
+	int						y;
+	static mlx_texture_t	*texture_sky = NULL;
+	static mlx_texture_t	*texture_floor = NULL;
+	int						texture_x;
+	int						texture_y;
+	uint8_t					*pixel;
+	float					player_angle;
+	float					sky_offset;
+	float					floor_offset;
+	int						sky_width;
+	int						floor_width;
+	float					texture_rotation_speed;
 
+	texture_rotation_speed = 1.9f;
+	if (!texture_sky)
+		texture_sky = mlx_load_png("textures/sky.png");
+	if (!texture_floor)
+		texture_floor = mlx_load_png("textures/floor.png");
+	if (!texture_sky || !texture_floor)
+	{
+		fprintf(stderr, "Error loading textures\n");
+		return ;
+	}
+	player_angle = atan2(global->player->dir.y, global->player->dir.x);
+	sky_width = texture_sky->width;
+	floor_width = texture_floor->width;
+	sky_offset = (player_angle / (2.0f * M_PI)) * sky_width
+		* texture_rotation_speed;
+	floor_offset = (player_angle / (2.0f * M_PI)) * floor_width
+		* texture_rotation_speed;
+	sky_offset = fmod(sky_offset + sky_width, sky_width);
+	floor_offset = fmod(floor_offset + floor_width, floor_width);
+	// Ensure positive offset
 	y = 0;
 	while (y < global->window_height / 2)
 	{
+		texture_y = (int)(((float)y / (global->window_height / 2))
+				* texture_sky->height);
 		x = 0;
 		while (x < global->window_width)
 		{
-			mlx_put_pixel(global->img, x, y, get_rgba(0, 255, 255, 255));
+			texture_x = (int)(((float)(x + sky_offset) / global->window_width)
+					* sky_width);
+			texture_x = texture_x % sky_width; // Wrap texture_x
+			pixel = &(texture_sky->pixels[(texture_y * sky_width + texture_x)
+					* texture_sky->bytes_per_pixel]);
+			mlx_put_pixel(global->img, x, y, get_rgba(pixel[0], pixel[1],
+					pixel[2], 255));
 			x++;
 		}
 		y++;
 	}
 	while (y < global->window_height)
 	{
+		texture_y = (int)(((float)(y - global->window_height / 2)
+					/ (global->window_height / 2)) * texture_floor->height);
 		x = 0;
 		while (x < global->window_width)
 		{
-			mlx_put_pixel(global->img, x, y, get_rgba(255, 255, 0, 255));
+			texture_x = (int)(((float)(x + floor_offset) / global->window_width)
+					* floor_width);
+			texture_x = texture_x % floor_width; // Wrap texture_x
+			pixel = &(texture_floor->pixels[(texture_y * floor_width
+						+ texture_x) * texture_floor->bytes_per_pixel]);
+			mlx_put_pixel(global->img, x, y, get_rgba(pixel[0], pixel[1],
+					pixel[2], 255));
 			x++;
 		}
 		y++;
