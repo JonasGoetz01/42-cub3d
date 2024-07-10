@@ -108,6 +108,9 @@ void	render_3d(t_global *global)
 	static mlx_texture_t	*texture_south = NULL;
 	static mlx_texture_t	*texture_east = NULL;
 	static mlx_texture_t	*texture_west = NULL;
+	int						r;
+	int						g;
+	int						b;
 
 	// Load textures once
 	if (!texture_north)
@@ -118,6 +121,12 @@ void	render_3d(t_global *global)
 		texture_east = mlx_load_png("textures/polished_granite.png");
 	if (!texture_west)
 		texture_west = mlx_load_png("textures/piston_bottom.png");
+	// Check if textures are loaded successfully
+	if (!texture_north || !texture_south || !texture_east || !texture_west)
+	{
+		fprintf(stderr, "Error loading textures\n");
+		return ;
+	}
 	player_angle = atan2(global->player->dir.y, global->player->dir.x);
 	bar_width = 1;
 	for (i = 0; i < (int)global->img->width; i++)
@@ -171,20 +180,33 @@ void	render_3d(t_global *global)
 			}
 			hit_percentage = fmax(fmin(hit_percentage, 1.0f), 0.0f);
 			// Clamp hit_percentage to [0, 1]
-			texture_x = (int)(hit_percentage * (texture->width - 1));
+			texture_x = (int)(hit_percentage * (texture->width));
 			for (int j = 0; j < bar_height; j++)
 			{
-				texture_y = (int)(((float)j / bar_height) * (texture->height
-							- 1));
-				pixel = &texture->pixels[(texture_y * texture->width
-						+ texture_x) * texture->bytes_per_pixel];
-				color = get_rgba(pixel[0], pixel[1], pixel[2], 255);
-				draw_y = top_y + j;
-				if (draw_y >= 0 && (uint32_t)draw_y < global->img->height)
+				texture_y = (int)(((float)j / bar_height) * (texture->height));
+				if ((uint32_t)texture_y >= texture->height)
+					texture_y = texture->height - 1;
+				if (texture_y < 0)
+					texture_y = 0;
+				if ((uint32_t)texture_x >= texture->width)
+					texture_x = texture->width - 1;
+				if (texture_x < 0)
+					texture_x = 0;
+				pixel = &(texture->pixels[(texture_y * texture->width
+							+ texture_x) * texture->bytes_per_pixel]);
+				if (pixel != NULL)
 				{
-					if (x >= 0 && (uint32_t)x < global->img->width)
+					r = pixel[0];
+					g = pixel[1];
+					b = pixel[2];
+					color = get_rgba(r, g, b, 255);
+					draw_y = top_y + j;
+					if (draw_y >= 0 && (uint32_t)draw_y < global->img->height)
 					{
-						mlx_put_pixel(global->img, x, draw_y, color);
+						if (x >= 0 && (uint32_t)x < global->img->width)
+						{
+							mlx_put_pixel(global->img, x, draw_y, color);
+						}
 					}
 				}
 			}
