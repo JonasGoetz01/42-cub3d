@@ -6,21 +6,21 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/10 15:37:51 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/10 18:26:57 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
 
-bool	check_space_vicinity(char **map, int x, int y, int width, int height)
+bool	check_space_vicinity(char **map, int x, int y, int *height_width)
 {
 	if (y > 0 && map[y - 1][x] != '1' && map[y - 1][x] != ' ')
 		return (false);
-	if (y < height - 1 && map[y + 1][x] != '1' && map[y + 1][x] != ' ')
+	if (y < height_width[0] - 1 && map[y + 1][x] != '1' && map[y + 1][x] != ' ')
 		return (false);
 	if (x > 0 && map[y][x - 1] != '1' && map[y][x - 1] != ' ')
 		return (false);
-	if (x < width - 1 && map[y][x + 1] != '1' && map[y][x + 1] != ' ')
+	if (x < height_width[1] - 1 && map[y][x + 1] != '1' && map[y][x + 1] != ' ')
 		return (false);
 	return (true);
 }
@@ -41,22 +41,16 @@ bool	valid_characters(char **map, int height)
 			if (map[y][x] != '0' && map[y][x] != '1' && map[y][x] != 'O'
 				&& map[y][x] != 'N' && map[y][x] != 'S' && map[y][x] != 'E'
 				&& map[y][x] != 'W' && map[y][x] != ' ')
-			{
-				// error
-				return (false);
-			}
+				return (printf(ERR_CHAR), false);
 			if (map[y][x] == 'N' || map[y][x] == 'S'
 				|| map[y][x] == 'E' || map[y][x] == 'W')
 				player++;
-			if (player > 1)
-			{
-				// error
-				return (false);
-			}
 			x++;
 		}
 		y++;
 	}
+	if (player != 1)
+		return (printf(ERR_PLAYER), false);
 	return (true);
 }
 
@@ -64,17 +58,19 @@ bool	valid_map(char **map, int height)
 {
 	int	y;
 	int	x;
-	int	width;
+	int	height_width[2];
 
 	y = 0;
+	height_width[0] = height;
 	while (y < height)
 	{
-		width = ft_strlen(map[y]);
+		height_width[1] = ft_strlen(map[y]);
 		x = 0;
-		while (x < width)
+		while (x < height_width[1])
 		{
-			if (map[y][x] == ' ' && !check_space_vicinity(map, x, y, width, height))
-				return (false);
+			if (map[y][x] == ' '
+				&& !check_space_vicinity(map, x, y, height_width))
+				return (printf(ERR_MAP), false);
 			x++;
 		}
 		y++;

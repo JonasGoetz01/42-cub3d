@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/10 17:44:46 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/10 19:24:55 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,79 +24,60 @@
 // error function that prints certain error message?
 // error messages will be modified later on to be more specific
 
-bool double_identifier(char *identifier, t_global *global)
+void	free_2d_arr(void **arr)
 {
-	if (ft_strcmp(identifier, "NO") == 0 && global->flags.no)
-		return (true); // add error message
-	else if (ft_strcmp(identifier, "SO") == 0 && global->flags.so)
-		return (true);
-	else if (ft_strcmp(identifier, "WE") == 0 && global->flags.we)
-		return (true);
-	else if (ft_strcmp(identifier, "EA") == 0 && global->flags.ea)
-		return (true);
-	else if (ft_strcmp(identifier, "F") == 0 && global->flags.f)
-		return (true);
-	else if (ft_strcmp(identifier, "C") == 0 && global->flags.c)
-		return (true);
-	return (false);
+	int	i;
+
+	i = -1;
+	while (arr[++i])
+		free(arr[i]);
+	free(arr);
 }
 
-bool check_identifier(char *line, t_global *global) // free split when return
+bool set_flag(bool *flag)
+{
+	*flag = 1;
+	return (true);
+}
+
+bool strlen_check(char **split)
+{
+	int	i;
+
+	i = 0;
+	while (split[++i])
+	{
+		if (ft_strlen(split[i]) > 11)
+			return (printf(ERR_RANGE), false);
+	}
+	return (true);
+}
+
+bool check_identifier(char *line, t_global *global)
 {
 	char	**split;
 
 	split = ft_split(line, ' ');
 	if (!split)
-	{
-		// error
-		return (false);
-	}
+		return (printf(RED BOLD ERR_MALLOC NC), false);
 	if (double_identifier(split[0], global))
-	{
-		printf("error double identifier\n");
-		return (false);
-	}
+		return (free_2d_arr((void**)split), printf(ERR_D_ID), false);
 	if (!(check_arg_amount(split, 2) || check_arg_amount(split, 4)))
-	{
-		printf("error arg amount\n");
-		return (false);
-	}
+		return (free_2d_arr((void**)split), printf(ERR), false);
 	if (ft_strcmp(split[0], "NO") == 0)
-	{
-		global->flags.no = 1;
-		return (true);
-	}
+	 return (free_2d_arr((void**)split), set_flag(&global->flags.no));
 	else if (ft_strcmp(split[0], "SO") == 0)
-	{
-		global->flags.so = 1;
-		return (true);
-	}
+		return (free_2d_arr((void**)split), set_flag(&global->flags.so));
 	else if (ft_strcmp(split[0], "WE") == 0)
-	{
-		global->flags.we = 1;
-		return (true);
-	}
+		return (free_2d_arr((void**)split), set_flag(&global->flags.we));
 	else if (ft_strcmp(split[0], "EA") == 0)
-	{
-		global->flags.ea = 1;
-		return (true);
-	}
+		return (free_2d_arr((void**)split), set_flag(&global->flags.ea));
 	else if (ft_strcmp(split[0], "F") == 0)
-	{
-		global->flags.f = 1;
-		return (true);
-	}
+		return (free_2d_arr((void**)split), set_flag(&global->flags.f));
 	else if (ft_strcmp(split[0], "C") == 0)
-	{
-		global->flags.c = 1;
-		return (true);
-	}
+		return (free_2d_arr((void**)split), set_flag(&global->flags.c));
 	else
-	{
-		printf("error unrecognized identifier\n");
-		// error
-		return (false);
-	}
+		return (free_2d_arr((void**)split), printf(ERR_NO_ID), false);
 }
 
 bool	parse_texture(char *identifier, char *path, t_global *global)
@@ -121,18 +102,13 @@ bool	parse_color_long(char **split, t_global *global)
 
 	colors = ft_split(split[1], ',');
 	if (!colors || !check_arg_amount(colors, 3))
-	{
-		// error
-		return (false);
-	}
+		return (printf(ERR), false);
 	tmp[0] = ft_atoi(colors[0]);
 	tmp[1] = ft_atoi(colors[1]);
 	tmp[2] = ft_atoi(colors[2]);
-	if (!valid_range(tmp[0]) || !valid_range(tmp[1]) || !valid_range(tmp[2]))
-	{
-		// error
+	if (!valid_range(tmp[0]) || !valid_range(tmp[1])
+		|| !valid_range(tmp[2]) || !strlen_check(colors))
 		return (false);
-	}
 	if (ft_strcmp(split[0], "F") == 0)
 	{
 		global->floor.r = tmp[0];
@@ -155,11 +131,11 @@ bool	parse_color_short(char **split, t_global *global)
 	tmp[0] = ft_atoi(split[1]);
 	tmp[1] = ft_atoi(split[2]);
 	tmp[2] = ft_atoi(split[3]);
+	if (ft_strlen(split[1]) > 11 || ft_strlen(split[2]) > 11
+		|| ft_strlen(split[3]) > 11)
+		return (printf(ERR_RANGE), false);
 	if (!valid_range(tmp[0]) || !valid_range(tmp[1]) || !valid_range(tmp[2]))
-	{
-		// error
 		return (false);
-	}
 	if (ft_strcmp(split[0], "F") == 0)
 	{
 		global->floor.r = tmp[0];
@@ -175,7 +151,7 @@ bool	parse_color_short(char **split, t_global *global)
 	return (true);
 }
 
-bool	precise_comma_check(char **color)
+bool	precise_comma_check(char **color, int comma)
 {
 	int	i;
 	int	j;
@@ -186,12 +162,9 @@ bool	precise_comma_check(char **color)
 		while (color[++i])
 		{
 			j = ft_strlen(color[i]);
-			if ((i < 3 && color[i][j - 1] != ',') || (i == 3 && ft_strchr(color[i], ',')) || j > 4)
-			{
-				// error
-				printf("error comma multiple\n");
-				return (false);
-			}
+			if ((i < 3 && color[i][j - 1] != ',')
+				|| (i == 3 && ft_strchr(color[i], ',')) || comma > 2)
+				return (printf(ERR_COMMA), false);
 		}
 	}
 	else
@@ -201,12 +174,10 @@ bool	precise_comma_check(char **color)
 			j = 0;
 			while (color[i][j])
 			{
-				if (color[i][0] == ',' || (color[i][j] == ',' && (color[i][j + 1] == ',' || color[i][j + 1] == '\0')) || ft_strlen(color[i]) > 11)
-				{
-					// error
-					printf("error comma single\n");
-					return (false);
-				}
+				if (color[i][0] == ',' || (color[i][j] == ','
+					&& (color[i][j + 1] == ',' || color[i][j + 1] == '\0'))
+					|| comma > 2)
+					return (printf(ERR_COMMA), false);
 				j++;
 			}
 		}
@@ -228,17 +199,16 @@ bool	color_format(char **color)
 		{
 			if (color[i[0]][i[1]] == ',')
 				comma++;
-			if ((!ft_isdigit(color[i[0]][i[1]]) && color[i[0]][i[1]] != ',') || comma > 2)
+			if ((!ft_isdigit(color[i[0]][i[1]]) && color[i[0]][i[1]] != ','))
 			{
-				// error
-				printf("error color format\n");
+				printf(RED BOLD "ERROR: Invalid characters in color\n" NC);
 				return (false);
 			}
 			i[1]++;
 		}
 		i[0]++;
 	}
-	return (precise_comma_check(color));
+	return (precise_comma_check(color, comma));
 }
 
 bool	parse_line(char *line, t_global *global) // free split when return
@@ -247,33 +217,23 @@ bool	parse_line(char *line, t_global *global) // free split when return
 
 	split = ft_split(line, ' ');
 	if (!split)
-	{
-		// error
-		return (false);
-	}
-	if (check_arg_amount(split, 2) && (ft_strcmp(split[0], "NO") == 0 || ft_strcmp(split[0], "SO") == 0 || ft_strcmp(split[0], "WE") == 0 || ft_strcmp(split[0], "EA") == 0))
+		return (printf(ERR_MALLOC), false);
+	if (check_arg_amount(split, 2) && (ft_strcmp(split[0], "NO") == 0
+		|| ft_strcmp(split[0], "SO") == 0 || ft_strcmp(split[0], "WE") == 0
+		|| ft_strcmp(split[0], "EA") == 0))
 		return (parse_texture(split[0], split[1], global));
-	else if ((ft_strcmp(split[0], "F") == 0 || ft_strcmp(split[0], "C") == 0) && (check_arg_amount(split, 2) || check_arg_amount(split, 4)))
+	else if ((ft_strcmp(split[0], "F") == 0 || ft_strcmp(split[0], "C") == 0)
+		&& (check_arg_amount(split, 2) || check_arg_amount(split, 4)))
 	{
 		if (!color_format(split))
 			return (false);
 		if (check_arg_amount(split, 2))
 			return (parse_color_long(split, global));
-		else if (check_arg_amount(split, 4))
-			return (parse_color_short(split, global));
 		else
-		{
-			printf("error color\n");
-			// error
-			return (false);
-		}
+			return (parse_color_short(split, global));
 	}
 	else
-	{
-		printf("error unrecognized identifier\n");
-		// error
-		return (false);
-	}
+		return (printf(ERR_NO_ID), false);
 }
 
 bool	parse_map(char *line, t_global *global)

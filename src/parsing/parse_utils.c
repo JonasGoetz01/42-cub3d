@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 15:17:15 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/10 15:18:39 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/10 18:27:12 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ bool	valid_range(int color)
 {
 	if (color < 0 || color > 255)
 	{
-		// error
+		printf(ERR_RANGE);
 		return (false);
 	}
 	return (true);

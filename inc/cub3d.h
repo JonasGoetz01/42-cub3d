@@ -37,10 +37,23 @@
 # define GREEN   "\033[32m"
 # define YELLOW  "\033[33m"
 # define BLUE    "\033[34m"
-# define MAGENTA "\033[35m"
+# define MAG     "\033[35m"
 # define CYAN    "\033[36m"
 # define BOLD    "\033[1m"
 # define LINE    "\033[4m"
+
+# define ERR_MALLOC  RED BOLD "ERROR: Malloc failed\n" NC
+# define ERR_OPEN    RED BOLD "ERROR: Could not open file\n" NC
+# define ERR_DIR	 RED BOLD "ERROR: File is a directory\n" NC
+# define ERR_PLAYER  RED BOLD "ERROR: Multiple players or no player in map\n" NC
+# define ERR_CHAR    RED BOLD "ERROR: Invalid character in map\n" NC
+# define ERR_MAP     RED BOLD "ERROR: Map is not closed correctly\n" NC
+# define ERR_RANGE   RED BOLD "ERROR: Color value out of range\n" NC
+# define ERR         RED BOLD "ERROR: Error\n" NC
+# define ERR_NO_ID   RED BOLD "ERROR: Unrecognized identifier\n" NC
+# define ERR_D_ID    RED BOLD "ERROR: Double identifier\n" NC
+# define ERR_COMMA   RED BOLD "ERROR: Invalid position of commas\n" NC
+# define ERR_FORMAT  RED BOLD "ERROR: Invalid color format\n" NC
 
 typedef struct s_map
 {
@@ -142,16 +155,17 @@ void			render_3d(t_global *global);
 void			draw_bar(t_global *global, int x, int y, int width, int height,
 					int color);
 double			get_current_millis(void);
-void    get_opponents(t_global *global);
+void			get_opponents(t_global *global);
 
-int		parse_and_validate(char *file, t_global *global);
-bool	valid_file(char *file, int flag);
-bool	valid_map(char **map, int height);
+int				parse_and_validate(char *file, t_global *global);
+bool			valid_file(char *file, int flag);
+bool			valid_map(char **map, int height);
+bool 			double_identifier(char *identifier, t_global *global);
 
-int		ft_strcmp(const char *s1, const char *s2);
-int		strlen_tab_to_space(char *str);
-char	*strdup_tab_to_space(const char *s1, int len);
-bool	check_arg_amount(char **split, int amount);
-bool	valid_range(int color);
+int				ft_strcmp(const char *s1, const char *s2);
+int				strlen_tab_to_space(char *str);
+char			*strdup_tab_to_space(const char *s1, int len);
+bool			check_arg_amount(char **split, int amount);
+bool			valid_range(int color);
 
 #endif
