@@ -3,7 +3,7 @@
 int	main(int argc, char **argv)
 {
 	t_global global;
-	t_map map;
+	// t_map map;
 
 	if (argc != 2)
 	{
@@ -11,19 +11,20 @@ int	main(int argc, char **argv)
 		// print usage
 		return (EXIT_FAILURE);
 	}
-	if (parse_and_validate(argv[1], &global))
-	{
-		return (EXIT_FAILURE);
-	}
-	printf("textures: NO: %s, SO: %s, WE: %s, EA: %s\n", global.texture->north, global.texture->south, global.texture->west, global.texture->east);
-	printf("colors: floor: %d, %d, %d; ceiling: %d, %d, %d\n", global.floor.r, global.floor.g, global.floor.b, global.ceiling.r, global.ceiling.g, global.ceiling.b);
-	return (EXIT_SUCCESS);
-	(void)argc;
-	(void)argv;
 	global.window_height = HEIGHT;
 	global.window_width = WIDTH;
 	global.minimap_scale = MINIMAP_SCALE;
 	global.time = get_current_millis();
+	if (parse_and_validate(argv[1], &global))
+	{
+		return (EXIT_FAILURE);
+	}
+	// (void)argc;
+	// (void)argv;
+	// global.window_height = HEIGHT;
+	// global.window_width = WIDTH;
+	// global.minimap_scale = MINIMAP_SCALE;
+	// global.time = get_current_millis();
 	mlx_texture_t *logo = mlx_load_png("textures/wolfenstein-logo.png");
 	if (!logo)
 	{
@@ -49,9 +50,9 @@ int	main(int argc, char **argv)
 		printf("%s\n", mlx_strerror(mlx_errno));
 		return(EXIT_FAILURE);
 	}
-	global.map = &map;
+	// global.map = &map;
 	mlx_loop_hook(global.mlx, keyHook, &global);
-	initMap(&global);
+	// initMap(&global);
 	global.player = new_player(&global, (t_vec2d){get_player_position(&global).x * global.scale_factor, get_player_position(&global).y * global.scale_factor}, get_player_direction(&global));
 	mlx_loop_hook(global.mlx, loop, &global);
 	mlx_resize_hook(global.mlx, resize, &global);

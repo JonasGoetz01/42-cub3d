@@ -32,6 +32,7 @@ typedef struct s_map
     char **map;
     int width;
     int height;
+    int count;
 } t_map;
 
 typedef struct s_texture
@@ -111,6 +112,7 @@ void    make_background_transparent(t_global *global);
 void    render_3d(t_global *global);
 void    draw_bar(t_global *global, int x, int y, int width, int height, int color);
 double  get_current_millis(void);
+void    get_opponents(t_global *global);
 
 int parse_and_validate(char *file, t_global *global);
 bool valid_file(char *file, int flag);

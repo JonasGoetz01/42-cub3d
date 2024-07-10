@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/09 19:45:03 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/10 11:27:14 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,51 @@ int	ft_strcmp(const char *s1, const char *s2) // add to libft?
 		i++;
 	return (str1[i] - str2[i]);
 }
+
+int strlen_tab_to_space(char *str)
+{
+	int i;
+
+	i = 0;
+	while (*str)
+	{
+		if (*str == '\t')
+			i += 4;
+		else
+			i++;
+		str++;
+	}
+	return (i);
+}
+
+char	*strdup_tab_to_space(const char *s1, int len)
+{
+	int		i;
+	char	*str;
+
+	i = 0;
+	str = malloc(len + 1);
+	if (str == NULL)
+		return (NULL);
+	while (*s1)
+	{
+		if (*s1 == '\t')
+		{
+			str[i++] = ' ';
+			str[i++] = ' ';
+			str[i++] = ' ';
+			str[i++] = ' ';
+		}
+		else
+			str[i++] = *s1;
+		s1++;
+	}
+	while (i < len)
+		str[i++] = ' ';
+	str[i] = '\0';
+	return (str);
+}
+
 
 bool check_arg_amount(char **split, int amount)
 {
@@ -186,7 +231,6 @@ bool color_format(char **color)
 	comma = 0;
 	while (color[i[0]])
 	{
-		printf("color: %s\n", color[i[0]]);
 		i[1] = 0;
 		while (color[i[0]][i[1]])
 		{
@@ -246,8 +290,12 @@ bool parse_line(char *line, t_global *global)
 
 bool parse_map(char *line, t_global *global)
 {
-	(void)global;
-	printf("map: %s\n", line);
+	global->map->map[global->map->count] = strdup_tab_to_space(line, global->map->width);
+	global->map->count++;
+	if (global->map->count == global->map->height)
+	{
+		global->map->map[global->map->count] = NULL;
+	}
 	return (true);
 }
 
@@ -261,7 +309,7 @@ int parse_file(char *file, t_global *global)
 	
 	i = 0;
 	in_map = 0;
-	fd = open(file, O_RDONLY); // maybe make it to have fd here already because of valid_file then i wouldn't need to open it again
+	fd = open(file, O_RDONLY);
 	if (fd < 0)
 	{
 		// error
@@ -276,7 +324,7 @@ int parse_file(char *file, t_global *global)
 			continue ;
 		tmp = ft_strtrim(line, "\n");
 		free(line);
-		if (i < 6) // probably need to modify conditions to determine line or map
+		if (i < 6)
 		{
 			if (!parse_line(tmp, global))
 			{
@@ -301,22 +349,26 @@ int parse_file(char *file, t_global *global)
 	return (0);
 }
 
-void map_size(char *file, t_global *global)
+int map_size(char *file, t_global *global)
 {
 	char *line;
+	char *tmp;
 	int fd;
 	int height;
 	int max_width;
 	int in_map;
+	int i;
 
 	in_map = 0;
 	height = 0;
 	max_width = 0;
+	i = 0;
+	tmp = NULL;
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 	{
 		// error
-		return ;
+		return (1);
 	}
 	while (1)
 	{
@@ -325,44 +377,62 @@ void map_size(char *file, t_global *global)
 			break ;
 		if (line[0] == '\n' && !in_map)
 			continue ;
-		if (check_for_map(line)) // need to implement this function
-			in_map = 1;
-		if (in_map)
+		if (i < 6)
 		{
+			i++;
+		}
+		else
+		{
+			in_map = 1;
 			if (line[0] == '\n')
 			{
+				printf("error map size\n");
 				// error
-				return ;
+				return (1);
 			}
+			tmp = ft_strtrim(line, "\n");
+			free(line);
 			height++;
-			if (ft_strlen(line) > max_width)
-				max_width = ft_strlen(line);
+			if (strlen_tab_to_space(tmp) > max_width)
+				max_width = strlen_tab_to_space(tmp);
 		}
-		free(line);
+		free(tmp);
 	}
 	global->map->height = height;
 	global->map->width = max_width;
+	return (0);
 }
 
 int parse_and_validate(char *file, t_global *global)
 {
+	t_line *lines;
+    int line_count;
+	
 	if (!valid_file(file, 0))
-	{
-		printf("\noption1\n");
 		return (1);
-	}
 	global->texture = malloc(sizeof(t_texture));
 	if (!global->texture)
 	{
 		// error
 		return (1);
 	}
-	// global->map->map = malloc();
-	if (parse_file(file, global))
+	global->map = malloc(sizeof(t_map));
+	if (map_size(file, global))
+		return (1);
+	global->map->count = 0;
+	global->map->map = malloc(sizeof(char *) * (global->map->height + 1));
+	if (!global->map->map)
 	{
-		printf("\noption2\n");
+		// error
 		return (1);
 	}
-	printf("\noption3\n");
+	if (parse_file(file, global))
+		return (1);
+	map_to_line_segments(global, &lines, &line_count);
+    global->scale_factor = calculate_scale_factor(global->map->width, global->map->height, WIDTH * global->minimap_scale, HEIGHT * global->minimap_scale);
+    scale_line_segments(lines, line_count, global->scale_factor);
+    global->line_count = line_count;
+    global->lines = lines;
+    get_opponents(global);
 	return (0);
 }
