@@ -29,28 +29,33 @@ int	main(int argc, char **argv)
 		printf("%s\n", mlx_strerror(mlx_errno));
 		return (EXIT_FAILURE);
 	}
-	if (!(global.mlx = mlx_init(global.window_width, global.window_height, "cub3d", true)))
+	if (!(global.mlx = mlx_init(global.window_width, global.window_height,
+				"cub3d", true)))
 	{
 		printf("%s\n", mlx_strerror(mlx_errno));
-		return(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	}
 	mlx_set_icon(global.mlx, logo);
-	if (!(global.minimap = mlx_new_image(global.mlx, global.window_width, global.window_height)))
+	if (!(global.minimap = mlx_new_image(global.mlx, global.window_width,
+				global.window_height)))
 	{
 		mlx_close_window(global.mlx);
 		printf("%s\n", mlx_strerror(mlx_errno));
-		return(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	}
-	if (!(global.img = mlx_new_image(global.mlx, global.window_width, global.window_height)))
+	if (!(global.img = mlx_new_image(global.mlx, global.window_width,
+				global.window_height)))
 	{
 		mlx_close_window(global.mlx);
 		printf("%s\n", mlx_strerror(mlx_errno));
-		return(EXIT_FAILURE);
+		return (EXIT_FAILURE);
 	}
 	// global.map = &map;
 	mlx_loop_hook(global.mlx, keyHook, &global);
 	// initMap(&global);
-	global.player = new_player(&global, (t_vec2d){get_player_position(&global).x * global.scale_factor, get_player_position(&global).y * global.scale_factor}, get_player_direction(&global));
+	global.player = new_player(&global, (t_vec2d){get_player_position(&global).x
+			* global.scale_factor, get_player_position(&global).y
+			* global.scale_factor}, get_player_direction(&global));
 	mlx_loop_hook(global.mlx, loop, &global);
 	mlx_resize_hook(global.mlx, resize, &global);
 	mlx_cursor_hook(global.mlx, cursor, &global);
