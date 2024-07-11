@@ -134,27 +134,48 @@ bool	circle_line_collision(t_vec2d circle_center, float radius, t_line line)
 void	update_position(t_global *global, t_vec2d dir, float speed)
 {
 	t_vec2d	new_pos;
-	bool	collision;
+	bool	collision_x;
+	bool	collision_y;
+	t_vec2d	temp_pos;
 	float	base_angle;
 	float	angle;
 
-	collision = false;
+	collision_x = false;
+	collision_y = false;
+	// Calculate new position
 	new_pos.x = global->player->pos.x + dir.x * speed * global->minimap_scale;
 	new_pos.y = global->player->pos.y + dir.y * speed * global->minimap_scale;
-	// Check collision with each wall
+	// Check collision for x-axis
+	temp_pos = global->player->pos;
+	temp_pos.x = new_pos.x;
 	for (int i = 0; i < global->line_count; i++)
 	{
-		if (circle_line_collision(new_pos, PLAYER_RADIUS * global->scale_factor,
-				global->lines[i]))
+		if (circle_line_collision(temp_pos, PLAYER_RADIUS
+				* global->scale_factor, global->lines[i]))
 		{
-			collision = true;
+			collision_x = true;
 			break ;
 		}
 	}
-	// Update player position if no collision
-	if (!collision)
+	if (!collision_x)
 	{
-		global->player->pos = new_pos;
+		global->player->pos.x = new_pos.x;
+	}
+	// Check collision for y-axis
+	temp_pos = global->player->pos;
+	temp_pos.y = new_pos.y;
+	for (int i = 0; i < global->line_count; i++)
+	{
+		if (circle_line_collision(temp_pos, PLAYER_RADIUS
+				* global->scale_factor, global->lines[i]))
+		{
+			collision_y = true;
+			break ;
+		}
+	}
+	if (!collision_y)
+	{
+		global->player->pos.y = new_pos.y;
 	}
 	// Update ray origins
 	for (int i = 0; i < (int)global->img->width; i++)
