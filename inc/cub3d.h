@@ -21,7 +21,7 @@
 # define SHOW_COLLISIONS 0
 # define SHOW_FOV 1
 # define WALL_BUFFER_DISTANCE 0.2f
-# define PLAYER_RADIUS 0.5f
+# define PLAYER_RADIUS 0.2f
 
 typedef struct s_map
 {
