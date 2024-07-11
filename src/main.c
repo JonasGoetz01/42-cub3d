@@ -16,12 +16,6 @@ int	main(int argc, char **argv)
 		//call cleanup function (not implemented yet)
 		return (EXIT_FAILURE);
 	}
-	// (void)argc;
-	// (void)argv;
-	// global.window_height = HEIGHT;
-	// global.window_width = WIDTH;
-	// global.minimap_scale = MINIMAP_SCALE;
-	// global.time = get_current_millis();
 	mlx_texture_t *logo = mlx_load_png("textures/wolfenstein-logo.png");
 	if (!logo)
 	{
