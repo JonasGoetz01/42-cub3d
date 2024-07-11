@@ -108,8 +108,6 @@ bool	line_line_collision(t_line *a, t_line *b)
 	return (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1);
 }
 
-#include <math.h> // Ensure math.h is included for sqrt and pow functions
-
 bool	circle_line_collision(t_vec2d circle_center, float radius, t_line line)
 {
 	t_vec2d	line_vec;
