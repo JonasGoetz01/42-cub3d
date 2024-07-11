@@ -6,393 +6,124 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/10 19:24:55 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/11 12:48:08 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
 
-// step 1: validate input file done
-// step 2: read input file to get map size done
-// step 3: read input file done
-// step 4: validate texture paths and colors done
-// step 5: parse textures and colors done
-// step 6: parse map done
-// step 7: validate map done
-
 // clean exit function that frees all mallocs
-// error function that prints certain error message?
-// error messages will be modified later on to be more specific
 
-void	free_2d_arr(void **arr)
+int	parse_configurations(int fd, t_global *global)
 {
-	int	i;
-
-	i = -1;
-	while (arr[++i])
-		free(arr[i]);
-	free(arr);
-}
-
-bool set_flag(bool *flag)
-{
-	*flag = 1;
-	return (true);
-}
-
-bool strlen_check(char **split)
-{
-	int	i;
+	char	*line;
+	char	*tmp;
+	int		i;
 
 	i = 0;
-	while (split[++i])
+	while (i < 6)
 	{
-		if (ft_strlen(split[i]) > 11)
-			return (printf(ERR_RANGE), false);
-	}
-	return (true);
-}
-
-bool check_identifier(char *line, t_global *global)
-{
-	char	**split;
-
-	split = ft_split(line, ' ');
-	if (!split)
-		return (printf(RED BOLD ERR_MALLOC NC), false);
-	if (double_identifier(split[0], global))
-		return (free_2d_arr((void**)split), printf(ERR_D_ID), false);
-	if (!(check_arg_amount(split, 2) || check_arg_amount(split, 4)))
-		return (free_2d_arr((void**)split), printf(ERR), false);
-	if (ft_strcmp(split[0], "NO") == 0)
-	 return (free_2d_arr((void**)split), set_flag(&global->flags.no));
-	else if (ft_strcmp(split[0], "SO") == 0)
-		return (free_2d_arr((void**)split), set_flag(&global->flags.so));
-	else if (ft_strcmp(split[0], "WE") == 0)
-		return (free_2d_arr((void**)split), set_flag(&global->flags.we));
-	else if (ft_strcmp(split[0], "EA") == 0)
-		return (free_2d_arr((void**)split), set_flag(&global->flags.ea));
-	else if (ft_strcmp(split[0], "F") == 0)
-		return (free_2d_arr((void**)split), set_flag(&global->flags.f));
-	else if (ft_strcmp(split[0], "C") == 0)
-		return (free_2d_arr((void**)split), set_flag(&global->flags.c));
-	else
-		return (free_2d_arr((void**)split), printf(ERR_NO_ID), false);
-}
-
-bool	parse_texture(char *identifier, char *path, t_global *global)
-{
-	if (!valid_file(path, 1))
-		return (false);
-	if (ft_strcmp(identifier, "NO") == 0)
-		global->texture->north = ft_strdup(path);
-	else if (ft_strcmp(identifier, "SO") == 0)
-		global->texture->south = ft_strdup(path);
-	else if (ft_strcmp(identifier, "WE") == 0)
-		global->texture->west = ft_strdup(path);
-	else if (ft_strcmp(identifier, "EA") == 0)
-		global->texture->east = ft_strdup(path);
-	return (true);
-}
-
-bool	parse_color_long(char **split, t_global *global)
-{
-	char	**colors;
-	int		tmp[3];
-
-	colors = ft_split(split[1], ',');
-	if (!colors || !check_arg_amount(colors, 3))
-		return (printf(ERR), false);
-	tmp[0] = ft_atoi(colors[0]);
-	tmp[1] = ft_atoi(colors[1]);
-	tmp[2] = ft_atoi(colors[2]);
-	if (!valid_range(tmp[0]) || !valid_range(tmp[1])
-		|| !valid_range(tmp[2]) || !strlen_check(colors))
-		return (false);
-	if (ft_strcmp(split[0], "F") == 0)
-	{
-		global->floor.r = tmp[0];
-		global->floor.g = tmp[1];
-		global->floor.b = tmp[2];
-	}
-	else if (ft_strcmp(split[0], "C") == 0)
-	{
-		global->ceiling.r = tmp[0];
-		global->ceiling.g = tmp[1];
-		global->ceiling.b = tmp[2];
-	}
-	return (true);
-}
-
-bool	parse_color_short(char **split, t_global *global)
-{
-	int	tmp[3];
-
-	tmp[0] = ft_atoi(split[1]);
-	tmp[1] = ft_atoi(split[2]);
-	tmp[2] = ft_atoi(split[3]);
-	if (ft_strlen(split[1]) > 11 || ft_strlen(split[2]) > 11
-		|| ft_strlen(split[3]) > 11)
-		return (printf(ERR_RANGE), false);
-	if (!valid_range(tmp[0]) || !valid_range(tmp[1]) || !valid_range(tmp[2]))
-		return (false);
-	if (ft_strcmp(split[0], "F") == 0)
-	{
-		global->floor.r = tmp[0];
-		global->floor.g = tmp[1];
-		global->floor.b = tmp[2];
-	}
-	else if (ft_strcmp(split[0], "C") == 0)
-	{
-		global->ceiling.r = tmp[0];
-		global->ceiling.g = tmp[1];
-		global->ceiling.b = tmp[2];
-	}
-	return (true);
-}
-
-bool	precise_comma_check(char **color, int comma)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	if (check_arg_amount(color, 4))
-	{
-		while (color[++i])
+		line = get_next_line(fd);
+		if (!line)
+			return (1);
+		if (line[0] == '\n')
 		{
-			j = ft_strlen(color[i]);
-			if ((i < 3 && color[i][j - 1] != ',')
-				|| (i == 3 && ft_strchr(color[i], ',')) || comma > 2)
-				return (printf(ERR_COMMA), false);
+			free(line);
+			continue ;
 		}
+		tmp = ft_strtrim(line, "\n");
+		if (!tmp)
+			return (printf(ERR_MALLOC), free(line), 1);
+		free(line);
+		if (!parse_line(tmp, global))
+			return (free(tmp), 1);
+		free(tmp);
+		i++;
 	}
-	else
+	return (0);
+}
+
+int	parse_map_data(int fd, t_global *global, int count)
+{
+	char	*line;
+	char	*tmp;
+
+	while (1)
 	{
-		while (color[++i])
+		line = get_next_line(fd);
+		if (!line)
+			break ;
+		if (line[0] == '\n')
 		{
-			j = 0;
-			while (color[i][j])
-			{
-				if (color[i][0] == ',' || (color[i][j] == ','
-					&& (color[i][j + 1] == ',' || color[i][j + 1] == '\0'))
-					|| comma > 2)
-					return (printf(ERR_COMMA), false);
-				j++;
-			}
+			free(line);
+			continue ;
 		}
+		tmp = ft_strtrim(line, "\n");
+		if (!tmp)
+			return (printf(ERR_MALLOC), free(line), 1);
+		free(line);
+		if (!parse_map(tmp, global))
+			return (free(tmp), 1);
+		free(tmp);
+		count++;
+		if (count == global->map->height)
+			break ;
 	}
-	return (true);
-}
-
-bool	color_format(char **color)
-{
-	int	i[2];
-	int	comma;
-
-	i[0] = 1;
-	comma = 0;
-	while (color[i[0]])
-	{
-		i[1] = 0;
-		while (color[i[0]][i[1]])
-		{
-			if (color[i[0]][i[1]] == ',')
-				comma++;
-			if ((!ft_isdigit(color[i[0]][i[1]]) && color[i[0]][i[1]] != ','))
-			{
-				printf(RED BOLD "ERROR: Invalid characters in color\n" NC);
-				return (false);
-			}
-			i[1]++;
-		}
-		i[0]++;
-	}
-	return (precise_comma_check(color, comma));
-}
-
-bool	parse_line(char *line, t_global *global) // free split when return
-{
-	char	**split;
-
-	split = ft_split(line, ' ');
-	if (!split)
-		return (printf(ERR_MALLOC), false);
-	if (check_arg_amount(split, 2) && (ft_strcmp(split[0], "NO") == 0
-		|| ft_strcmp(split[0], "SO") == 0 || ft_strcmp(split[0], "WE") == 0
-		|| ft_strcmp(split[0], "EA") == 0))
-		return (parse_texture(split[0], split[1], global));
-	else if ((ft_strcmp(split[0], "F") == 0 || ft_strcmp(split[0], "C") == 0)
-		&& (check_arg_amount(split, 2) || check_arg_amount(split, 4)))
-	{
-		if (!color_format(split))
-			return (false);
-		if (check_arg_amount(split, 2))
-			return (parse_color_long(split, global));
-		else
-			return (parse_color_short(split, global));
-	}
-	else
-		return (printf(ERR_NO_ID), false);
-}
-
-bool	parse_map(char *line, t_global *global)
-{
-	global->map->map[global->map->count] = strdup_tab_to_space(line, global->map->width);
-	global->map->count++;
-	if (global->map->count == global->map->height)
-	{
-		global->map->map[global->map->count] = NULL;
-	}
-	return (true);
+	return (0);
 }
 
 int	parse_file(char *file, t_global *global)
 {
-	int		fd;
-	int		i;
-	char	*line;
-	char	*tmp;
-	int		in_map;
+	int	fd;
+	int	ret;
+	int	count;
 
-	i = 0;
-	in_map = 0;
+	count = 0;
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
-	{
-		// error
-		return (1);
-	}
-	while (1)
-	{
-		line = get_next_line(fd);
-		if (!line)
-			break ;
-		if (line[0] == '\n' && !in_map)
-			continue ;
-		tmp = ft_strtrim(line, "\n");
-		free(line);
-		if (i < 6)
-		{
-			if (!parse_line(tmp, global))
-			{
-				// error
-				return (1);
-			}
-			else
-				i++;
-		}
-		else
-		{
-			if (!parse_map(tmp, global))
-			{
-				// error
-				return (1);
-			}
-			else
-				in_map = 1;
-		}
-		free(tmp);
-	}
-	return (0);
+		return (printf(ERR_OPEN), 1);
+	ret = parse_configurations(fd, global);
+	if (ret)
+		return (close(fd), 1);
+	ret = parse_map_data(fd, global, count);
+	close(fd);
+	return (ret);
 }
 
-int	map_size(char *file, t_global *global)
-{
-	char	*line;
-	char	*tmp;
-	int		fd;
-	int		height;
-	int		max_width;
-	int		in_map;
-	int		i;
-
-	in_map = 0;
-	height = 0;
-	max_width = 0;
-	i = 0;
-	tmp = NULL;
-	fd = open(file, O_RDONLY);
-	if (fd < 0)
-	{
-		// error
-		return (1);
-	}
-	while (1)
-	{
-		line = get_next_line(fd);
-		if (!line)
-			break ;
-		if (line[0] == '\n' && !in_map)
-			continue ;
-		if (i < 6)
-		{
-			if (!check_identifier(line, global))
-				return (free(line), free(tmp), 1);
-			i++;
-		}
-		else
-		{
-			in_map = 1;
-			if (line[0] == '\n')
-			{
-				printf("error map size\n");
-				// error
-				return (free(line), free(tmp), 1);
-			}
-			tmp = ft_strtrim(line, "\n");
-			free(line);
-			height++;
-			if (strlen_tab_to_space(tmp) > max_width)
-				max_width = strlen_tab_to_space(tmp);
-		}
-		free(tmp);
-	}
-	global->map->height = height;
-	global->map->width = max_width;
-	return (0);
-}
-
-// make an init function to allocate memory and set identifier flags to 0
-
-int	parse_and_validate(char *file, t_global *global)
+void	configure_map(t_global *global)
 {
 	t_line	*lines;
 	int		line_count;
 
+	map_to_line_segments(global, &lines, &line_count);
+	global->scale_factor = calculate_scale_factor(global->map->width,
+			global->map->height, WIDTH * global->minimap_scale, HEIGHT
+			* global->minimap_scale);
+	scale_line_segments(lines, line_count, global->scale_factor);
+	global->line_count = line_count;
+	global->lines = lines;
+	get_opponents(global);
+}
+
+int	parse_and_validate(char *file, t_global *global)
+{
 	if (!valid_file(file, 0))
 		return (1);
 	global->texture = malloc(sizeof(t_texture));
-	if (!global->texture)
-	{
-		// error
-		return (1);
-	}
 	global->map = malloc(sizeof(t_map));
+	if (!global->texture || !global->map)
+		return (printf(ERR_MALLOC), 1);
 	global->flags = (t_identifier_flag){0, 0, 0, 0, 0, 0};
 	if (map_size(file, global))
 		return (1);
 	global->map->count = 0;
 	global->map->map = malloc(sizeof(char *) * (global->map->height + 1));
 	if (!global->map->map)
-	{
-		// error
-		return (1);
-	}
+		return (printf(ERR_MALLOC), 1);
 	if (parse_file(file, global))
 		return (1);
-	if (valid_map(global->map->map, global->map->height))
-		printf("Map is valid.\n");
-	else
-	{
-		printf("Map is invalid.\n");
+	if (!valid_map(global->map->map, global->map->height))
 		return (1);
-	}
-	map_to_line_segments(global, &lines, &line_count); // only temporarily in this function
-	global->scale_factor = calculate_scale_factor(global->map->width, global->map->height, WIDTH * global->minimap_scale, HEIGHT * global->minimap_scale);
-	scale_line_segments(lines, line_count, global->scale_factor);
-	global->line_count = line_count;
-	global->lines = lines;
-	get_opponents(global);
+	configure_map(global);
 	return (0);
 }

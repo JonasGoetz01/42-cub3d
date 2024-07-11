@@ -54,39 +54,53 @@
 # define ERR_D_ID    RED BOLD "ERROR: Double identifier\n" NC
 # define ERR_COMMA   RED BOLD "ERROR: Invalid position of commas\n" NC
 # define ERR_FORMAT  RED BOLD "ERROR: Invalid color format\n" NC
-
+# define ERR_EMPTY   RED BOLD "ERROR: Empty line in map\n" NC
+# define ERR_ARG     RED BOLD "ERROR: Invalid number of arguments\n" NC
+# define USAGE       BLUE BOLD "USAGE: ./cub3D <[file].cub>\n" NC
 typedef struct s_map
 {
-    char **map;
-    int width;
-    int height;
-    int count;
+	char **map;
+	int width;
+	int height;
+	int count;
 } t_map;
 
 typedef struct s_texture
 {
-    char *north;
-    char *south;
-    char *east;
-    char *west;
+	char *north;
+	char *south;
+	char *east;
+	char *west;
 } t_texture;
 
 typedef struct s_color
 {
-    int r;
-    int g;
-    int b;
+	int r;
+	int g;
+	int b;
 } t_color;
 
 typedef struct s_identifier_flag
 {
-    bool no;
-    bool so;
-    bool we;
-    bool ea;
-    bool f;
-    bool c;
+	bool no;
+	bool so;
+	bool we;
+	bool ea;
+	bool f;
+	bool c;
 } t_identifier_flag;
+
+typedef struct s_map_size
+{
+	char	*line;
+	char	*tmp;
+	int		fd;
+	int		height;
+	int		max_width;
+	int		in_map;
+	int		i;
+	int		empty_line;
+} t_map_size;
 
 typedef struct s_player
 {
@@ -106,24 +120,24 @@ typedef struct s_opponent
 
 typedef struct s_global
 {
-    double time;
-    mlx_t *mlx;
-    mlx_image_t *minimap;
-    mlx_image_t *img;
-    t_map *map;
-    t_texture *texture;
-    t_color floor;
-    t_color ceiling;
-    t_identifier_flag flags;
-    t_player *player;
-    int line_count;
-    float scale_factor;
-    t_line *lines;
-    float minimap_scale;
-    int window_width;
-    int window_height;
-    t_opponent *opponent;
-    int opponent_count;
+	double time;
+	mlx_t *mlx;
+	mlx_image_t *minimap;
+	mlx_image_t *img;
+	t_map *map;
+	t_texture *texture;
+	t_color floor;
+	t_color ceiling;
+	t_identifier_flag flags;
+	t_player *player;
+	int line_count;
+	float scale_factor;
+	t_line *lines;
+	float minimap_scale;
+	int window_width;
+	int window_height;
+	t_opponent *opponent;
+	int opponent_count;
 } t_global;
 
 void			loop(void *param);
@@ -166,6 +180,11 @@ int				ft_strcmp(const char *s1, const char *s2);
 int				strlen_tab_to_space(char *str);
 char			*strdup_tab_to_space(const char *s1, int len);
 bool			check_arg_amount(char **split, int amount);
-bool			valid_range(int color);
-
+bool			valid_range(int *color);
+bool			check_identifier(char *line, t_global *global);
+bool			color_format(char **color);
+bool 			strlen_check(char **split);
+int				map_size(char *file, t_global *global);
+bool			parse_map(char *line, t_global *global);
+bool			parse_line(char *line, t_global *global);
 #endif

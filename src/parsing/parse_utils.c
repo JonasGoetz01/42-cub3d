@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 15:17:15 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/10 18:27:12 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/11 10:53:04 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,12 +82,16 @@ bool	check_arg_amount(char **split, int amount)
 	return (true);
 }
 
-bool	valid_range(int color)
+bool	valid_range(int *color)
 {
-	if (color < 0 || color > 255)
+	int	i;
+
+	i = 0;
+	while (i < 3)
 	{
-		printf(ERR_RANGE);
-		return (false);
+		if (color[i] < 0 || color[i] > 255)
+			return (printf(ERR_RANGE), false);
+		i++;
 	}
 	return (true);
 }

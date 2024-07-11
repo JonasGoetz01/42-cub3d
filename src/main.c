@@ -6,17 +6,14 @@ int	main(int argc, char **argv)
 	// t_map map;
 
 	if (argc != 2)
-	{
-		// error
-		// print usage
-		return (EXIT_FAILURE);
-	}
+		return (printf(ERR_ARG USAGE), EXIT_FAILURE);
 	global.window_height = HEIGHT;
 	global.window_width = WIDTH;
 	global.minimap_scale = MINIMAP_SCALE;
 	global.time = get_current_millis();
 	if (parse_and_validate(argv[1], &global))
 	{
+		//call cleanup function (not implemented yet)
 		return (EXIT_FAILURE);
 	}
 	// (void)argc;

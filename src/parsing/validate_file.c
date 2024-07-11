@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 16:20:59 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/10 18:30:01 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/11 11:05:16 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,21 +63,4 @@ bool	valid_file(char *file, int flag)
 	}
 	close(fd);
 	return (true);
-}
-
-bool double_identifier(char *identifier, t_global *global)
-{
-	if (ft_strcmp(identifier, "NO") == 0 && global->flags.no)
-		return (true);
-	else if (ft_strcmp(identifier, "SO") == 0 && global->flags.so)
-		return (true);
-	else if (ft_strcmp(identifier, "WE") == 0 && global->flags.we)
-		return (true);
-	else if (ft_strcmp(identifier, "EA") == 0 && global->flags.ea)
-		return (true);
-	else if (ft_strcmp(identifier, "F") == 0 && global->flags.f)
-		return (true);
-	else if (ft_strcmp(identifier, "C") == 0 && global->flags.c)
-		return (true);
-	return (false);
 }
