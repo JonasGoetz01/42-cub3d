@@ -50,6 +50,7 @@ typedef struct s_global
 {
 	double		time;
 	mlx_t		*mlx;
+	mlx_image_t	*sprite;
 	mlx_image_t	*minimap;
 	mlx_image_t	*img;
 	t_map		*map;
