@@ -66,20 +66,6 @@ float	get_distance(t_vec2d a, t_vec2d b)
 	return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)));
 }
 
-int	get_wall_color(t_face face)
-{
-	if (face == NORTH)
-		return (NORTH_COLOR);
-	if (face == SOUTH)
-		return (SOUTH_COLOR);
-	if (face == EAST)
-		return (EAST_COLOR);
-	if (face == WEST)
-		return (WEST_COLOR);
-	return (get_rgba(255, 255, 255, 255));
-	// Default color if something goes wrong
-}
-
 void	render_3d(t_global *global)
 {
 	int						bar_width;

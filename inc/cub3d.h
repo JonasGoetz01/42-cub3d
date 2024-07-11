@@ -12,7 +12,7 @@
 
 # define WIDTH 1080
 # define HEIGHT 720
-# define FOV 60.0f * (M_PI / 180.0f) // Convert degrees to radians
+# define FOV 60.0f * (M_PI / 180.0f)
 # define BPP sizeof(int32_t)
 # define MOVE_SPEED 0.7f
 # define MINIMAP_SCALE 0.3f
@@ -20,11 +20,8 @@
 # define SHOW_RAYS 0
 # define SHOW_COLLISIONS 0
 # define SHOW_FOV 1
-
-# define NORTH_COLOR get_rgba(255, 255, 200, 255) // creme
-# define SOUTH_COLOR get_rgba(100, 255, 100, 255) // green
-# define EAST_COLOR get_rgba(100, 10, 10, 255)    // brown
-# define WEST_COLOR get_rgba(140, 20, 100, 255)   // purple
+# define WALL_BUFFER_DISTANCE 0.2f
+# define PLAYER_RADIUS 0.5f
 
 typedef struct s_map
 {
