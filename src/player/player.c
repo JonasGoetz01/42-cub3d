@@ -108,67 +108,88 @@ bool	line_line_collision(t_line *a, t_line *b)
 	return (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1);
 }
 
+bool	circle_line_collision(t_vec2d circle_center, float radius, t_line line)
+{
+	t_vec2d	line_vec;
+	t_vec2d	closest_point;
+	float	line_length;
+	float	t;
+	float	distance_squared;
+
+	line_vec.x = line.b.x - line.a.x;
+	line_vec.y = line.b.y - line.a.y;
+	line_length = sqrt(line_vec.x * line_vec.x + line_vec.y * line_vec.y);
+	if (line_length == 0)
+		return (false);
+	t = ((circle_center.x - line.a.x) * line_vec.x + (circle_center.y
+				- line.a.y) * line_vec.y) / (line_length * line_length);
+	t = fmax(0, fmin(1, t));
+	closest_point.x = line.a.x + t * line_vec.x;
+	closest_point.y = line.a.y + t * line_vec.y;
+	distance_squared = pow(circle_center.x - closest_point.x, 2)
+		+ pow(circle_center.y - closest_point.y, 2);
+	return (distance_squared <= (radius * radius));
+}
+
 void	update_position(t_global *global, t_vec2d dir, float speed)
 {
 	t_vec2d	new_pos;
+	bool	collision_x;
+	bool	collision_y;
 	t_vec2d	temp_pos;
-	bool	collision;
-	t_line	temp_line;
 	float	base_angle;
 	float	angle;
 
-	collision = false;
+	collision_x = false;
+	collision_y = false;
+	// Calculate new position
 	new_pos.x = global->player->pos.x + dir.x * speed * global->minimap_scale;
 	new_pos.y = global->player->pos.y + dir.y * speed * global->minimap_scale;
+	// Check collision for x-axis
+	temp_pos = global->player->pos;
+	temp_pos.x = new_pos.x;
 	for (int i = 0; i < global->line_count; i++)
 	{
-		temp_line = (t_line){global->player->pos, new_pos, VERTICAL};
-		if (line_line_collision(&global->lines[i], &temp_line))
+		if (circle_line_collision(temp_pos, PLAYER_RADIUS
+				* global->scale_factor, global->lines[i]))
 		{
-			collision = true;
+			collision_x = true;
 			break ;
 		}
 	}
-	if (collision)
+	if (!collision_x)
 	{
-		temp_pos.x = global->player->pos.x + dir.x * speed
-			* global->minimap_scale;
-		temp_pos.y = global->player->pos.y;
-		for (int i = 0; i < global->line_count; i++)
-		{
-			temp_line = (t_line){global->player->pos, temp_pos, VERTICAL};
-			if (line_line_collision(&global->lines[i], &temp_line))
-			{
-				temp_pos.x = global->player->pos.x;
-				break ;
-			}
-		}
-		new_pos = temp_pos;
-		temp_pos.y = global->player->pos.y + dir.y * speed
-			* global->minimap_scale;
-		for (int i = 0; i < global->line_count; i++)
-		{
-			temp_line = (t_line){global->player->pos, temp_pos, VERTICAL};
-			if (line_line_collision(&global->lines[i], &temp_line))
-			{
-				temp_pos.y = global->player->pos.y;
-				break ;
-			}
-		}
-		new_pos.y = temp_pos.y;
+		global->player->pos.x = new_pos.x;
 	}
-	global->player->pos = new_pos;
+	// Check collision for y-axis
+	temp_pos = global->player->pos;
+	temp_pos.y = new_pos.y;
+	for (int i = 0; i < global->line_count; i++)
+	{
+		if (circle_line_collision(temp_pos, PLAYER_RADIUS
+				* global->scale_factor, global->lines[i]))
+		{
+			collision_y = true;
+			break ;
+		}
+	}
+	if (!collision_y)
+	{
+		global->player->pos.y = new_pos.y;
+	}
+	// Update ray origins
 	for (int i = 0; i < (int)global->img->width; i++)
 	{
-		global->player->rays[i].origin = new_pos;
+		global->player->rays[i].origin = global->player->pos;
 	}
 	for (int i = 0; i < global->opponent_count; i++)
 	{
-		global->player->opponent_rays[i].origin = new_pos;
+		global->player->opponent_rays[i].origin = global->player->pos;
 		global->player->opponent_rays[i].direction = (t_vec2d){cosf(atan2f(global->opponent[i].pos.y
-					- new_pos.y, global->opponent[i].pos.x - new_pos.x)),
-			sinf(atan2f(global->opponent[i].pos.y - new_pos.y,
-					global->opponent[i].pos.x - new_pos.x))};
+					- global->player->pos.y, global->opponent[i].pos.x
+					- global->player->pos.x)),
+			sinf(atan2f(global->opponent[i].pos.y - global->player->pos.y,
+					global->opponent[i].pos.x - global->player->pos.x))};
 	}
 	base_angle = atan2f(global->player->dir.y, global->player->dir.x) - (FOV
 			/ 2.0f);
