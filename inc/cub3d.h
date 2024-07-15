@@ -35,16 +35,7 @@ typedef struct s_player
 	t_vec2d			pos;
 	t_vec2d			dir;
 	t_ray			*rays;
-	t_ray			*opponent_rays;
-	t_ray			*weapon_ray;
 }					t_player;
-
-typedef struct s_opponent
-{
-	t_vec2d			pos;
-	bool			visible;
-	bool			dead;
-}					t_opponent;
 
 typedef struct s_global
 {
@@ -62,8 +53,6 @@ typedef struct s_global
 	float			minimap_scale;
 	int				window_width;
 	int				window_height;
-	t_opponent		*opponent;
-	int				opponent_count;
 }					t_global;
 
 void				loop(void *param);
