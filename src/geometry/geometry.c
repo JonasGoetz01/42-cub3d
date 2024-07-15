@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/07/09 10:18:14 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/15 11:20:45 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,8 +227,6 @@ void	raycast(t_global *global)
 	t_collision	*new_collisions;
 	float		min_distance;
 	float		distance;
-	float		base_angle;
-	float		angle;
 
 	for (int i = 0; i < (int)global->img->width; i++)
 	{
@@ -259,74 +257,6 @@ void	raycast(t_global *global)
 				global->player->rays[i].closest_collision = &global->player->rays[i].collisions[j];
 			}
 		}
-	}
-	// intersect the opponent_rays with all the lines and compare the distance to the player to determine if the opponent is visible
-	// reset old collisions
-	for (int j = 0; j < global->opponent_count; j++)
-	{
-		global->player->opponent_rays[j].closest_collision = NULL;
-		global->player->opponent_rays[j].collisions = NULL;
-	}
-	for (int j = 0; j < global->opponent_count; j++)
-	{
-		for (int k = 0; k < global->line_count; k++)
-		{
-			intersection = ray_line_collision(&global->player->opponent_rays[j],
-					&global->lines[k], &face);
-			if (intersection.x != -1)
-			{
-				new_collisions = new_collision(global->player->opponent_rays[j].collisions,
-						&global->player->opponent_rays[j].collision_count,
-						intersection, &global->lines[k], face);
-				if (!new_collisions)
-					return ;
-				global->player->opponent_rays[j].collisions = new_collisions;
-			}
-		}
-		min_distance = 1000000;
-		for (int k = 0; k < global->player->opponent_rays[j].collision_count; k++)
-		{
-			if (global->player->opponent_rays[j].direction.x != 0
-				&& global->player->opponent_rays[j].direction.y != 0)
-			{
-				distance = sqrtf(powf(global->player->pos.x
-							- global->player->opponent_rays[j].collisions[k].point.x,
-							2) + powf(global->player->pos.y
-							- global->player->opponent_rays[j].collisions[k].point.y,
-							2));
-				if (distance < min_distance)
-				{
-					min_distance = distance;
-					global->player->opponent_rays[j].closest_collision = &global->player->opponent_rays[j].collisions[k];
-				}
-				base_angle = atan2f(global->player->dir.y,
-						global->player->dir.x) - (FOV / 2.0f);
-				for (int i = 0; i < global->opponent_count; i++)
-				{
-					angle = atan2f(global->opponent[i].pos.y
-							- global->player->pos.y, global->opponent[i].pos.x
-							- global->player->pos.x);
-					if (!(angle < base_angle || angle > base_angle + FOV))
-					{
-						// distance to the opponent
-						distance = sqrtf(powf(global->opponent[j].pos.x
-									- global->player->pos.x, 2)
-								+ powf(global->opponent[j].pos.y
-									- global->player->pos.y, 2));
-						if (distance < min_distance)
-						{
-							min_distance = distance;
-							global->player->opponent_rays[j].closest_collision = &(t_collision){global->opponent[j].pos,
-								NULL, NORTH};
-						}
-					}
-				}
-			}
-		}
-		if (min_distance < 0.5)
-			global->opponent[j].visible = true;
-		else
-			global->opponent[j].visible = false;
 	}
 }
 
