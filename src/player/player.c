@@ -1,14 +1,21 @@
 #include "../../inc/cub3d.h"
 
+void	collision_helper(t_ray *ray, t_player *player, t_vec2d dir,
+		float ray_angle)
+{
+	ray->origin = (t_vec2d){player->pos.x - dir.x, player->pos.y - dir.y};
+	ray->direction = (t_vec2d){cosf(ray_angle), sinf(ray_angle)};
+	ray->collisions = NULL;
+	ray->collision_count = 0;
+}
+
 t_player	*new_player(t_global *global, t_vec2d pos, t_vec2d dir)
 {
 	t_player	*player;
 	float		angle_increment;
 	float		ray_angle;
 	int			i;
-	float		offset_distance;
 
-	offset_distance = 30.0f;
 	player = malloc(sizeof(t_player));
 	if (!player)
 		return (NULL);
@@ -23,11 +30,7 @@ t_player	*new_player(t_global *global, t_vec2d pos, t_vec2d dir)
 	{
 		ray_angle = atan2f(player->dir.y, player->dir.x) - (FOV / 2.0f) + (i
 				* angle_increment);
-		player->rays[i].origin = (t_vec2d){player->pos.x - dir.x
-			* offset_distance, player->pos.y - dir.y * offset_distance};
-		player->rays[i].direction = (t_vec2d){cosf(ray_angle), sinf(ray_angle)};
-		player->rays[i].collisions = NULL;
-		player->rays[i].collision_count = 0;
+		collision_helper(&(player->rays[i]), player, dir, ray_angle);
 		i++;
 	}
 	return (player);
