@@ -56,8 +56,6 @@ float	map_distance_to_height(float distance, t_global *global)
 		height = window_height;
 	else
 		height = (global->scale_factor / distance) * window_height;
-	// if (height > window_height)
-	// 	height = window_height;
 	return (height);
 }
 
