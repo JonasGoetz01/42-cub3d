@@ -16,21 +16,19 @@ t_player	*new_player(t_global *global, t_vec2d pos, t_vec2d dir)
 	player->dir = dir;
 	player->rays = malloc(sizeof(t_ray) * global->img->width);
 	if (!player->rays)
-	{
-		free(player);
-		return (NULL);
-	}
+		return (free(player), NULL);
 	angle_increment = FOV / (global->img->width - 1);
-	for (i = 0; i < (int)global->img->width; i++)
+	i = 0;
+	while (i < (int)global->img->width)
 	{
 		ray_angle = atan2f(player->dir.y, player->dir.x) - (FOV / 2.0f) + (i
 				* angle_increment);
 		player->rays[i].origin = (t_vec2d){player->pos.x - dir.x
 			* offset_distance, player->pos.y - dir.y * offset_distance};
-		// Apply the offset
 		player->rays[i].direction = (t_vec2d){cosf(ray_angle), sinf(ray_angle)};
 		player->rays[i].collisions = NULL;
 		player->rays[i].collision_count = 0;
+		i++;
 	}
 	return (player);
 }
@@ -41,7 +39,6 @@ t_vec2d	calculate_perpendicular_direction(t_line dir_line, t_line wall)
 	t_vec2d	perpendicular;
 	t_vec2d	dir_vector;
 	t_vec2d	new_dir;
-	float	dot_product;
 	float	length;
 
 	wall_dir.x = wall.b.x - wall.a.x;
@@ -54,42 +51,27 @@ t_vec2d	calculate_perpendicular_direction(t_line dir_line, t_line wall)
 	perpendicular.y /= length;
 	dir_vector.x = dir_line.b.x - dir_line.a.x;
 	dir_vector.y = dir_line.b.y - dir_line.a.y;
-	dot_product = dir_vector.x * perpendicular.x + dir_vector.y
+	new_dir.x = dir_vector.x * perpendicular.x + dir_vector.y * perpendicular.y
+		* perpendicular.x;
+	new_dir.y = dir_vector.x * perpendicular.x + dir_vector.y * perpendicular.y
 		* perpendicular.y;
-	new_dir.x = dot_product * perpendicular.x;
-	new_dir.y = dot_product * perpendicular.y;
 	return (new_dir);
 }
 
 bool	line_line_collision(t_line *a, t_line *b)
 {
-	float	x1;
-	float	y1;
-	float	x2;
-	float	y2;
-	float	x3;
-	float	y3;
-	float	x4;
-	float	y4;
 	float	denominator;
 	float	ua;
 	float	ub;
 
-	x1 = a->a.x;
-	y1 = a->a.y;
-	x2 = a->b.x;
-	y2 = a->b.y;
-	x3 = b->a.x;
-	y3 = b->a.y;
-	x4 = b->b.x;
-	y4 = b->b.y;
-	denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+	denominator = ((b->b.y - b->a.y) * (a->b.x - a->a.x) - (b->b.x - b->a.x)
+			* (a->b.y - a->a.y));
 	if (denominator == 0)
-	{
 		return (false);
-	}
-	ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
-	ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+	ua = ((b->b.x - b->a.x) * (a->a.y - b->a.y) - (b->b.y - b->a.y) * (a->a.x
+				- b->a.x)) / denominator;
+	ub = ((a->b.x - a->a.x) * (a->a.y - b->a.y) - (a->b.y - a->a.y) * (a->a.x
+				- b->a.x)) / denominator;
 	return (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1);
 }
 
@@ -187,22 +169,15 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 
 void	rotate_player(t_global *global, float angle)
 {
-	float	cos_angle;
-	float	sin_angle;
 	t_vec2d	old_dir;
 	t_vec2d	new_dir;
-	float	new_x;
-	float	new_y;
 	float	angle_increment;
 	float	base_angle;
 	float	ray_angle;
 
-	cos_angle = cosf(angle);
-	sin_angle = sinf(angle);
 	old_dir = global->player->dir;
-	new_x = old_dir.x * cos_angle - old_dir.y * sin_angle;
-	new_y = old_dir.x * sin_angle + old_dir.y * cos_angle;
-	new_dir = (t_vec2d){new_x, new_y};
+	new_dir.x = old_dir.x * cosf(angle) - old_dir.y * sinf(angle);
+	new_dir.y = old_dir.x * sinf(angle) + old_dir.y * cosf(angle);
 	global->player->dir = new_dir;
 	angle_increment = FOV / (global->img->width - 1);
 	base_angle = atan2f(new_dir.y, new_dir.x) - (FOV / 2.0f);
