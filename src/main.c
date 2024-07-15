@@ -2,9 +2,8 @@
 
 int	main(int argc, char **argv)
 {
-	t_global		global;
-	t_map			map;
-	mlx_texture_t	*logo;
+	t_global	global;
+	t_map		map;
 
 	(void)argc;
 	(void)argv;
@@ -12,20 +11,12 @@ int	main(int argc, char **argv)
 	global.window_width = WIDTH;
 	global.minimap_scale = MINIMAP_SCALE;
 	global.time = get_current_millis();
-	logo = mlx_load_png("textures/wolfenstein-logo.png");
-	if (!logo)
-	{
-		printf("Failed to load logo\n");
-		printf("%s\n", mlx_strerror(mlx_errno));
-		return (EXIT_FAILURE);
-	}
 	if (!(global.mlx = mlx_init(global.window_width, global.window_height,
 				"cub3d", true)))
 	{
 		printf("%s\n", mlx_strerror(mlx_errno));
 		return (EXIT_FAILURE);
 	}
-	mlx_set_icon(global.mlx, logo);
 	if (!(global.minimap = mlx_new_image(global.mlx, global.window_width,
 				global.window_height)))
 	{
