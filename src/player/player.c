@@ -109,6 +109,7 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 	t_vec2d		temp_pos;
 	float		base_angle;
 	static int	sprite_counter = 0;
+	int			i;
 
 	collision_x = false;
 	collision_y = false;
@@ -156,8 +157,12 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 	if (!collision_y)
 		global->player->pos.y = new_pos.y;
 	// Update ray origins
-	for (int i = 0; i < (int)global->img->width; i++)
+	i = 0;
+	while (i < (int)global->img->width)
+	{
 		global->player->rays[i].origin = global->player->pos;
+		i++;
+	}
 	base_angle = atan2f(global->player->dir.y, global->player->dir.x) - (FOV
 			/ 2.0f);
 }
@@ -167,19 +172,21 @@ void	rotate_player(t_global *global, float angle)
 	t_vec2d	old_dir;
 	t_vec2d	new_dir;
 	float	angle_increment;
-	float	base_angle;
-	float	ray_angle;
+	float	new_angle;
+	int		i;
 
 	old_dir = global->player->dir;
 	new_dir.x = old_dir.x * cosf(angle) - old_dir.y * sinf(angle);
 	new_dir.y = old_dir.x * sinf(angle) + old_dir.y * cosf(angle);
 	global->player->dir = new_dir;
 	angle_increment = FOV / (global->img->width - 1);
-	base_angle = atan2f(new_dir.y, new_dir.x) - (FOV / 2.0f);
-	for (int i = 0; i < (int)global->img->width; i++)
+	i = 0;
+	while (i < (int)global->img->width)
 	{
-		ray_angle = base_angle + (i * angle_increment);
-		global->player->rays[i].direction = (t_vec2d){cosf(ray_angle),
-			sinf(ray_angle)};
+		new_angle = (atan2f(new_dir.y, new_dir.x) - (FOV / 2.0f)) + (i
+				* angle_increment);
+		global->player->rays[i].direction = (t_vec2d){cosf(new_angle),
+			sinf(new_angle)};
+		i++;
 	}
 }
