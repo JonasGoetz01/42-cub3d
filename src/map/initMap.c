@@ -75,38 +75,6 @@ t_vec2d	get_player_direction(t_global *global)
 	return (player_pos);
 }
 
-void	get_opponents(t_global *global)
-{
-	int	count;
-
-	count = 0;
-	for (int y = 0; y < global->map->height; y++)
-	{
-		for (int x = 0; x < global->map->width; x++)
-		{
-			if (global->map->map[y][x] == 'O')
-				count++;
-		}
-	}
-	global->opponent_count = count;
-	global->opponent = malloc(sizeof(t_opponent) * count);
-	count = 0;
-	for (int y = 0; y < global->map->height; y++)
-	{
-		for (int x = 0; x < global->map->width; x++)
-		{
-			if (global->map->map[y][x] == 'O')
-			{
-				global->opponent[count].pos.x = x * global->scale_factor;
-				global->opponent[count].pos.y = y * global->scale_factor;
-				global->opponent[count].visible = false;
-				global->opponent[count].dead = false;
-				count++;
-			}
-		}
-	}
-}
-
 void	initMap(t_global *global)
 {
 	t_line	*lines;
@@ -142,5 +110,4 @@ void	initMap(t_global *global)
 	scale_line_segments(lines, line_count, global->scale_factor);
 	global->line_count = line_count;
 	global->lines = lines;
-	get_opponents(global);
 }
