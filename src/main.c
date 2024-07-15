@@ -2,8 +2,9 @@
 
 int	main(int argc, char **argv)
 {
-	t_global global;
-	t_map map;
+	t_global		global;
+	t_map			map;
+	mlx_texture_t	*logo;
 
 	(void)argc;
 	(void)argv;
@@ -11,7 +12,7 @@ int	main(int argc, char **argv)
 	global.window_width = WIDTH;
 	global.minimap_scale = MINIMAP_SCALE;
 	global.time = get_current_millis();
-	mlx_texture_t *logo = mlx_load_png("textures/wolfenstein-logo.png");
+	logo = mlx_load_png("textures/wolfenstein-logo.png");
 	if (!logo)
 	{
 		printf("Failed to load logo\n");
@@ -40,6 +41,11 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 	global.map = &map;
+	global.sprite_index = 0;
+	global.sprite_textures[0] = mlx_load_png("textures/gun1.png");
+	global.sprite_textures[1] = mlx_load_png("textures/gun2.png");
+	global.sprite_textures[2] = mlx_load_png("textures/gun3.png");
+	global.sprite_textures[3] = mlx_load_png("textures/gun2.png");
 	mlx_loop_hook(global.mlx, keyHook, &global);
 	initMap(&global);
 	global.player = new_player(&global, (t_vec2d){get_player_position(&global).x
