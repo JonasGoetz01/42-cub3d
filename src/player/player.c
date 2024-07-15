@@ -133,15 +133,30 @@ bool	circle_line_collision(t_vec2d circle_center, float radius, t_line line)
 
 void	update_position(t_global *global, t_vec2d dir, float speed)
 {
-	t_vec2d	new_pos;
-	bool	collision_x;
-	bool	collision_y;
-	t_vec2d	temp_pos;
-	float	base_angle;
-	float	angle;
+	t_vec2d		new_pos;
+	bool		collision_x;
+	bool		collision_y;
+	t_vec2d		temp_pos;
+	float		base_angle;
+	float		angle;
+	static int	sprite_counter = 0;
 
 	collision_x = false;
 	collision_y = false;
+	if (dir.x != 0 && dir.y != 0)
+	{
+		if (sprite_counter % 10 == 0)
+		{
+			global->sprite_index++;
+			global->sprite_index %= 4;
+			sprite_counter = 1;
+		}
+		sprite_counter++;
+	}
+	else
+	{
+		global->sprite_index = 0;
+	}
 	// Calculate new position
 	new_pos.x = global->player->pos.x + dir.x * speed * global->minimap_scale;
 	new_pos.y = global->player->pos.y + dir.y * speed * global->minimap_scale;
