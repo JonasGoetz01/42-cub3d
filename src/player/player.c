@@ -123,9 +123,7 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 		sprite_counter++;
 	}
 	else
-	{
 		global->sprite_index = 0;
-	}
 	// Calculate new position
 	new_pos.x = global->player->pos.x + dir.x * speed * global->minimap_scale;
 	new_pos.y = global->player->pos.y + dir.y * speed * global->minimap_scale;
@@ -142,9 +140,7 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 		}
 	}
 	if (!collision_x)
-	{
 		global->player->pos.x = new_pos.x;
-	}
 	// Check collision for y-axis
 	temp_pos = global->player->pos;
 	temp_pos.y = new_pos.y;
@@ -158,14 +154,10 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 		}
 	}
 	if (!collision_y)
-	{
 		global->player->pos.y = new_pos.y;
-	}
 	// Update ray origins
 	for (int i = 0; i < (int)global->img->width; i++)
-	{
 		global->player->rays[i].origin = global->player->pos;
-	}
 	base_angle = atan2f(global->player->dir.y, global->player->dir.x) - (FOV
 			/ 2.0f);
 }
