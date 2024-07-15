@@ -17,15 +17,11 @@ int	main(int argc, char **argv)
 		printf("%s\n", mlx_strerror(mlx_errno));
 		return (EXIT_FAILURE);
 	}
-	if (!(global.minimap = mlx_new_image(global.mlx, global.window_width,
-				global.window_height)))
-	{
-		mlx_close_window(global.mlx);
-		printf("%s\n", mlx_strerror(mlx_errno));
-		return (EXIT_FAILURE);
-	}
-	if (!(global.img = mlx_new_image(global.mlx, global.window_width,
-				global.window_height)))
+	global.minimap = mlx_new_image(global.mlx, global.window_width,
+			global.window_height);
+	global.img = mlx_new_image(global.mlx, global.window_width,
+			global.window_height);
+	if (!global.img || !global.minimap)
 	{
 		mlx_close_window(global.mlx);
 		printf("%s\n", mlx_strerror(mlx_errno));
