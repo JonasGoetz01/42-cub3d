@@ -53,6 +53,8 @@ typedef struct s_global
 	float			minimap_scale;
 	int				window_width;
 	int				window_height;
+	int				i;
+	int				j;
 }					t_global;
 
 void				loop(void *param);
