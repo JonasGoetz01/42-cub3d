@@ -18,3 +18,22 @@ void	get_t_and_u(float *t, float *u, t_ray *ray, t_line *line,
 		/ *denominator;
 }
 
+void	set_faces(t_ray *ray, t_vec2d collision_point, t_face *face,
+		t_line *line)
+{
+	if (line->alignment == HORIZONTAL)
+	{
+		if (ray->origin.y < collision_point.y)
+			*face = SOUTH;
+		else
+			*face = NORTH;
+	}
+	else
+	{
+		if (ray->origin.x < collision_point.x)
+			*face = EAST;
+		else
+			*face = WEST;
+	}
+}
+
