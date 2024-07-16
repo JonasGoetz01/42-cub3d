@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/07/15 11:20:45 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/16 09:58:02 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ void	draw_line(t_global *global, t_vec2d a, t_vec2d b, int color)
 		b.x++;
 	}
 }
+
 void	put_circle_pixels(t_global *global, t_circle *circle, int x, int y,
 		int color)
 {
