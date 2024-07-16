@@ -101,6 +101,7 @@ void	put_circle_pixels(t_global *global, t_circle *circle, int x, int y,
 	if (cx + x >= 0 && cx + x < img_width && cy - y >= 0 && cy - y < img_height)
 		mlx_put_pixel(global->minimap, cx + x, cy - y, color);
 }
+
 void	init_values_draw_circle(int *x, int *y, int *dx, t_circle *circle)
 {
 	*x = (int)circle->radius - 1;
