@@ -49,8 +49,6 @@ void	loop(void *param)
 	current_time = get_current_millis();
 	elapsed_time = current_time - global->time;
 	global->time = current_time;
-	// Change the sprite every 10 frames
-	// global->sprite_index = (global->sprite_index + 1) % 4;
 	if (fps_timer % 10 == 0)
 	{
 		fps = 1000 / elapsed_time;
