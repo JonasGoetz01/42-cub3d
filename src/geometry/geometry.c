@@ -45,32 +45,33 @@ void	scale_line_segments(t_line *lines, int line_count, float scale_factor)
 
 void	draw_line(t_global *global, t_vec2d a, t_vec2d b, int color)
 {
-	int		dx;
-	int		dy;
 	int		steps;
 	float	x_inc;
 	float	y_inc;
 	float	x;
 	float	y;
-	int		i;
 
-	dx = b.x - a.x;
-	dy = b.y - a.y;
-	steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
-	x_inc = dx / (float)steps;
-	y_inc = dy / (float)steps;
+	if (abs((int)(b.x - a.x)) > abs((int)(b.y - a.y)))
+		steps = abs((int)(b.x - a.x));
+	else
+		steps = abs((int)(b.y - a.y));
+	x_inc = (int)(b.x - a.x) / (float)steps;
+	y_inc = (int)(b.y - a.y) / (float)steps;
 	x = a.x;
 	y = a.y;
-	for (i = 0; i <= steps; i++)
+	b.x = 0;
+	while (b.x <= steps)
 	{
-		if (x >= 0 && x < global->minimap->width && y >= 0
-			&& y < global->minimap->height)
+		if ((uint32_t)x >= 0 && (uint32_t)x < global->minimap->width
+			&& (uint32_t)y >= 0 && (uint32_t)y < global->minimap->height)
 		{
 			mlx_put_pixel(global->minimap, (int)x, (int)y, color);
 		}
 		x += x_inc;
 		y += y_inc;
+		b.x++;
 	}
+}
 }
 
 void	draw_circle(t_global *global, t_circle *circle, int color)
