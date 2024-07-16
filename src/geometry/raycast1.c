@@ -46,3 +46,32 @@ static void	find_closest_collision(t_global *global, t_ray *ray)
 	}
 }
 
+static void	process_ray(t_global *global, t_ray *ray, int width_index)
+{
+	t_vec2d	intersection;
+	t_face	face;
+
+	global->j = 0;
+	while (global->j < global->line_count)
+	{
+		intersection = ray_line_collision(&ray[width_index],
+				&global->lines[global->j], &face);
+		if (intersection.x != -1)
+			add_collision(&ray[width_index], intersection,
+				&global->lines[global->j], face);
+		global->j++;
+	}
+	find_closest_collision(global, &ray[width_index]);
+}
+
+void	raycast(t_global *global)
+{
+	int i;
+
+	i = 0;
+	while (i < (int)global->img->width)
+	{
+		process_ray(global, global->player->rays, i);
+		i++;
+	}
+}
