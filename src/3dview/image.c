@@ -64,63 +64,108 @@ float	get_distance(t_vec2d a, t_vec2d b)
 	return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)));
 }
 
+void	load_textures(mlx_texture_t **texture_north,
+		mlx_texture_t **texture_south, mlx_texture_t **texture_east,
+		mlx_texture_t **texture_west)
+{
+	if (!*texture_north)
+		*texture_north = mlx_load_png("textures/cobblestone.png");
+	if (!*texture_south)
+		*texture_south = mlx_load_png("textures/dirt.png");
+	if (!*texture_east)
+		*texture_east = mlx_load_png("textures/polished_granite.png");
+	if (!*texture_west)
+		*texture_west = mlx_load_png("textures/piston_bottom.png");
+	if (!*texture_north || !*texture_south || !*texture_east || !*texture_west)
+	{
+		fprintf(stderr, "Error loading textures\n");
+	}
+}
+
+mlx_texture_t	*select_texture(t_collision *collision,
+		mlx_texture_t *texture_north, mlx_texture_t *texture_south,
+		mlx_texture_t *texture_east, mlx_texture_t *texture_west)
+{
+	if (collision->face == NORTH)
+		return (texture_north);
+	else if (collision->face == SOUTH)
+		return (texture_south);
+	else if (collision->face == EAST)
+		return (texture_east);
+	else
+		return (texture_west);
+}
+
+float	calculate_hit_percentage(t_collision *collision)
+{
+	if (collision->line->alignment == VERTICAL)
+	{
+		return ((collision->point.y - collision->line->a.y)
+			/ (collision->line->b.y - collision->line->a.y));
+	}
+	else
+	{
+		return ((collision->point.x - collision->line->a.x)
+			/ (collision->line->b.x - collision->line->a.x));
+	}
+}
+
+void	draw_column(t_global *global, int x, int top_y, int bar_height,
+		mlx_texture_t *texture, float hit_percentage)
+{
+	uint8_t	*pixel;
+
+	int r, g, b, color;
+	int draw_y, texture_x, texture_y, i;
+	texture_x = (int)(hit_percentage * (texture->width));
+	for (i = 0; i < bar_height; i++)
+	{
+		texture_y = (int)(((float)i / bar_height) * (texture->height));
+		texture_y = fmax(fmin(texture_y, texture->height - 1), 0);
+		texture_x = fmax(fmin(texture_x, texture->width - 1), 0);
+		pixel = &(texture->pixels[(texture_y * texture->width + texture_x)
+				* texture->bytes_per_pixel]);
+		if (pixel != NULL)
+		{
+			r = pixel[0];
+			g = pixel[1];
+			b = pixel[2];
+			color = get_rgba(r, g, b, 255);
+			draw_y = top_y + i;
+			if (draw_y >= 0 && (uint32_t)draw_y < global->img->height)
+			{
+				if (x >= 0 && (uint32_t)x < global->img->width)
+				{
+					mlx_put_pixel(global->img, x, draw_y, color);
+				}
+			}
+		}
+	}
+}
+
 void	render_3d(t_global *global)
 {
-	int						bar_width;
-	int						i;
-	t_ray					*ray;
-	t_collision				*closest_collision;
-	float					distance;
-	int						bar_height;
-	int						center_y;
-	int						top_y;
-	int						bottom_y;
-	int						x;
-	float					hit_percentage;
-	int						color;
-	mlx_texture_t			*texture;
-	uint8_t					*pixel;
-	int						draw_y;
-	int						texture_x;
-	int						texture_y;
-	float					z_buffer[global->img->width];
-	float					perpendicular_distance;
-	float					ray_angle;
-	float					player_angle;
-	float					angle_diff;
 	static mlx_texture_t	*texture_north = NULL;
 	static mlx_texture_t	*texture_south = NULL;
 	static mlx_texture_t	*texture_east = NULL;
 	static mlx_texture_t	*texture_west = NULL;
-	int						r;
-	int						g;
-	int						b;
+	t_ray					*ray;
+	t_collision				*collision;
+	mlx_texture_t			*texture;
 
-	// Load textures once
-	if (!texture_north)
-		texture_north = mlx_load_png("textures/cobblestone.png");
-	if (!texture_south)
-		texture_south = mlx_load_png("textures/dirt.png");
-	if (!texture_east)
-		texture_east = mlx_load_png("textures/polished_granite.png");
-	if (!texture_west)
-		texture_west = mlx_load_png("textures/piston_bottom.png");
-	// Check if textures are loaded successfully
-	if (!texture_north || !texture_south || !texture_east || !texture_west)
-	{
-		fprintf(stderr, "Error loading textures\n");
-		return ;
-	}
+	float player_angle, ray_angle, angle_diff;
+	float distance, perpendicular_distance, hit_percentage;
+	int bar_width, bar_height, center_y, top_y, bottom_y, x;
+	load_textures(&texture_north, &texture_south, &texture_east, &texture_west);
 	player_angle = atan2(global->player->dir.y, global->player->dir.x);
 	bar_width = 1;
-	for (i = 0; i < (int)global->img->width; i++)
+	for (int i = 0; i < (int)global->img->width; i++)
 	{
 		ray = &global->player->rays[i];
-		closest_collision = ray->closest_collision;
-		if (closest_collision)
+		collision = ray->closest_collision;
+		if (collision)
 		{
-			distance = get_distance(global->player->pos,
-					closest_collision->point);
+			distance = get_distance(global->player->pos, collision->point);
 			distance = fmax(distance, 0.1f);
 			ray_angle = atan2(ray->direction.y, ray->direction.x);
 			angle_diff = ray_angle - player_angle;
@@ -130,71 +175,11 @@ void	render_3d(t_global *global)
 			top_y = center_y - (bar_height / 2);
 			bottom_y = center_y + (bar_height / 2);
 			x = i * bar_width;
-			switch (closest_collision->face)
-			{
-			case NORTH:
-				texture = texture_north;
-				break ;
-			case SOUTH:
-				texture = texture_south;
-				break ;
-			case EAST:
-				texture = texture_east;
-				break ;
-			case WEST:
-				texture = texture_west;
-				break ;
-			default:
-				texture = texture_north;
-				break ;
-			}
-			if (closest_collision->line->alignment == VERTICAL)
-			{
-				hit_percentage = (closest_collision->point.y
-						- closest_collision->line->a.y)
-					/ (closest_collision->line->b.y
-						- closest_collision->line->a.y);
-			}
-			else
-			{
-				hit_percentage = (closest_collision->point.x
-						- closest_collision->line->a.x)
-					/ (closest_collision->line->b.x
-						- closest_collision->line->a.x);
-			}
+			texture = select_texture(collision, texture_north, texture_south,
+					texture_east, texture_west);
+			hit_percentage = calculate_hit_percentage(collision);
 			hit_percentage = fmax(fmin(hit_percentage, 1.0f), 0.0f);
-			// Clamp hit_percentage to [0, 1]
-			texture_x = (int)(hit_percentage * (texture->width));
-			for (int j = 0; j < bar_height; j++)
-			{
-				texture_y = (int)(((float)j / bar_height) * (texture->height));
-				if ((uint32_t)texture_y >= texture->height)
-					texture_y = texture->height - 1;
-				if (texture_y < 0)
-					texture_y = 0;
-				if ((uint32_t)texture_x >= texture->width)
-					texture_x = texture->width - 1;
-				if (texture_x < 0)
-					texture_x = 0;
-				pixel = &(texture->pixels[(texture_y * texture->width
-							+ texture_x) * texture->bytes_per_pixel]);
-				if (pixel != NULL)
-				{
-					r = pixel[0];
-					g = pixel[1];
-					b = pixel[2];
-					color = get_rgba(r, g, b, 255);
-					draw_y = top_y + j;
-					if (draw_y >= 0 && (uint32_t)draw_y < global->img->height)
-					{
-						if (x >= 0 && (uint32_t)x < global->img->width)
-						{
-							mlx_put_pixel(global->img, x, draw_y, color);
-						}
-					}
-				}
-			}
-			z_buffer[i] = perpendicular_distance;
+			draw_column(global, x, top_y, bar_height, texture, hit_percentage);
 		}
 	}
 }
