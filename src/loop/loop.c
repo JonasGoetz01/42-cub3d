@@ -1,5 +1,42 @@
 #include "../../inc/cub3d.h"
 
+void	ft_texture_to_image(t_global *global, mlx_texture_t *texture)
+{
+	int		i;
+	int		i_start;
+	int		j;
+	int		j_start;
+	int		color;
+	uint8_t	*pixel;
+
+	i = global->window_height - texture->height;
+	i_start = i;
+	while (i < global->window_height)
+	{
+		j = global->window_width - texture->width;
+		j_start = j;
+		while (j < global->window_width)
+		{
+			pixel = &(texture->pixels[((i - i_start) * texture->width + (j
+							- j_start)) * texture->bytes_per_pixel]);
+			if (pixel != NULL)
+			{
+				color = get_rgba(pixel[0], pixel[1], pixel[2], 255);
+				if (pixel[3] != 0)
+				{
+					if ((uint32_t)i < global->img->height
+						&& (uint32_t)j < global->img->width)
+					{
+						mlx_put_pixel(global->img, j, i, color);
+					}
+				}
+			}
+			j++;
+		}
+		i++;
+	}
+}
+
 void	loop(void *param)
 {
 	t_global	*global;
@@ -31,6 +68,7 @@ void	loop(void *param)
 	showMap(global);
 	show_sky_and_floor(global);
 	render_3d(global);
+	ft_texture_to_image(global, global->sprite_textures[global->sprite_index]);
 	mlx_image_to_window(global->mlx, global->minimap, 0, 0);
 	mlx_image_to_window(global->mlx, global->img, 0, 0);
 	if (SHOW_MINIMAP)

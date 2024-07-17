@@ -28,7 +28,9 @@ SRCS	:=  main.c \
 			resize.c \
 			cursor.c \
 			image.c \
-			time.c
+			time.c \
+			raycast.c \
+			raycast1.c 
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))

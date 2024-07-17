@@ -1,14 +1,21 @@
 #include "../../inc/cub3d.h"
 
+void	collision_helper(t_ray *ray, t_player *player, t_vec2d dir,
+		float ray_angle)
+{
+	ray->origin = (t_vec2d){player->pos.x - dir.x, player->pos.y - dir.y};
+	ray->direction = (t_vec2d){cosf(ray_angle), sinf(ray_angle)};
+	ray->collisions = NULL;
+	ray->collision_count = 0;
+}
+
 t_player	*new_player(t_global *global, t_vec2d pos, t_vec2d dir)
 {
 	t_player	*player;
 	float		angle_increment;
 	float		ray_angle;
 	int			i;
-	float		offset_distance;
 
-	offset_distance = 30.0f;
 	player = malloc(sizeof(t_player));
 	if (!player)
 		return (NULL);
@@ -16,36 +23,15 @@ t_player	*new_player(t_global *global, t_vec2d pos, t_vec2d dir)
 	player->dir = dir;
 	player->rays = malloc(sizeof(t_ray) * global->img->width);
 	if (!player->rays)
-	{
-		free(player);
-		return (NULL);
-	}
+		return (free(player), NULL);
 	angle_increment = FOV / (global->img->width - 1);
-	for (i = 0; i < (int)global->img->width; i++)
+	i = 0;
+	while (i < (int)global->img->width)
 	{
 		ray_angle = atan2f(player->dir.y, player->dir.x) - (FOV / 2.0f) + (i
 				* angle_increment);
-		player->rays[i].origin = (t_vec2d){player->pos.x - dir.x
-			* offset_distance, player->pos.y - dir.y * offset_distance};
-		// Apply the offset
-		player->rays[i].direction = (t_vec2d){cosf(ray_angle), sinf(ray_angle)};
-		player->rays[i].collisions = NULL;
-		player->rays[i].collision_count = 0;
-	}
-	player->opponent_rays = malloc(sizeof(t_ray) * global->opponent_count);
-	for (i = 0; i < global->opponent_count; i++)
-	{
-		global->opponent[i].visible = false;
-		global->opponent[i].dead = false;
-		ray_angle = atan2f(global->opponent[i].pos.y - player->pos.y,
-				global->opponent[i].pos.x - player->pos.x);
-		player->opponent_rays[i].origin = (t_vec2d){player->pos.x - dir.x
-			* offset_distance, player->pos.y - dir.y * offset_distance};
-		// Apply the offset
-		player->opponent_rays[i].direction = (t_vec2d){cosf(ray_angle),
-			sinf(ray_angle)};
-		player->opponent_rays[i].collisions = NULL;
-		player->opponent_rays[i].collision_count = 0;
+		collision_helper(&(player->rays[i]), player, dir, ray_angle);
+		i++;
 	}
 	return (player);
 }
@@ -56,7 +42,6 @@ t_vec2d	calculate_perpendicular_direction(t_line dir_line, t_line wall)
 	t_vec2d	perpendicular;
 	t_vec2d	dir_vector;
 	t_vec2d	new_dir;
-	float	dot_product;
 	float	length;
 
 	wall_dir.x = wall.b.x - wall.a.x;
@@ -69,42 +54,27 @@ t_vec2d	calculate_perpendicular_direction(t_line dir_line, t_line wall)
 	perpendicular.y /= length;
 	dir_vector.x = dir_line.b.x - dir_line.a.x;
 	dir_vector.y = dir_line.b.y - dir_line.a.y;
-	dot_product = dir_vector.x * perpendicular.x + dir_vector.y
+	new_dir.x = dir_vector.x * perpendicular.x + dir_vector.y * perpendicular.y
+		* perpendicular.x;
+	new_dir.y = dir_vector.x * perpendicular.x + dir_vector.y * perpendicular.y
 		* perpendicular.y;
-	new_dir.x = dot_product * perpendicular.x;
-	new_dir.y = dot_product * perpendicular.y;
 	return (new_dir);
 }
 
 bool	line_line_collision(t_line *a, t_line *b)
 {
-	float	x1;
-	float	y1;
-	float	x2;
-	float	y2;
-	float	x3;
-	float	y3;
-	float	x4;
-	float	y4;
 	float	denominator;
 	float	ua;
 	float	ub;
 
-	x1 = a->a.x;
-	y1 = a->a.y;
-	x2 = a->b.x;
-	y2 = a->b.y;
-	x3 = b->a.x;
-	y3 = b->a.y;
-	x4 = b->b.x;
-	y4 = b->b.y;
-	denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+	denominator = ((b->b.y - b->a.y) * (a->b.x - a->a.x) - (b->b.x - b->a.x)
+			* (a->b.y - a->a.y));
 	if (denominator == 0)
-	{
 		return (false);
-	}
-	ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
-	ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+	ua = ((b->b.x - b->a.x) * (a->a.y - b->a.y) - (b->b.y - b->a.y) * (a->a.x
+				- b->a.x)) / denominator;
+	ub = ((a->b.x - a->a.x) * (a->a.y - b->a.y) - (a->b.y - a->a.y) * (a->a.x
+				- b->a.x)) / denominator;
 	return (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1);
 }
 
@@ -133,15 +103,28 @@ bool	circle_line_collision(t_vec2d circle_center, float radius, t_line line)
 
 void	update_position(t_global *global, t_vec2d dir, float speed)
 {
-	t_vec2d	new_pos;
-	bool	collision_x;
-	bool	collision_y;
-	t_vec2d	temp_pos;
-	float	base_angle;
-	float	angle;
+	t_vec2d		new_pos;
+	bool		collision_x;
+	bool		collision_y;
+	t_vec2d		temp_pos;
+	float		base_angle;
+	static int	sprite_counter = 0;
+	int			i;
 
 	collision_x = false;
 	collision_y = false;
+	if (dir.x != 0 && dir.y != 0)
+	{
+		if (sprite_counter % 10 == 0)
+		{
+			global->sprite_index++;
+			global->sprite_index %= 4;
+			sprite_counter = 1;
+		}
+		sprite_counter++;
+	}
+	else
+		global->sprite_index = 0;
 	// Calculate new position
 	new_pos.x = global->player->pos.x + dir.x * speed * global->minimap_scale;
 	new_pos.y = global->player->pos.y + dir.y * speed * global->minimap_scale;
@@ -158,9 +141,7 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 		}
 	}
 	if (!collision_x)
-	{
 		global->player->pos.x = new_pos.x;
-	}
 	// Check collision for y-axis
 	temp_pos = global->player->pos;
 	temp_pos.y = new_pos.y;
@@ -174,82 +155,38 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 		}
 	}
 	if (!collision_y)
-	{
 		global->player->pos.y = new_pos.y;
-	}
 	// Update ray origins
-	for (int i = 0; i < (int)global->img->width; i++)
+	i = 0;
+	while (i < (int)global->img->width)
 	{
 		global->player->rays[i].origin = global->player->pos;
-	}
-	for (int i = 0; i < global->opponent_count; i++)
-	{
-		global->player->opponent_rays[i].origin = global->player->pos;
-		global->player->opponent_rays[i].direction = (t_vec2d){cosf(atan2f(global->opponent[i].pos.y
-					- global->player->pos.y, global->opponent[i].pos.x
-					- global->player->pos.x)),
-			sinf(atan2f(global->opponent[i].pos.y - global->player->pos.y,
-					global->opponent[i].pos.x - global->player->pos.x))};
+		i++;
 	}
 	base_angle = atan2f(global->player->dir.y, global->player->dir.x) - (FOV
 			/ 2.0f);
-	for (int i = 0; i < global->opponent_count; i++)
-	{
-		angle = atan2f(global->opponent[i].pos.y - global->player->pos.y,
-				global->opponent[i].pos.x - global->player->pos.x);
-		if (angle < base_angle || angle > base_angle + FOV)
-		{
-			global->player->opponent_rays[i].direction = (t_vec2d){0, 0};
-		}
-	}
-	for (int j = 0; j < global->opponent_count; j++)
-	{
-		global->player->opponent_rays[j].closest_collision = NULL;
-		global->player->opponent_rays[j].collisions = NULL;
-	}
 }
 
 void	rotate_player(t_global *global, float angle)
 {
-	float	cos_angle;
-	float	sin_angle;
 	t_vec2d	old_dir;
 	t_vec2d	new_dir;
-	float	new_x;
-	float	new_y;
 	float	angle_increment;
-	float	base_angle;
-	float	ray_angle;
+	float	new_angle;
+	int		i;
 
-	cos_angle = cosf(angle);
-	sin_angle = sinf(angle);
 	old_dir = global->player->dir;
-	new_x = old_dir.x * cos_angle - old_dir.y * sin_angle;
-	new_y = old_dir.x * sin_angle + old_dir.y * cos_angle;
-	new_dir = (t_vec2d){new_x, new_y};
+	new_dir.x = old_dir.x * cosf(angle) - old_dir.y * sinf(angle);
+	new_dir.y = old_dir.x * sinf(angle) + old_dir.y * cosf(angle);
 	global->player->dir = new_dir;
 	angle_increment = FOV / (global->img->width - 1);
-	base_angle = atan2f(new_dir.y, new_dir.x) - (FOV / 2.0f);
-	for (int i = 0; i < (int)global->img->width; i++)
+	i = 0;
+	while (i < (int)global->img->width)
 	{
-		ray_angle = base_angle + (i * angle_increment);
-		global->player->rays[i].direction = (t_vec2d){cosf(ray_angle),
-			sinf(ray_angle)};
-	}
-	// if the opponent ray is outside the FOV,
-	// set the direction to the player direction
-	for (int i = 0; i < global->opponent_count; i++)
-	{
-		angle = atan2f(global->opponent[i].pos.y - global->player->pos.y,
-				global->opponent[i].pos.x - global->player->pos.x);
-		if (angle < base_angle || angle > base_angle + FOV)
-		{
-			global->player->opponent_rays[i].direction = global->player->dir;
-		}
-	}
-	for (int j = 0; j < global->opponent_count; j++)
-	{
-		global->player->opponent_rays[j].closest_collision = NULL;
-		global->player->opponent_rays[j].collisions = NULL;
+		new_angle = (atan2f(new_dir.y, new_dir.x) - (FOV / 2.0f)) + (i
+				* angle_increment);
+		global->player->rays[i].direction = (t_vec2d){cosf(new_angle),
+			sinf(new_angle)};
+		i++;
 	}
 }
