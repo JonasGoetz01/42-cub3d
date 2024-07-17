@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   geometry.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/07/09 10:18:14 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/17 17:27:29 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,29 @@ void	draw_ray(t_global *global, t_ray *ray)
 	draw_line(global, ray->origin, end, get_rgba(255, 255, 255, 255));
 }
 
-t_vec2d	ray_line_collision(t_ray *ray, t_line *line, t_face *face)
+double point_line_distance(t_vec2d point, t_line *line)
+{
+	double dx = line->b.x - line->a.x;
+	double dy = line->b.y - line->a.y;
+	if (dx == 0 && dy == 0)
+	{
+		dx = point.x - line->a.x;
+		dy = point.y - line->a.y;
+		return (sqrt(dx*dx + dy*dy));
+	}
+	
+	double t = ((point.x - line->a.x) * dx + (point.y - line->a.y) * dy) / (dx*dx + dy*dy);
+	t = fmax(0, fmin(1, t));
+	double closestX = line->a.x + t * dx;
+	double closestY = line->a.y + t * dy;
+
+	dx = point.x - closestX;
+	dy = point.y - closestY;
+
+	return (sqrt(dx*dx + dy*dy));
+}
+
+t_vec2d	ray_line_collision(t_ray *ray, t_line *line, t_face *face, t_global *global)
 {
 	float	x1;
 	float	y1;
@@ -168,7 +190,12 @@ t_vec2d	ray_line_collision(t_ray *ray, t_line *line, t_face *face)
 	float	t;
 	float	u;
 	t_vec2d	collision_point;
+	(void)global;
 
+	if (line->flag == INACTIVE /*&& !global->close*/)
+	{
+		return ((t_vec2d){-1, -1});
+	}
 	x1 = ray->origin.x;
 	y1 = ray->origin.y;
 	x2 = ray->origin.x + ray->direction.x;
@@ -187,18 +214,34 @@ t_vec2d	ray_line_collision(t_ray *ray, t_line *line, t_face *face)
 		collision_point = (t_vec2d){x1 + t * (x2 - x1), y1 + t * (y2 - y1)};
 		if (line->alignment == HORIZONTAL)
 		{
-			if (ray->origin.y < collision_point.y)
-				*face = SOUTH;
+			if (line->type == WALL)
+			{
+				if (ray->origin.y < collision_point.y)
+					*face = SOUTH;
+				else
+					*face = NORTH;
+			}
 			else
-				*face = NORTH;
+				*face = DOORS;
 		}
 		else // VERTICAL
 		{
-			if (ray->origin.x < collision_point.x)
-				*face = EAST;
+			if (line->type == WALL)
+			{
+				if (ray->origin.x < collision_point.x)
+					*face = EAST;
+				else
+					*face = WEST;
+			}
 			else
-				*face = WEST;
+				*face = DOORS;
 		}
+		// double distance = get_distance(ray->origin, collision_point);
+		double distance = point_line_distance(ray->origin, line);
+		// if (line->flag == INACTIVE)
+		// 	printf("distance: %f\n", distance);
+		if (line->flag == INACTIVE && (distance < 3.5 || distance > 15.0))
+			return ((t_vec2d){-1, -1});
 		return (collision_point);
 	}
 	return ((t_vec2d){-1, -1});
@@ -229,13 +272,16 @@ void	raycast(t_global *global)
 	float		distance;
 	float		base_angle;
 	float		angle;
+	t_collision *collisions;
+	t_vec2d inters;
+	t_face door_face;
 
 	for (int i = 0; i < (int)global->img->width; i++)
 	{
 		for (int j = 0; j < global->line_count; j++)
 		{
 			intersection = ray_line_collision(&global->player->rays[i],
-					&global->lines[j], &face);
+					&global->lines[j], &face, global);
 			if (intersection.x != -1)
 			{
 				new_collisions = new_collision(global->player->rays[i].collisions,
@@ -260,6 +306,33 @@ void	raycast(t_global *global)
 			}
 		}
 	}
+	for (int l = 0; l < global->line_count; l++)
+	{
+		inters = ray_line_collision(global->player->door_ray,
+		&global->lines[l], &door_face, global);
+		if (inters.x != -1)
+		{
+			collisions = new_collision(global->player->door_ray->collisions,
+				&global->player->door_ray->collision_count, inters,
+				&global->lines[l], door_face);
+			if (!collisions)
+				return ;
+			global->player->door_ray->collisions = collisions;
+		}
+	}
+	min_distance = 1000000;
+	for (int l = 0; l < global->player->door_ray->collision_count; l++)
+	{
+		distance = sqrtf(powf(global->player->pos.x
+					- global->player->door_ray->collisions[l].point.x, 2)
+				+ powf(global->player->pos.y
+					- global->player->door_ray->collisions[l].point.y, 2));
+		if (distance < min_distance)
+		{
+			min_distance = distance;
+			global->player->door_ray->closest_collision = &global->player->door_ray->collisions[l];
+		}
+	}
 	// intersect the opponent_rays with all the lines and compare the distance to the player to determine if the opponent is visible
 	// reset old collisions
 	for (int j = 0; j < global->opponent_count; j++)
@@ -272,7 +345,7 @@ void	raycast(t_global *global)
 		for (int k = 0; k < global->line_count; k++)
 		{
 			intersection = ray_line_collision(&global->player->opponent_rays[j],
-					&global->lines[k], &face);
+					&global->lines[k], &face, global);
 			if (intersection.x != -1)
 			{
 				new_collisions = new_collision(global->player->opponent_rays[j].collisions,

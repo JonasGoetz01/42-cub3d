@@ -47,6 +47,14 @@ t_player	*new_player(t_global *global, t_vec2d pos, t_vec2d dir)
 		player->opponent_rays[i].collisions = NULL;
 		player->opponent_rays[i].collision_count = 0;
 	}
+	player->door_ray = malloc(sizeof(t_ray));
+	ray_angle = atan2f(player->dir.y, player->dir.x) - (FOV / 2.0f) + (i
+		* angle_increment);
+	player->door_ray->origin = (t_vec2d){player->pos.x - dir.x
+		* offset_distance, player->pos.y - dir.y * offset_distance};
+	player->door_ray->direction = (t_vec2d){cosf(ray_angle), sinf(ray_angle)};
+	player->door_ray->collisions = NULL;
+	player->door_ray->collision_count = 0;
 	return (player);
 }
 
@@ -150,6 +158,8 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 	temp_pos.x = new_pos.x;
 	for (int i = 0; i < global->line_count; i++)
 	{
+		if (global->lines[i].flag == INACTIVE)
+			continue ;
 		if (circle_line_collision(temp_pos, PLAYER_RADIUS
 				* global->scale_factor, global->lines[i]))
 		{
@@ -166,6 +176,8 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 	temp_pos.y = new_pos.y;
 	for (int i = 0; i < global->line_count; i++)
 	{
+		if (global->lines[i].flag == INACTIVE)
+			continue ;
 		if (circle_line_collision(temp_pos, PLAYER_RADIUS
 				* global->scale_factor, global->lines[i]))
 		{
@@ -207,6 +219,8 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 		global->player->opponent_rays[j].closest_collision = NULL;
 		global->player->opponent_rays[j].collisions = NULL;
 	}
+	global->player->door_ray->origin = global->player->pos;
+	global->player->door_ray->direction = global->player->dir;
 }
 
 void	rotate_player(t_global *global, float angle)
@@ -252,4 +266,5 @@ void	rotate_player(t_global *global, float angle)
 		global->player->opponent_rays[j].closest_collision = NULL;
 		global->player->opponent_rays[j].collisions = NULL;
 	}
+	global->player->door_ray->direction = global->player->dir;
 }

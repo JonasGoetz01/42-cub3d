@@ -36,13 +36,52 @@ bool	isWallRight(t_global *global, int x, int y)
 	return (false);
 }
 
+bool	is_door_left(t_global *global, int x, int y)
+{
+	if (x == 0)
+		return (false);
+	if (global->map->map[y][x - 1] == 'D')
+		return (true);
+	return (false);
+}
+
+bool	is_door_right(t_global *global, int x, int y)
+{
+	if (x == global->map->width - 1)
+		return (false);
+	if (global->map->map[y][x + 1] == 'D')
+		return (true);
+	return (false);
+}
+
+bool	is_door_above(t_global *global, int x, int y)
+{
+	if (y == 0)
+		return (false);
+	if (global->map->map[y - 1][x] == 'D')
+		return (true);
+	return (false);
+}
+
+bool	is_door_below(t_global *global, int x, int y)
+{
+	if (y == global->map->height - 1)
+		return (false);
+	if (global->map->map[y + 1][x] == 'D')
+		return (true);
+	return (false);
+}
+
 void	add_line_segment(t_line **lines, int *count, t_vec2d a, t_vec2d b,
-		t_alignment alignment)
+		t_alignment alignment, t_type type, t_flag flag, t_door *door)
 {
 	*lines = realloc(*lines, (*count + 1) * sizeof(t_line));
 	(*lines)[*count].a = a;
 	(*lines)[*count].b = b;
 	(*lines)[*count].alignment = alignment;
+	(*lines)[*count].type = type;
+	(*lines)[*count].flag = flag;
+	(*lines)[*count].door = door;
 	(*count)++;
 }
 
@@ -52,6 +91,8 @@ void	map_to_line_segments(t_global *global, t_line **lines, int *line_count)
 	t_vec2d	top_right;
 	t_vec2d	bottom_left;
 	t_vec2d	bottom_right;
+	t_vec2d	left_middle;
+	t_vec2d	right_middle;
 
 	int x, y;
 	*lines = NULL;
@@ -60,31 +101,80 @@ void	map_to_line_segments(t_global *global, t_line **lines, int *line_count)
 	{
 		for (x = 0; x < global->map->width; x++)
 		{
-			if (global->map->map[y][x] == '1')
+			if (global->map->map[y][x] == '1' || global->map->map[y][x] == 'D')
 			{
 				top_left = (t_vec2d){x, y};
 				top_right = (t_vec2d){x + 1, y};
 				bottom_left = (t_vec2d){x, y + 1};
 				bottom_right = (t_vec2d){x + 1, y + 1};
-				if (!isWallAbove(global, x, y))
+				if (global->map->map[y][x] == '1')
 				{
-					add_line_segment(lines, line_count, top_left, top_right,
-						HORIZONTAL);
+					if (!isWallAbove(global, x, y) && !is_door_above(global, x, y))
+					{
+						add_line_segment(lines, line_count, top_left, top_right,
+							HORIZONTAL, WALL, ACTIVE, NULL);
+					}
+					if (!isWallBelow(global, x, y) && !is_door_below(global, x, y))
+					{
+						add_line_segment(lines, line_count, bottom_left,
+							bottom_right, HORIZONTAL, WALL, ACTIVE, NULL);
+					}
+					if (!isWallLeft(global, x, y) && !is_door_left(global, x, y))
+					{
+						add_line_segment(lines, line_count, top_left, bottom_left,
+							VERTICAL, WALL, ACTIVE, NULL);
+					}
+					if (!isWallRight(global, x, y) && !is_door_right(global, x, y))
+					{
+						add_line_segment(lines, line_count, top_right, bottom_right,
+							VERTICAL, WALL, ACTIVE, NULL);
+					}
 				}
-				if (!isWallBelow(global, x, y))
+				else
 				{
-					add_line_segment(lines, line_count, bottom_left,
-						bottom_right, HORIZONTAL);
-				}
-				if (!isWallLeft(global, x, y))
-				{
-					add_line_segment(lines, line_count, top_left, bottom_left,
-						VERTICAL);
-				}
-				if (!isWallRight(global, x, y))
-				{
-					add_line_segment(lines, line_count, top_right, bottom_right,
-						VERTICAL);
+					t_door	*door = NULL;
+					int		count = 0;
+					for (int i = 0; i < global->door_count; i++)
+					{
+						float scaled_x = x * global->scale_factor;
+						float scaled_y = y * global->scale_factor;
+						if (global->doors[i].pos.x == scaled_x && global->doors[i].pos.y == scaled_y)
+						{
+							door = &global->doors[i];
+							break;
+						}
+					}
+					if (!door)
+					{
+						printf("no door found\n");
+						exit(1); // handle differently
+					}
+					if (isWallLeft(global, x, y) && isWallRight(global, x, y))
+					{
+						left_middle = (t_vec2d){x, y + 0.5};
+						right_middle = (t_vec2d){x + 1, y + 0.5};
+						add_line_segment(lines, line_count, left_middle, right_middle,
+							HORIZONTAL, DOOR, ACTIVE, door);
+						global->door_line[count] = (*lines)[*line_count - 1];
+						count++;
+						add_line_segment(lines, line_count, top_left, bottom_left,
+							VERTICAL, DOOR_SIDE, ACTIVE, NULL);
+						add_line_segment(lines, line_count, top_right, bottom_right,
+							VERTICAL, DOOR_SIDE, ACTIVE, NULL);
+					}
+					else
+					{
+						left_middle = (t_vec2d){x + 0.5, y};
+						right_middle = (t_vec2d){x + 0.5, y + 1};
+						add_line_segment(lines, line_count, left_middle, right_middle,
+							VERTICAL, DOOR, ACTIVE, door);
+						global->door_line[count] = (*lines)[*line_count - 1];
+						count++;
+						add_line_segment(lines, line_count, top_left, top_right,
+							HORIZONTAL, DOOR_SIDE, ACTIVE, NULL);
+						add_line_segment(lines, line_count, bottom_left, bottom_right,
+							HORIZONTAL, DOOR_SIDE, ACTIVE, NULL);
+					}
 				}
 			}
 		}
@@ -133,6 +223,10 @@ void	showMap(t_global *global)
 		global->player->rays[i].collisions = NULL;
 		global->player->rays[i].collision_count = 0;
 	}
+	if (global->player->door_ray->collisions)
+		free(global->player->door_ray->collisions);
+	global->player->door_ray->collisions = NULL;
+	global->player->door_ray->collision_count = 0;
 	raycast(global);
 	for (uint32_t i = 0; i < global->img->width; i++)
 	{
@@ -149,6 +243,18 @@ void	showMap(t_global *global)
 			draw_circle(global,
 				&(t_circle){global->player->rays[i].closest_collision->point,
 				3}, get_rgba(0, 0, 255, 255));
+	}
+	if (SHOW_DOOR_RAY)
+	{
+		t_vec2d	end;
+
+		end = (t_vec2d){global->player->door_ray->origin.x + global->player->door_ray->direction.x * 1000, global->player->door_ray->origin.y
+			+ global->player->door_ray->direction.y * 1000};
+		draw_line(global, global->player->door_ray->origin, end, get_rgba(255, 0, 0, 255));
+		if (global->player->door_ray->closest_collision)
+			draw_circle(global,
+				&(t_circle){global->player->door_ray->closest_collision->point,
+				4}, get_rgba(0, 0, 255, 255));
 	}
 	for (int i = 0; i < global->opponent_count; i++)
 	{

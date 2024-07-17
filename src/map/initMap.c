@@ -107,6 +107,37 @@ void	get_opponents(t_global *global)
 	}
 }
 
+void	get_doors(t_global *global)
+{
+	int count;
+
+	count = 0;
+	for (int y = 0; y < global->map->height; y++)
+	{
+		for (int x = 0; x < global->map->width; x++)
+		{
+			if (global->map->map[y][x] == 'D')
+				count++;
+		}
+	}
+	global->door_count = count;
+	global->doors = malloc(sizeof(t_door) * count);
+	count = 0;
+	for (int y = 0; y < global->map->height; y++)
+	{
+		for (int x = 0; x < global->map->width; x++)
+		{
+			if (global->map->map[y][x] == 'D')
+			{
+				global->doors[count].pos.x = x * global->scale_factor;
+				global->doors[count].pos.y = y * global->scale_factor;
+				global->doors[count].state = CLOSED;
+				count++;
+			}
+		}
+	}
+}
+
 void	initMap(t_global *global)
 {
 	t_line	*lines;

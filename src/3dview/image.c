@@ -66,6 +66,25 @@ float	get_distance(t_vec2d a, t_vec2d b)
 	return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)));
 }
 
+double point_line_distance(t_vec2d point, t_line *line);
+
+void	check_inactive_lines(t_global *global)
+{
+	float distance;
+
+	// printf("Checking inactive lines\n");
+	for (int i = 0; i < global->door_count; i++)
+	{
+		distance = point_line_distance(global->player->pos, &global->door_line[i]);
+		if (global->door_line[i].flag == INACTIVE && distance < INTERACT_DISTANCE)
+		{
+			global->door_line[i].flag = ACTIVE;
+			global->door_line[i].door->state = CLOSING;
+			global->door_line[i].door->animation_progress = 1.0;
+		}
+	}
+}
+
 void	render_3d(t_global *global)
 {
 	int						bar_width;
@@ -94,6 +113,7 @@ void	render_3d(t_global *global)
 	static mlx_texture_t	*texture_south = NULL;
 	static mlx_texture_t	*texture_east = NULL;
 	static mlx_texture_t	*texture_west = NULL;
+	static mlx_texture_t	*door = NULL;
 	int						r;
 	int						g;
 	int						b;
@@ -107,14 +127,40 @@ void	render_3d(t_global *global)
 		texture_east = mlx_load_png("textures/polished_granite.png");
 	if (!texture_west)
 		texture_west = mlx_load_png("textures/piston_bottom.png");
+	if (!door)
+		door = mlx_load_png("textures/diamond.png");
 	// Check if textures are loaded successfully
-	if (!texture_north || !texture_south || !texture_east || !texture_west)
+	if (!texture_north || !texture_south || !texture_east || !texture_west || !door)
 	{
 		fprintf(stderr, "Error loading textures\n");
 		return ;
 	}
 	player_angle = atan2(global->player->dir.y, global->player->dir.x);
 	bar_width = 1;
+	t_ray *door_ray = global->player->door_ray;
+	t_collision *door_collision = door_ray->closest_collision;
+	float door_distance = get_distance(global->player->pos, door_collision->point);
+	if (global->close)
+		check_inactive_lines(global);
+	if (door_collision && door_distance < INTERACT_DISTANCE && door_distance > 2.0 && global->open && door_collision->line->type == DOOR)
+	{
+		// if (global->close)
+		// {
+		// 	if (door_collision->line->flag == INACTIVE)
+		// 	{
+		// 		door_collision->line->flag = ACTIVE;
+		// 		door_collision->line->door->state = CLOSING;
+		// 		door_collision->line->door->animation_progress = 1.0;
+		// 	}
+
+		// }
+		// else
+		// {
+			door_collision->line->flag = INACTIVE;
+			door_collision->line->door->state = OPENING;
+			door_collision->line->door->animation_progress = 0.0;
+		// }
+	}
 	for (i = 0; i < (int)global->img->width; i++)
 	{
 		ray = &global->player->rays[i];
@@ -145,6 +191,9 @@ void	render_3d(t_global *global)
 				break ;
 			case WEST:
 				texture = texture_west;
+				break ;
+			case DOORS:
+				texture = door;
 				break ;
 			default:
 				texture = texture_north;

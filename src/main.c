@@ -1,5 +1,28 @@
 #include "../inc/cub3d.h"
 
+void key(mlx_key_data_t key, void *param)
+{
+	t_global *global;
+
+	global = (t_global *)param;
+	if (key.key == MLX_KEY_LEFT_CONTROL && key.action == MLX_PRESS)
+	{
+		global->open = true;
+	}
+	if (key.key == MLX_KEY_LEFT_CONTROL && key.action == MLX_RELEASE)
+	{
+		global->open = false;
+	}
+	if (key.key == MLX_KEY_RIGHT_CONTROL && key.action == MLX_PRESS)
+	{
+		global->close = true;
+	}
+	if (key.key == MLX_KEY_RIGHT_CONTROL && key.action == MLX_RELEASE)
+	{
+		global->close = false;
+	}
+}
+
 int	main(int argc, char **argv)
 {
 	t_global global;
@@ -11,6 +34,8 @@ int	main(int argc, char **argv)
 	global.window_width = WIDTH;
 	global.minimap_scale = MINIMAP_SCALE;
 	global.time = get_current_millis();
+	global.open = false;
+	global.close = false;
 	if (parse_and_validate(argv[1], &global))
 	{
 		//call cleanup function (not implemented yet)
@@ -51,6 +76,7 @@ int	main(int argc, char **argv)
 			* global.scale_factor, get_player_position(&global).y
 			* global.scale_factor}, get_player_direction(&global));
 	mlx_loop_hook(global.mlx, loop, &global);
+	mlx_key_hook(global.mlx, key, &global);
 	mlx_resize_hook(global.mlx, resize, &global);
 	mlx_cursor_hook(global.mlx, cursor, &global);
 	mlx_set_cursor_mode(global.mlx, MLX_MOUSE_HIDDEN);

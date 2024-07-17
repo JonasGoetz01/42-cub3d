@@ -23,6 +23,8 @@
 # define SHOW_FOV 1
 # define WALL_BUFFER_DISTANCE 0.2f
 # define PLAYER_RADIUS 0.2f
+# define INTERACT_DISTANCE 15.0f // maybe change value
+# define SHOW_DOOR_RAY 1
 
 # define NC      "\033[0m"
 # define RED     "\033[31m"
@@ -35,7 +37,7 @@
 # define LINE    "\033[4m"
 
 # define ERR_MALLOC  RED BOLD "ERROR: Malloc failed\n" NC
-# define ERR_OPEN    RED BOLD "ERROR: Could not open file\n" NC
+# define ERR_OPEN    RED BOLD "ERROR: Could not open file "
 # define ERR_DIR	 RED BOLD "ERROR: File is a directory\n" NC
 # define ERR_PLAYER  RED BOLD "ERROR: Multiple players or no player in map\n" NC
 # define ERR_CHAR    RED BOLD "ERROR: Invalid character in map\n" NC
@@ -48,6 +50,7 @@
 # define ERR_FORMAT  RED BOLD "ERROR: Invalid color format\n" NC
 # define ERR_EMPTY   RED BOLD "ERROR: Empty line in map\n" NC
 # define ERR_ARG     RED BOLD "ERROR: Invalid number of arguments\n" NC
+# define ERR_DOOR    RED BOLD "ERROR: Invalid door position\n" NC
 # define USAGE       BLUE BOLD "USAGE: ./cub3D <[file].cub>\n" NC
 typedef struct s_map
 {
@@ -101,6 +104,7 @@ typedef struct s_player
 	t_ray		*rays;
 	t_ray		*opponent_rays;
 	t_ray		*weapon_ray;
+	t_ray		*door_ray;
 }				t_player;
 
 typedef struct s_opponent
@@ -130,6 +134,11 @@ typedef struct s_global
 	int window_height;
 	t_opponent *opponent;
 	int opponent_count;
+	t_door *doors;
+	int door_count;
+	bool open;
+	bool close;
+	t_line *door_line;
 } t_global;
 
 void			loop(void *param);
@@ -147,7 +156,7 @@ void			draw_circle(t_global *global, t_circle *circle, int color);
 int				get_rgba(int r, int g, int b, int a);
 void			draw_ray(t_global *global, t_ray *ray);
 t_player		*new_player(t_global *global, t_vec2d pos, t_vec2d dir);
-t_vec2d			ray_line_collision(t_ray *ray, t_line *line, t_face *face);
+t_vec2d			ray_line_collision(t_ray *ray, t_line *line, t_face *face, t_global *global);
 void			update_position(t_global *global, t_vec2d dir, float speed);
 void			rotate_player(t_global *global, float angle);
 void			raycast(t_global *global);
@@ -179,4 +188,7 @@ bool 			strlen_check(char **split);
 int				map_size(char *file, t_global *global);
 bool			parse_map(char *line, t_global *global);
 bool			parse_line(char *line, t_global *global);
+
+void	get_doors(t_global *global);
+float	get_distance(t_vec2d a, t_vec2d b);
 #endif
