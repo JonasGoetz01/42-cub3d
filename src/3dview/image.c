@@ -114,11 +114,17 @@ void	draw_column(t_global *global, int x, int top_y, int bar_height,
 		mlx_texture_t *texture, float hit_percentage)
 {
 	uint8_t	*pixel;
+    int i;
+	int r;
+    int g;
+    int b;
+    int color;
+	int draw_y;
+    int texture_x;
+    int texture_y;
 
-	int r, g, b, color;
-	int draw_y, texture_x, texture_y, i;
 	texture_x = (int)(hit_percentage * (texture->width));
-	int i = 0;
+	i = 0;
 	while (i < bar_height)
 	{
 		texture_y = (int)(((float)i / bar_height) * (texture->height));
