@@ -118,7 +118,8 @@ void	draw_column(t_global *global, int x, int top_y, int bar_height,
 	int r, g, b, color;
 	int draw_y, texture_x, texture_y, i;
 	texture_x = (int)(hit_percentage * (texture->width));
-	for (i = 0; i < bar_height; i++)
+	int i = 0;
+	while (i < bar_height)
 	{
 		texture_y = (int)(((float)i / bar_height) * (texture->height));
 		texture_y = fmax(fmin(texture_y, texture->height - 1), 0);
@@ -140,6 +141,7 @@ void	draw_column(t_global *global, int x, int top_y, int bar_height,
 				}
 			}
 		}
+		i++;
 	}
 }
 
@@ -152,6 +154,7 @@ void	render_3d(t_global *global)
 	t_ray					*ray;
 	t_collision				*collision;
 	mlx_texture_t			*texture;
+	int						i;
 
 	float player_angle, ray_angle, angle_diff;
 	float distance, perpendicular_distance, hit_percentage;
@@ -159,7 +162,8 @@ void	render_3d(t_global *global)
 	load_textures(&texture_north, &texture_south, &texture_east, &texture_west);
 	player_angle = atan2(global->player->dir.y, global->player->dir.x);
 	bar_width = 1;
-	for (int i = 0; i < (int)global->img->width; i++)
+	i = 0;
+	while (i < (int)global->img->width)
 	{
 		ray = &global->player->rays[i];
 		collision = ray->closest_collision;
@@ -181,5 +185,6 @@ void	render_3d(t_global *global)
 			hit_percentage = fmax(fmin(hit_percentage, 1.0f), 0.0f);
 			draw_column(global, x, top_y, bar_height, texture, hit_percentage);
 		}
+		i++;
 	}
 }
