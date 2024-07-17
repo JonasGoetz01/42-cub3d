@@ -99,12 +99,12 @@ void	draw_fov_lines(t_global *global)
 	t_vec2d start, left_end, right_end;
 	player = global->player;
 	start = player->pos;
-	angle = atan2(player->dir.y, player->dir.x) - (FOV / 2);
-	left_end.x = start.x + cos(angle) * 10;
-	left_end.y = start.y + sin(angle) * 10;
-	angle = atan2(player->dir.y, player->dir.x) + (FOV / 2);
-	right_end.x = start.x + cos(angle) * 10;
-	right_end.y = start.y + sin(angle) * 10;
+	angle = atan2f(player->dir.y, player->dir.x) - (float)(FOV / 2);
+	left_end.x = start.x + cosf(angle) * 10;
+	left_end.y = start.y + sinf(angle) * 10;
+	angle = atan2f(player->dir.y, player->dir.x) + (float)(FOV / 2);
+	right_end.x = start.x + cosf(angle) * 10;
+	right_end.y = start.y + sinf(angle) * 10;
 	draw_line(global, start, left_end, get_rgba(255, 255, 255, 255));
 	// white color
 	draw_line(global, start, right_end, get_rgba(255, 255, 255, 255));
