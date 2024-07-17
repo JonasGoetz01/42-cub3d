@@ -38,7 +38,7 @@ void	keyHook(void *param)
 		rotate_player(global, 0.03f);
 	if (mlx_is_key_down(global->mlx, MLX_KEY_Q))
 		rotate_player(global, -0.03f);
-	length = sqrt(dir.x * dir.x + dir.y * dir.y);
+	length = sqrtf(dir.x * dir.x + dir.y * dir.y);
 	if (length != 0)
 	{
 		dir.x /= length;
