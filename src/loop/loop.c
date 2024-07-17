@@ -9,11 +9,11 @@ void	ft_texture_to_image(t_global *global, mlx_texture_t *texture)
 	int		color;
 	uint8_t	*pixel;
 
-	i = global->window_height - texture->height;
+	i = (int)global->window_height - (int)texture->height;
 	i_start = i;
 	while (i < global->window_height)
 	{
-		j = global->window_width - texture->width;
+		j = (int)global->window_width - (int)texture->width;
 		j_start = j;
 		while (j < global->window_width)
 		{
@@ -51,7 +51,7 @@ void	loop(void *param)
 	global->time = current_time;
 	if (fps_timer % 10 == 0)
 	{
-		fps = 1000 / elapsed_time;
+		fps = (int)((double)1000.0 / elapsed_time);
 		printf("\rFPS: %d", fps);
 		fflush(stdout);
 		fps_timer = 0;
