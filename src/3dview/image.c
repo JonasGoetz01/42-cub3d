@@ -164,7 +164,7 @@ void	render_3d(t_global *global)
 
 	float player_angle, ray_angle, angle_diff;
 	float distance, perpendicular_distance, hit_percentage;
-	int bar_width, bar_height, center_y, top_y, bottom_y, x;
+	int bar_width, bar_height, center_y, top_y, x;
 	load_textures(&texture_north, &texture_south, &texture_east, &texture_west);
 	player_angle = atan2(global->player->dir.y, global->player->dir.x);
 	bar_width = 1;
@@ -183,7 +183,6 @@ void	render_3d(t_global *global)
 			bar_height = map_distance_to_height(perpendicular_distance, global);
 			center_y = global->img->height / 2;
 			top_y = center_y - (bar_height / 2);
-			bottom_y = center_y + (bar_height / 2);
 			x = i * bar_width;
 			texture = select_texture(collision, texture_north, texture_south,
 					texture_east, texture_west);
