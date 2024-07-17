@@ -49,9 +49,9 @@ void	show_sky_and_floor(t_global *global)
 float	map_distance_to_height(float distance, t_global *global)
 {
 	float	height;
-	int		window_height;
+	float		window_height;
 
-	window_height = global->window_height;
+	window_height = (float)global->window_height;
 	if (distance == 0)
 		height = window_height;
 	else
@@ -61,7 +61,7 @@ float	map_distance_to_height(float distance, t_global *global)
 
 float	get_distance(t_vec2d a, t_vec2d b)
 {
-	return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)));
+	return (sqrtf(powf(b.x - a.x, 2) + powf(b.y - a.y, 2)));
 }
 
 void	load_textures(mlx_texture_t **texture_north,
@@ -123,13 +123,13 @@ void	draw_column(t_global *global, int x, int top_y, int bar_height,
     int texture_x;
     int texture_y;
 
-	texture_x = (int)(hit_percentage * (texture->width));
+	texture_x = (int)(hit_percentage * (float)texture->width);
 	i = 0;
 	while (i < bar_height)
 	{
-		texture_y = (int)(((float)i / bar_height) * (texture->height));
-		texture_y = fmax(fmin(texture_y, texture->height - 1), 0);
-		texture_x = fmax(fmin(texture_x, texture->width - 1), 0);
+		texture_y = (int)(((float)i / (float)bar_height) * (float)texture->height);
+		texture_y = (int)fmax(fmin(texture_y, texture->height - 1), 0);
+		texture_x = (int)fmax(fmin(texture_x, texture->width - 1), 0);
 		pixel = &(texture->pixels[(texture_y * texture->width + texture_x)
 				* texture->bytes_per_pixel]);
 		if (pixel != NULL)
@@ -166,7 +166,7 @@ void	render_3d(t_global *global)
 	float distance, perpendicular_distance, hit_percentage;
 	int bar_width, bar_height, center_y, top_y, x;
 	load_textures(&texture_north, &texture_south, &texture_east, &texture_west);
-	player_angle = atan2(global->player->dir.y, global->player->dir.x);
+	player_angle = atan2f(global->player->dir.y, global->player->dir.x);
 	bar_width = 1;
 	i = 0;
 	while (i < (int)global->img->width)
@@ -176,18 +176,18 @@ void	render_3d(t_global *global)
 		if (collision)
 		{
 			distance = get_distance(global->player->pos, collision->point);
-			distance = fmax(distance, 0.1f);
-			ray_angle = atan2(ray->direction.y, ray->direction.x);
+			distance = fmaxf(distance, 0.1f);
+			ray_angle = atan2f(ray->direction.y, ray->direction.x);
 			angle_diff = ray_angle - player_angle;
-			perpendicular_distance = distance * cos(angle_diff);
-			bar_height = map_distance_to_height(perpendicular_distance, global);
-			center_y = global->img->height / 2;
+			perpendicular_distance = distance * cosf(angle_diff);
+			bar_height = (int)map_distance_to_height(perpendicular_distance, global);
+			center_y = (int)global->img->height / 2;
 			top_y = center_y - (bar_height / 2);
 			x = i * bar_width;
 			texture = select_texture(collision, texture_north, texture_south,
 					texture_east, texture_west);
 			hit_percentage = calculate_hit_percentage(collision);
-			hit_percentage = fmax(fmin(hit_percentage, 1.0f), 0.0f);
+			hit_percentage = fmaxf(fminf(hit_percentage, 1.0f), 0.0f);
 			draw_column(global, x, top_y, bar_height, texture, hit_percentage);
 		}
 		i++;
