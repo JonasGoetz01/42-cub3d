@@ -130,7 +130,8 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 	// Check collision for x-axis
 	temp_pos = global->player->pos;
 	temp_pos.x = new_pos.x;
-	for (int i = 0; i < global->line_count; i++)
+    i = 0;
+    while (i < global->line_count)
 	{
 		if (circle_line_collision(temp_pos, PLAYER_RADIUS
 				* global->scale_factor, global->lines[i]))
@@ -138,13 +139,15 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 			collision_x = true;
 			break ;
 		}
+        i++;
 	}
 	if (!collision_x)
 		global->player->pos.x = new_pos.x;
 	// Check collision for y-axis
 	temp_pos = global->player->pos;
 	temp_pos.y = new_pos.y;
-	for (int i = 0; i < global->line_count; i++)
+    i = 0;
+    while (i < global->line_count)
 	{
 		if (circle_line_collision(temp_pos, PLAYER_RADIUS
 				* global->scale_factor, global->lines[i]))
@@ -152,6 +155,7 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 			collision_y = true;
 			break ;
 		}
+        i++;
 	}
 	if (!collision_y)
 		global->player->pos.y = new_pos.y;
