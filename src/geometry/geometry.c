@@ -45,18 +45,18 @@ void	scale_line_segments(t_line *lines, int line_count, float scale_factor)
 
 void	draw_line(t_global *global, t_vec2d a, t_vec2d b, int color)
 {
-	int		steps;
+	float		steps;
 	float	x_inc;
 	float	y_inc;
 	float	x;
 	float	y;
 
 	if (abs((int)(b.x - a.x)) > abs((int)(b.y - a.y)))
-		steps = abs((int)(b.x - a.x));
+		steps = fabsf((b.x - a.x));
 	else
-		steps = abs((int)(b.y - a.y));
-	x_inc = (int)(b.x - a.x) / (float)steps;
-	y_inc = (int)(b.y - a.y) / (float)steps;
+		steps = fabsf((b.y - a.y));
+	x_inc = (b.x - a.x) / steps;
+	y_inc = (b.y - a.y) / steps;
 	x = a.x;
 	y = a.y;
 	b.x = 0;
@@ -146,30 +146,4 @@ void	draw_ray(t_global *global, t_ray *ray)
 	end = (t_vec2d){ray->origin.x + ray->direction.x * 1000, ray->origin.y
 		+ ray->direction.y * 1000};
 	draw_line(global, ray->origin, end, get_rgba(255, 255, 255, 255));
-}
-
-void	draw_bar(t_global *global, int x, int y, int width, int height,
-		int color)
-{
-	int	draw_y;
-	int	i;
-	int	j;
-
-	i = 0;
-	while (i < width)
-	{
-		if (x + i < 0 || (uint32_t)x + (uint32_t)i >= global->img->width)
-			continue ;
-		j = 0;
-		while (j < height)
-		{
-			draw_y = y + j;
-			if (draw_y >= 0 && (uint32_t)draw_y < global->img->height)
-			{
-				mlx_put_pixel(global->img, x + i, draw_y, color);
-			}
-			j++;
-		}
-		i++;
-	}
 }
