@@ -107,7 +107,6 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 	bool		collision_x;
 	bool		collision_y;
 	t_vec2d		temp_pos;
-	float		base_angle;
 	static int	sprite_counter = 0;
 	int			i;
 
@@ -158,13 +157,10 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 		global->player->pos.y = new_pos.y;
 	// Update ray origins
 	i = 0;
-	while (i < (int)global->img->width)
-	{
-		global->player->rays[i].origin = global->player->pos;
-		i++;
-	}
-	base_angle = atan2f(global->player->dir.y, global->player->dir.x) - (FOV
-			/ 2.0f);
+	while (i < (int)global->img->width) {
+        global->player->rays[i].origin = global->player->pos;
+        i++;
+    }
 }
 
 void	rotate_player(t_global *global, float angle)
