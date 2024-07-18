@@ -24,7 +24,6 @@
 # define WALL_BUFFER_DISTANCE 0.2f
 # define PLAYER_RADIUS 0.2f
 # define INTERACT_DISTANCE 15.0f // maybe change value
-# define SHOW_DOOR_RAY 1
 
 # define NC      "\033[0m"
 # define RED     "\033[31m"
@@ -104,7 +103,6 @@ typedef struct s_player
 	t_ray		*rays;
 	t_ray		*opponent_rays;
 	t_ray		*weapon_ray;
-	t_ray		*door_ray;
 }				t_player;
 
 typedef struct s_opponent
@@ -138,7 +136,6 @@ typedef struct s_global
 	int door_count;
 	bool open;
 	bool close;
-	bool check;
 	t_line **door_line;
 } t_global;
 
@@ -157,7 +154,7 @@ void			draw_circle(t_global *global, t_circle *circle, int color);
 int				get_rgba(int r, int g, int b, int a);
 void			draw_ray(t_global *global, t_ray *ray);
 t_player		*new_player(t_global *global, t_vec2d pos, t_vec2d dir);
-t_vec2d			ray_line_collision(t_ray *ray, t_line *line, t_face *face, t_global *global);
+t_vec2d			ray_line_collision(t_ray *ray, t_line *line, t_face *face);
 void			update_position(t_global *global, t_vec2d dir, float speed);
 void			rotate_player(t_global *global, float angle);
 void			raycast(t_global *global);

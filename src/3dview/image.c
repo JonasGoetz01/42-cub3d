@@ -69,7 +69,6 @@ float	get_distance(t_vec2d a, t_vec2d b)
 double point_line_distance(t_vec2d point, t_line *line);
 t_collision	*new_collision(t_collision *collisions, int *collision_count,
 		t_vec2d point, t_line *line, t_face face);
-t_vec2d	ray_line_collision(t_ray *ray, t_line *line, t_face *face, t_global *global);
 
 void	check_inactive_lines(t_global *global)
 {
@@ -85,10 +84,9 @@ void	check_inactive_lines(t_global *global)
 	tmp_ray.collisions = NULL;
 	tmp_ray.collision_count = 0;
 
-	global->check = true;
 	for (int i = 0; i < global->line_count; i++)
 	{
-		intersection = ray_line_collision(&tmp_ray, &global->lines[i], &face, global);
+		intersection = ray_line_collision(&tmp_ray, &global->lines[i], &face);
 		if (intersection.x != -1)
 		{
 			tmp = new_collision(tmp_ray.collisions, &tmp_ray.collision_count, intersection, &global->lines[i], face);
@@ -109,17 +107,9 @@ void	check_inactive_lines(t_global *global)
 	for (int i = 0; i < global->door_count; i++)
 	{
 		distance = point_line_distance(global->player->pos, global->door_line[i]);
-		if (/*global->door_line[i]->flag == INACTIVE && */distance < INTERACT_DISTANCE && distance > 2.0 && (tmp_ray.closest_collision->line->type == DOOR || tmp_ray.closest_collision->line->type == DOOR_SIDE))
-		{
-			global->door_line[i]->flag = ACTIVE;
+		if (distance < INTERACT_DISTANCE && distance > 2.0 && (tmp_ray.closest_collision->line->type == DOOR || tmp_ray.closest_collision->line->type == DOOR_SIDE))
 			global->door_line[i]->door->state = CLOSING;
-		}
 	}
-	global->check = false;
-	if (global->player->door_ray->collisions)
-		free(global->player->door_ray->collisions);
-	global->player->door_ray->collisions = NULL;
-	global->player->door_ray->collision_count = 0;
 }
 
 void	check_active_lines(t_global *global)
@@ -138,7 +128,7 @@ void	check_active_lines(t_global *global)
 
 	for (int i = 0; i < global->line_count; i++)
 	{
-		intersection = ray_line_collision(&tmp_ray, &global->lines[i], &face, global);
+		intersection = ray_line_collision(&tmp_ray, &global->lines[i], &face);
 		if (intersection.x != -1)
 		{
 			tmp = new_collision(tmp_ray.collisions, &tmp_ray.collision_count, intersection, &global->lines[i], face);
@@ -159,16 +149,9 @@ void	check_active_lines(t_global *global)
 	for (int i = 0; i < global->door_count; i++)
 	{
 		distance = point_line_distance(global->player->pos, global->door_line[i]);
-		if (/*global->door_line[i]->flag == ACTIVE && */distance < INTERACT_DISTANCE && distance > 2.0 && (tmp_ray.closest_collision->line->type == DOOR || tmp_ray.closest_collision->line->type == DOOR_SIDE))
-		{
-			// global->door_line[i]->flag = INACTIVE;
+		if (distance < INTERACT_DISTANCE && distance > 2.0 && (tmp_ray.closest_collision->line->type == DOOR || tmp_ray.closest_collision->line->type == DOOR_SIDE))
 			global->door_line[i]->door->state = OPENING;
-		}
 	}
-	if (global->player->door_ray->collisions)
-		free(global->player->door_ray->collisions);
-	global->player->door_ray->collisions = NULL;
-	global->player->door_ray->collision_count = 0;
 }
 
 // void update_door_segments(t_global *global)
@@ -357,35 +340,10 @@ void	render_3d(t_global *global)
 	}
 	player_angle = atan2(global->player->dir.y, global->player->dir.x);
 	bar_width = 1;
-	// t_ray *door_ray = global->player->door_ray;
-	// t_collision *door_collision = door_ray->closest_collision;
-	// float door_distance = get_distance(global->player->pos, door_collision->point);
 	if (global->close)
 		check_inactive_lines(global);
 	if (global->open)
-	{
 		check_active_lines(global);
-	}
-	// if (door_collision && door_distance < INTERACT_DISTANCE && door_distance > 2.0 && global->open && (door_collision->line->type == DOOR || door_collision->line->type == DOOR_SIDE))
-	// {
-	// 	if (door_collision->line->type == DOOR)
-	// 	{
-	// 		door_collision->line->flag = INACTIVE;
-	// 		door_collision->line->door->state = OPENING;
-	// 	}
-	// 	else
-	// 	{
-	// 		printf("Door side\n");
-	// 		for (int i = 0; i < global->door_count; i++)
-	// 		{
-	// 			if (global->door_line[i] == door_collision->line)
-	// 			{
-	// 				global->door_line[i]->flag = INACTIVE;
-	// 				global->door_line[i]->door->state = OPENING;
-	// 			}
-	// 		}
-	// 	}
-	// }
 	for (i = 0; i < (int)global->img->width; i++)
 	{
 		ray = &global->player->rays[i];

@@ -43,12 +43,6 @@ typedef struct s_door
 	t_state		state;
 }				t_door;
 
-typedef enum e_flag
-{
-	ACTIVE,
-	INACTIVE
-}				t_flag;
-
 typedef struct s_line
 {
 	t_vec2d		a;
@@ -57,7 +51,6 @@ typedef struct s_line
 	t_vec2d		close_end;
 	t_alignment	alignment;
 	t_type		type;
-	t_flag		flag;
 	t_door		*door;
 }				t_line;
 
@@ -75,7 +68,6 @@ typedef struct s_ray
 	t_collision	*collisions;
 	int			collision_count;
 	t_collision	*closest_collision;
-	// t_line		*collision_line;
 }				t_ray;
 
 typedef struct s_circle
