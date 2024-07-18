@@ -73,7 +73,7 @@ bool	is_door_below(t_global *global, int x, int y)
 }
 
 void	add_line_segment(t_line **lines, int *count, t_vec2d a, t_vec2d b,
-		t_alignment alignment, t_type type, t_flag flag, t_door *door)
+		t_alignment alignment, t_type type, t_flag flag, t_door *door, t_vec2d open_end, t_vec2d close_end)
 {
 	*lines = realloc(*lines, (*count + 1) * sizeof(t_line));
 	(*lines)[*count].a = a;
@@ -82,6 +82,8 @@ void	add_line_segment(t_line **lines, int *count, t_vec2d a, t_vec2d b,
 	(*lines)[*count].type = type;
 	(*lines)[*count].flag = flag;
 	(*lines)[*count].door = door;
+	(*lines)[*count].open_end = open_end;
+	(*lines)[*count].close_end = close_end;
 	(*count)++;
 }
 
@@ -112,22 +114,22 @@ void	map_to_line_segments(t_global *global, t_line **lines, int *line_count)
 					if (!isWallAbove(global, x, y) && !is_door_above(global, x, y))
 					{
 						add_line_segment(lines, line_count, top_left, top_right,
-							HORIZONTAL, WALL, ACTIVE, NULL);
+							HORIZONTAL, WALL, ACTIVE, NULL, (t_vec2d){-1, -1}, (t_vec2d){-1, -1});
 					}
 					if (!isWallBelow(global, x, y) && !is_door_below(global, x, y))
 					{
 						add_line_segment(lines, line_count, bottom_left,
-							bottom_right, HORIZONTAL, WALL, ACTIVE, NULL);
+							bottom_right, HORIZONTAL, WALL, ACTIVE, NULL, (t_vec2d){-1, -1}, (t_vec2d){-1, -1});
 					}
 					if (!isWallLeft(global, x, y) && !is_door_left(global, x, y))
 					{
 						add_line_segment(lines, line_count, top_left, bottom_left,
-							VERTICAL, WALL, ACTIVE, NULL);
+							VERTICAL, WALL, ACTIVE, NULL, (t_vec2d){-1, -1}, (t_vec2d){-1, -1});
 					}
 					if (!isWallRight(global, x, y) && !is_door_right(global, x, y))
 					{
 						add_line_segment(lines, line_count, top_right, bottom_right,
-							VERTICAL, WALL, ACTIVE, NULL);
+							VERTICAL, WALL, ACTIVE, NULL, (t_vec2d){-1, -1}, (t_vec2d){-1, -1});
 					}
 				}
 				else
@@ -153,22 +155,22 @@ void	map_to_line_segments(t_global *global, t_line **lines, int *line_count)
 						left_middle = (t_vec2d){x, y + 0.5};
 						right_middle = (t_vec2d){x + 1, y + 0.5};
 						add_line_segment(lines, line_count, left_middle, right_middle,
-							HORIZONTAL, DOOR, ACTIVE, door);
+							HORIZONTAL, DOOR, ACTIVE, door, right_middle, left_middle);
 						add_line_segment(lines, line_count, top_left, bottom_left,
-							VERTICAL, DOOR_SIDE, ACTIVE, NULL);
+							VERTICAL, DOOR_SIDE, ACTIVE, door, (t_vec2d){-1, -1}, (t_vec2d){-1, -1});
 						add_line_segment(lines, line_count, top_right, bottom_right,
-							VERTICAL, DOOR_SIDE, ACTIVE, NULL);
+							VERTICAL, DOOR_SIDE, ACTIVE, door, (t_vec2d){-1, -1}, (t_vec2d){-1, -1});
 					}
 					else
 					{
 						left_middle = (t_vec2d){x + 0.5, y};
 						right_middle = (t_vec2d){x + 0.5, y + 1};
 						add_line_segment(lines, line_count, left_middle, right_middle,
-							VERTICAL, DOOR, ACTIVE, door);
+							VERTICAL, DOOR, ACTIVE, door, right_middle, left_middle);
 						add_line_segment(lines, line_count, top_left, top_right,
-							HORIZONTAL, DOOR_SIDE, ACTIVE, NULL);
+							HORIZONTAL, DOOR_SIDE, ACTIVE, door, (t_vec2d){-1, -1}, (t_vec2d){-1, -1});
 						add_line_segment(lines, line_count, bottom_left, bottom_right,
-							HORIZONTAL, DOOR_SIDE, ACTIVE, NULL);
+							HORIZONTAL, DOOR_SIDE, ACTIVE, door, (t_vec2d){-1, -1}, (t_vec2d){-1, -1});
 					}
 				}
 			}

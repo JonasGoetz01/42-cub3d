@@ -41,7 +41,6 @@ typedef struct s_door
 {
 	t_vec2d		pos;
 	t_state		state;
-	float		animation_progress;
 }				t_door;
 
 typedef enum e_flag
@@ -54,6 +53,8 @@ typedef struct s_line
 {
 	t_vec2d		a;
 	t_vec2d		b;
+	t_vec2d		open_end;
+	t_vec2d		close_end;
 	t_alignment	alignment;
 	t_type		type;
 	t_flag		flag;

@@ -192,4 +192,5 @@ bool			parse_line(char *line, t_global *global);
 
 void	get_doors(t_global *global);
 float	get_distance(t_vec2d a, t_vec2d b);
+void	update_door_segments(t_global *global);
 #endif

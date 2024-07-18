@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 16:20:59 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/11 19:36:00 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/18 17:39:00 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ bool	valid_file(char *file, int flag)
 	fd = open(file, O_RDONLY);
 	if (fd < 0)
 	{
-		printf(ERR_OPEN "%s\n" NC , file);
+		printf(ERR_OPEN "%s\n" NC, file);
 		return (false);
 	}
 	close(fd);

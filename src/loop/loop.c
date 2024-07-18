@@ -20,6 +20,7 @@ void	loop(void *param)
 		fps_timer = 0;
 	}
 	fps_timer++;
+	update_door_segments(global);
 	mlx_delete_image(global->mlx, global->minimap);
 	mlx_delete_image(global->mlx, global->img);
 	global->minimap = mlx_new_image(global->mlx, global->window_width
