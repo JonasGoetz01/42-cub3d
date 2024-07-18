@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/17 17:34:22 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/18 11:37:53 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,16 +94,23 @@ void	configure_map(t_global *global)
 {
 	t_line	*lines;
 	int		line_count;
+	int		count = 0;
 
 	global->scale_factor = calculate_scale_factor(global->map->width,
 			global->map->height, WIDTH * global->minimap_scale, HEIGHT
 			* global->minimap_scale);
 	get_doors(global);
-	global->door_line = malloc(sizeof(t_line) * global->door_count);
+	global->door_line = malloc(sizeof(t_line *) * (global->door_count + 1));
 	map_to_line_segments(global, &lines, &line_count);
 	scale_line_segments(lines, line_count, global->scale_factor);
 	global->line_count = line_count;
 	global->lines = lines;
+	for (int i = 0; i < global->line_count; i++)
+	{
+		if (global->lines[i].type == DOOR)
+			global->door_line[count++] = &global->lines[i];
+	}
+	global->door_line[count] = NULL;
 	get_opponents(global);
 }
 

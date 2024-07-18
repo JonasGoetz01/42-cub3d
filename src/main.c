@@ -36,6 +36,7 @@ int	main(int argc, char **argv)
 	global.time = get_current_millis();
 	global.open = false;
 	global.close = false;
+	global.check = false;
 	if (parse_and_validate(argv[1], &global))
 	{
 		//call cleanup function (not implemented yet)

@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/07/17 17:27:29 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/18 13:28:52 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,10 +192,8 @@ t_vec2d	ray_line_collision(t_ray *ray, t_line *line, t_face *face, t_global *glo
 	t_vec2d	collision_point;
 	(void)global;
 
-	if (line->flag == INACTIVE /*&& !global->close*/)
-	{
+	if (line->flag == INACTIVE && !global->check)
 		return ((t_vec2d){-1, -1});
-	}
 	x1 = ray->origin.x;
 	y1 = ray->origin.y;
 	x2 = ray->origin.x + ray->direction.x;
@@ -236,12 +234,6 @@ t_vec2d	ray_line_collision(t_ray *ray, t_line *line, t_face *face, t_global *glo
 			else
 				*face = DOORS;
 		}
-		// double distance = get_distance(ray->origin, collision_point);
-		double distance = point_line_distance(ray->origin, line);
-		// if (line->flag == INACTIVE)
-		// 	printf("distance: %f\n", distance);
-		if (line->flag == INACTIVE && (distance < 3.5 || distance > 15.0))
-			return ((t_vec2d){-1, -1});
 		return (collision_point);
 	}
 	return ((t_vec2d){-1, -1});

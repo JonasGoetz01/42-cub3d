@@ -138,7 +138,8 @@ typedef struct s_global
 	int door_count;
 	bool open;
 	bool close;
-	t_line *door_line;
+	bool check;
+	t_line **door_line;
 } t_global;
 
 void			loop(void *param);

@@ -74,7 +74,7 @@ typedef struct s_ray
 	t_collision	*collisions;
 	int			collision_count;
 	t_collision	*closest_collision;
-	t_line		*collision_line;
+	// t_line		*collision_line;
 }				t_ray;
 
 typedef struct s_circle

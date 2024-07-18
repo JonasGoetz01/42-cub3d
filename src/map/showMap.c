@@ -133,7 +133,6 @@ void	map_to_line_segments(t_global *global, t_line **lines, int *line_count)
 				else
 				{
 					t_door	*door = NULL;
-					int		count = 0;
 					for (int i = 0; i < global->door_count; i++)
 					{
 						float scaled_x = x * global->scale_factor;
@@ -155,8 +154,6 @@ void	map_to_line_segments(t_global *global, t_line **lines, int *line_count)
 						right_middle = (t_vec2d){x + 1, y + 0.5};
 						add_line_segment(lines, line_count, left_middle, right_middle,
 							HORIZONTAL, DOOR, ACTIVE, door);
-						global->door_line[count] = (*lines)[*line_count - 1];
-						count++;
 						add_line_segment(lines, line_count, top_left, bottom_left,
 							VERTICAL, DOOR_SIDE, ACTIVE, NULL);
 						add_line_segment(lines, line_count, top_right, bottom_right,
@@ -168,8 +165,6 @@ void	map_to_line_segments(t_global *global, t_line **lines, int *line_count)
 						right_middle = (t_vec2d){x + 0.5, y + 1};
 						add_line_segment(lines, line_count, left_middle, right_middle,
 							VERTICAL, DOOR, ACTIVE, door);
-						global->door_line[count] = (*lines)[*line_count - 1];
-						count++;
 						add_line_segment(lines, line_count, top_left, top_right,
 							HORIZONTAL, DOOR_SIDE, ACTIVE, NULL);
 						add_line_segment(lines, line_count, bottom_left, bottom_right,
