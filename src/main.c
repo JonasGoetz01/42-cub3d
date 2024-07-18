@@ -12,7 +12,7 @@ int	main(int argc, char **argv)
 	global.minimap_scale = MINIMAP_SCALE;
 	global.time = get_current_millis();
 	if (!(global.mlx = mlx_init(global.window_width, global.window_height,
-				"cub3d", true)))
+				"cub3d", false)))
 	{
 		printf("%s\n", mlx_strerror(mlx_errno));
 		return (EXIT_FAILURE);
