@@ -1,5 +1,16 @@
 #include "../../inc/cub3d.h"
 
+void	key_hook(mlx_key_data_t keydata, void *param)
+{
+	t_global	*global;
+
+	if (keydata.key == MLX_KEY_LEFT_ALT && keydata.action == MLX_PRESS)
+	{
+		global = (t_global *)param;
+		global->free_mouse = !global->free_mouse;
+	}
+}
+
 void	keyHook(void *param)
 {
 	t_global	*global;

@@ -28,6 +28,7 @@ int	main(int argc, char **argv)
 		return (EXIT_FAILURE);
 	}
 	global.map = &map;
+	global.free_mouse = false;
 	global.sprite_index = 0;
 	global.sprite_textures[0] = mlx_load_png("textures/gun1.png");
 	global.sprite_textures[1] = mlx_load_png("textures/gun2.png");
@@ -41,7 +42,7 @@ int	main(int argc, char **argv)
 	mlx_loop_hook(global.mlx, loop, &global);
 	mlx_resize_hook(global.mlx, resize, &global);
 	mlx_cursor_hook(global.mlx, cursor, &global);
-	mlx_set_cursor_mode(global.mlx, MLX_MOUSE_HIDDEN);
+	mlx_key_hook(global.mlx, key_hook, &global);
 	mlx_loop(global.mlx);
 	mlx_terminate(global.mlx);
 	return (0);

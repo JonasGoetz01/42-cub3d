@@ -8,7 +8,14 @@ void	cursor(double xpos, double ypos, void *param)
 
 	(void)ypos;
 	global = (t_global *)param;
-    x_offset = xpos - (double)global->window_width / 2;
+	if (global->free_mouse)
+	{
+		mlx_set_cursor_mode(global->mlx, MLX_MOUSE_NORMAL);
+		return ;
+	}
+	else
+		mlx_set_cursor_mode(global->mlx, MLX_MOUSE_HIDDEN);
+	x_offset = xpos - (double)global->window_width / 2;
 	factor = (int)fabs(x_offset) / 10;
 	if (x_offset > 0)
 		rotate_player(global, 0.01f * (float)factor);

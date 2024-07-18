@@ -55,6 +55,7 @@ typedef struct s_global
 	int				window_height;
 	int				i;
 	int				j;
+	bool			free_mouse;
 }					t_global;
 
 void				loop(void *param);
@@ -87,5 +88,6 @@ void				render_3d(t_global *global);
 void				draw_bar(t_global *global, int x, int y, int width,
 						int height, int color);
 double				get_current_millis(void);
+void				key_hook(mlx_key_data_t keydata, void *param);
 
 #endif
