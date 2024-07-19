@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vscode <vscode@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 16:21:47 by vscode            #+#    #+#             */
-/*   Updated: 2024/05/11 16:21:48 by vscode           ###   ########.fr       */
+/*   Updated: 2024/07/19 13:49:58 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,5 +67,6 @@ bool	ft_arr_cpy(char **src, char **dst);
 char	*ft_strtok(char *str, const char *delim);
 char	*get_next_line(int fd);
 void	ft_arr_sort(char **arr);
+void	*ft_realloc(void *ptr, size_t old_size, size_t new_size);
 
 #endif
