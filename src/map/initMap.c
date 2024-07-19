@@ -7,6 +7,7 @@ t_vec2d	get_player_position(t_global *global)
 	int		x;
 
 	player_pos = (t_vec2d){0, 0};
+	y = 0;
 	while (y < global->map->height)
 	{
 		x = 0;

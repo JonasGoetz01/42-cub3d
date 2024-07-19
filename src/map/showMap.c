@@ -246,7 +246,7 @@ void	showMap(t_global *global)
 	}
 	raycast(global);
 	i = 0;
-	while (i < global->img->width)
+	while ((uint32_t)i < global->img->width)
 	{
 		if (SHOW_RAYS)
 			draw_ray(global, &global->player->rays[i]);
