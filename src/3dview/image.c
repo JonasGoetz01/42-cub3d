@@ -29,7 +29,8 @@ void	show_sky_and_floor(t_global *global)
 		x = 0;
 		while (x < global->window_width)
 		{
-			mlx_put_pixel(global->img, x, y, get_rgba(global->ceiling.r, global->ceiling.g, global->ceiling.b, 255));
+			mlx_put_pixel(global->img, x, y, get_rgba(global->ceiling.r,
+					global->ceiling.g, global->ceiling.b, 255));
 			x++;
 		}
 		y++;
@@ -39,7 +40,8 @@ void	show_sky_and_floor(t_global *global)
 		x = 0;
 		while (x < global->window_width)
 		{
-			mlx_put_pixel(global->img, x, y, get_rgba(global->floor.r, global->floor.g, global->floor.b, 255));
+			mlx_put_pixel(global->img, x, y, get_rgba(global->floor.r,
+					global->floor.g, global->floor.b, 255));
 			x++;
 		}
 		y++;
@@ -66,30 +68,31 @@ float	get_distance(t_vec2d a, t_vec2d b)
 	return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)));
 }
 
-double point_line_distance(t_vec2d point, t_line *line);
+double		point_line_distance(t_vec2d point, t_line *line);
 t_collision	*new_collision(t_collision *collisions, int *collision_count,
-		t_vec2d point, t_line *line, t_face face);
+				t_vec2d point, t_line *line, t_face face);
 
 void	check_inactive_lines(t_global *global)
 {
-	float distance;
-	t_ray tmp_ray;
-	t_collision *tmp;
-	t_vec2d intersection;
-	t_face face;
-	float min_distance = 1000000;
+	float		distance;
+	t_ray		tmp_ray;
+	t_collision	*tmp;
+	t_vec2d		intersection;
+	t_face		face;
+	float		min_distance;
 
+	min_distance = 1000000;
 	tmp_ray.origin = global->player->pos;
 	tmp_ray.direction = global->player->dir;
 	tmp_ray.collisions = NULL;
 	tmp_ray.collision_count = 0;
-
 	for (int i = 0; i < global->line_count; i++)
 	{
 		intersection = ray_line_collision(&tmp_ray, &global->lines[i], &face);
 		if (intersection.x != -1)
 		{
-			tmp = new_collision(tmp_ray.collisions, &tmp_ray.collision_count, intersection, &global->lines[i], face);
+			tmp = new_collision(tmp_ray.collisions, &tmp_ray.collision_count,
+					intersection, &global->lines[i], face);
 			if (!tmp)
 				return ;
 			tmp_ray.collisions = tmp;
@@ -97,7 +100,8 @@ void	check_inactive_lines(t_global *global)
 	}
 	for (int i = 0; i < tmp_ray.collision_count; i++)
 	{
-		distance = get_distance(global->player->pos, tmp_ray.collisions[i].point);
+		distance = get_distance(global->player->pos,
+				tmp_ray.collisions[i].point);
 		if (distance < min_distance)
 		{
 			min_distance = distance;
@@ -106,32 +110,36 @@ void	check_inactive_lines(t_global *global)
 	}
 	for (int i = 0; i < global->door_count; i++)
 	{
-		distance = point_line_distance(global->player->pos, global->door_line[i]) / global->scale_factor;
-		if (distance < INTERACT_DISTANCE && distance > 1.0 && (tmp_ray.closest_collision->line->type == DOOR || tmp_ray.closest_collision->line->type == DOOR_SIDE))
+		distance = point_line_distance(global->player->pos,
+				global->door_line[i]) / global->scale_factor;
+		if (distance < INTERACT_DISTANCE && distance > 1.0
+			&& (tmp_ray.closest_collision->line->type == DOOR
+				|| tmp_ray.closest_collision->line->type == DOOR_SIDE))
 			global->door_line[i]->door->state = CLOSING;
 	}
 }
 
 void	check_active_lines(t_global *global)
 {
-	float distance;
-	t_ray tmp_ray;
-	t_collision *tmp;
-	t_vec2d intersection;
-	t_face face;
-	float min_distance = 1000000;
+	float		distance;
+	t_ray		tmp_ray;
+	t_collision	*tmp;
+	t_vec2d		intersection;
+	t_face		face;
+	float		min_distance;
 
+	min_distance = 1000000;
 	tmp_ray.origin = global->player->pos;
 	tmp_ray.direction = global->player->dir;
 	tmp_ray.collisions = NULL;
 	tmp_ray.collision_count = 0;
-
 	for (int i = 0; i < global->line_count; i++)
 	{
 		intersection = ray_line_collision(&tmp_ray, &global->lines[i], &face);
 		if (intersection.x != -1)
 		{
-			tmp = new_collision(tmp_ray.collisions, &tmp_ray.collision_count, intersection, &global->lines[i], face);
+			tmp = new_collision(tmp_ray.collisions, &tmp_ray.collision_count,
+					intersection, &global->lines[i], face);
 			if (!tmp)
 				return ;
 			tmp_ray.collisions = tmp;
@@ -139,7 +147,8 @@ void	check_active_lines(t_global *global)
 	}
 	for (int i = 0; i < tmp_ray.collision_count; i++)
 	{
-		distance = get_distance(global->player->pos, tmp_ray.collisions[i].point);
+		distance = get_distance(global->player->pos,
+				tmp_ray.collisions[i].point);
 		if (distance < min_distance)
 		{
 			min_distance = distance;
@@ -148,25 +157,30 @@ void	check_active_lines(t_global *global)
 	}
 	for (int i = 0; i < global->door_count; i++)
 	{
-		distance = point_line_distance(global->player->pos, global->door_line[i]) / global->scale_factor;
-		if (distance < INTERACT_DISTANCE && distance > 1.0 && (tmp_ray.closest_collision->line->type == DOOR || tmp_ray.closest_collision->line->type == DOOR_SIDE))
+		distance = point_line_distance(global->player->pos,
+				global->door_line[i]) / global->scale_factor;
+		if (distance < INTERACT_DISTANCE && distance > 1.0
+			&& (tmp_ray.closest_collision->line->type == DOOR
+				|| tmp_ray.closest_collision->line->type == DOOR_SIDE))
 			global->door_line[i]->door->state = OPENING;
 	}
 }
 
-void update_door_segments(t_global *global)
+void	update_door_segments(t_global *global)
 {
-	float scaled_x;
-	float scaled_y;
-	float distance;
-	float speed = (global->scale_factor / 40);
+	float	scaled_x;
+	float	scaled_y;
+	float	distance;
+	float	speed;
 
+	speed = (global->scale_factor / 40);
 	for (int i = 0; i < global->door_count; i++)
 	{
-		distance = point_line_distance(global->player->pos, global->door_line[i]);
-		if (global->doors[i].state == OPENING && distance > 1.0 / global->scale_factor)
+		distance = point_line_distance(global->player->pos,
+				global->door_line[i]);
+		if (global->doors[i].state == OPENING && distance > 1.0
+			/ global->scale_factor)
 		{
-
 			if (global->door_line[i]->alignment == VERTICAL)
 			{
 				scaled_y = global->door_line[i]->a.y / global->scale_factor;
@@ -190,7 +204,8 @@ void update_door_segments(t_global *global)
 					global->doors[i].state = OPEN;
 			}
 		}
-		else if (global->doors[i].state == CLOSING && distance > 1.0 / global->scale_factor)
+		else if (global->doors[i].state == CLOSING && distance > 1.0
+			/ global->scale_factor)
 		{
 			if (global->door_line[i]->alignment == VERTICAL)
 			{
@@ -220,38 +235,37 @@ void update_door_segments(t_global *global)
 
 void	render_3d(t_global *global)
 {
-	int						bar_width;
-	int						i;
-	t_ray					*ray;
-	t_collision				*closest_collision;
-	float					distance;
-	int						bar_height;
-	int						center_y;
-	int						top_y;
-	int						bottom_y;
-	int						x;
-	float					hit_percentage;
-	int						color;
-	mlx_texture_t			*texture;
-	uint8_t					*pixel;
-	int						draw_y;
-	int						texture_x;
-	int						texture_y;
-	float					z_buffer[global->img->width];
-	float					perpendicular_distance;
-	float					ray_angle;
-	float					player_angle;
-	float					angle_diff;
-	static mlx_texture_t	*texture_north = NULL;
-	static mlx_texture_t	*texture_south = NULL;
-	static mlx_texture_t	*texture_east = NULL;
-	static mlx_texture_t	*texture_west = NULL;
-	static mlx_texture_t	*door = NULL;
-	int						r;
-	int						g;
-	int						b;
+	int bar_width;
+	int i;
+	t_ray *ray;
+	t_collision *closest_collision;
+	float distance;
+	int bar_height;
+	int center_y;
+	int top_y;
+	int bottom_y;
+	int x;
+	float hit_percentage;
+	int color;
+	mlx_texture_t *texture;
+	uint8_t *pixel;
+	int draw_y;
+	int texture_x;
+	int texture_y;
+	float z_buffer[global->img->width];
+	float perpendicular_distance;
+	float ray_angle;
+	float player_angle;
+	float angle_diff;
+	static mlx_texture_t *texture_north = NULL;
+	static mlx_texture_t *texture_south = NULL;
+	static mlx_texture_t *texture_east = NULL;
+	static mlx_texture_t *texture_west = NULL;
+	static mlx_texture_t *door = NULL;
+	int r;
+	int g;
+	int b;
 
-	// Load textures once
 	if (!texture_north)
 		texture_north = mlx_load_png(global->texture->north);
 	if (!texture_south)
@@ -262,11 +276,9 @@ void	render_3d(t_global *global)
 		texture_west = mlx_load_png(global->texture->west);
 	if (!door)
 		door = mlx_load_png("textures/diamond.png");
-	if (!texture_north || !texture_south || !texture_east || !texture_west || !door)
-	{
-		fprintf(stderr, "Error loading textures\n");
-		return ;
-	}
+	if (!texture_north || !texture_south || !texture_east || !texture_west
+		|| !door)
+		ft_exit_free(global);
 	player_angle = atan2(global->player->dir.y, global->player->dir.x);
 	bar_width = 1;
 	if (global->close)

@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/07/19 11:21:44 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/19 13:48:31 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,26 +184,30 @@ void	draw_ray(t_global *global, t_ray *ray)
 	draw_line(global, ray->origin, end, get_rgba(255, 255, 255, 255));
 }
 
-double point_line_distance(t_vec2d point, t_line *line)
+double	point_line_distance(t_vec2d point, t_line *line)
 {
-	double dx = line->b.x - line->a.x;
-	double dy = line->b.y - line->a.y;
+	double	dx;
+	double	dy;
+	double	t;
+	double	closestX;
+	double	closestY;
+
+	dx = line->b.x - line->a.x;
+	dy = line->b.y - line->a.y;
 	if (dx == 0 && dy == 0)
 	{
 		dx = point.x - line->a.x;
 		dy = point.y - line->a.y;
-		return (sqrt(dx*dx + dy*dy));
+		return (sqrt(dx * dx + dy * dy));
 	}
-	
-	double t = ((point.x - line->a.x) * dx + (point.y - line->a.y) * dy) / (dx*dx + dy*dy);
+	t = ((point.x - line->a.x) * dx + (point.y - line->a.y) * dy) / (dx * dx
+			+ dy * dy);
 	t = fmax(0, fmin(1, t));
-	double closestX = line->a.x + t * dx;
-	double closestY = line->a.y + t * dy;
-
+	closestX = line->a.x + t * dx;
+	closestY = line->a.y + t * dy;
 	dx = point.x - closestX;
 	dy = point.y - closestY;
-
-	return (sqrt(dx*dx + dy*dy));
+	return (sqrt(dx * dx + dy * dy));
 }
 
 t_vec2d	ray_line_collision(t_ray *ray, t_line *line, t_face *face)
@@ -271,7 +275,8 @@ t_collision	*new_collision(t_collision *collisions, int *collision_count,
 {
 	t_collision	*new_collisions;
 
-	new_collisions = realloc(collisions, (*collision_count + 1)
+	new_collisions = ft_realloc(collisions, *collision_count
+			* sizeof(t_collision), (*collision_count + 1)
 			* sizeof(t_collision));
 	if (!new_collisions)
 		return (NULL);
@@ -326,7 +331,7 @@ void	raycast(t_global *global)
 void	draw_bar(t_global *global, int x, int y, int width, int height,
 		int color)
 {
-	int	draw_y;
+	int draw_y;
 
 	for (int i = 0; i < width; i++)
 	{
