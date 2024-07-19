@@ -213,11 +213,14 @@ t_vec2d	calculate_collision_point(float t, t_vec2d ray_origin,
 		* (ray_direction.y)});
 }
 
+void	determine_face(t_vec2d ray_origin, t_vec2d collision_point,
+		t_line *line, t_face *face)
+{
 		if (line->alignment == HORIZONTAL)
 		{
 			if (line->type == WALL)
 			{
-				if (ray->origin.y < collision_point.y)
+			if (ray_origin.y < collision_point.y)
 					*face = SOUTH;
 				else
 					*face = NORTH;
@@ -225,11 +228,11 @@ t_vec2d	calculate_collision_point(float t, t_vec2d ray_origin,
 			else
 				*face = DOORS;
 		}
-		else // VERTICAL
+	else
 		{
 			if (line->type == WALL)
 			{
-				if (ray->origin.x < collision_point.x)
+			if (ray_origin.x < collision_point.x)
 					*face = EAST;
 				else
 					*face = WEST;
@@ -237,6 +240,7 @@ t_vec2d	calculate_collision_point(float t, t_vec2d ray_origin,
 			else
 				*face = DOORS;
 		}
+}
 		return (collision_point);
 	}
 	return ((t_vec2d){-1, -1});
