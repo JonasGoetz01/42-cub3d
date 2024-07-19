@@ -70,6 +70,17 @@ void	loop(void *param)
 	show_sky_and_floor(global);
 	render_3d(global);
 	ft_texture_to_image(global, global->sprite_textures[global->sprite_index]);
+	t_line crosshair[2];
+	crosshair[0].a = (t_vec2d){global->window_width / 2 - 10,
+		global->window_height / 2};
+	crosshair[0].b = (t_vec2d){global->window_width / 2 + 10,
+		global->window_height / 2};
+	crosshair[1].a = (t_vec2d){global->window_width / 2,
+		global->window_height / 2 - 10};
+	crosshair[1].b = (t_vec2d){global->window_width / 2,
+		global->window_height / 2 + 10};
+	draw_line_crosshair(global, crosshair[0].a, crosshair[0].b, 0x00FF00);
+	draw_line_crosshair(global, crosshair[1].a, crosshair[1].b, 0x00FF00);
 	mlx_image_to_window(global->mlx, global->minimap, 0, 0);
 	mlx_image_to_window(global->mlx, global->img, 0, 0);
 	if (SHOW_MINIMAP)

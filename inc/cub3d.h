@@ -140,6 +140,7 @@ void				map_to_line_segments(t_global *global, t_line **lines,
 						int *line_count);
 void				draw_line(t_global *global, t_vec2d a, t_vec2d b,
 						int color);
+void				draw_line_crosshair(t_global *global, t_vec2d a, t_vec2d b, int color);
 void				showMap(t_global *global);
 float				calculate_scale_factor(int map_width, int map_height,
 						int window_width, int window_height);

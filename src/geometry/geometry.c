@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/07/19 11:00:52 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/19 11:21:44 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,36 @@ void	scale_line_segments(t_line *lines, int line_count, float scale_factor)
 		lines[i].a.y *= scale_factor;
 		lines[i].b.x *= scale_factor;
 		lines[i].b.y *= scale_factor;
+	}
+}
+
+void	draw_line_crosshair(t_global *global, t_vec2d a, t_vec2d b, int color)
+{
+	int		dx;
+	int		dy;
+	int		steps;
+	float	x_inc;
+	float	y_inc;
+	float	x;
+	float	y;
+	int		i;
+
+	dx = b.x - a.x;
+	dy = b.y - a.y;
+	steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+	x_inc = dx / (float)steps;
+	y_inc = dy / (float)steps;
+	x = a.x;
+	y = a.y;
+	for (i = 0; i <= steps; i++)
+	{
+		if (x >= 0 && x < global->img->width && y >= 0
+			&& y < global->img->height)
+		{
+			mlx_put_pixel(global->img, (int)x, (int)y, color);
+		}
+		x += x_inc;
+		y += y_inc;
 	}
 }
 
