@@ -1,8 +1,8 @@
 
-NO test.png
-SO test.png
-WE test.png
-EA test.png
+NO textures/cobblestone.png
+SO textures/dirt.png
+WE textures/piston_bottom.png
+EA textures/polished_granite.png
 
 F 220,100,0
 
