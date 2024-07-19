@@ -23,7 +23,7 @@
 # define SHOW_FOV 1
 # define WALL_BUFFER_DISTANCE 0.2f
 # define PLAYER_RADIUS 0.2f
-# define INTERACT_DISTANCE 15.0f // maybe change value
+# define INTERACT_DISTANCE 2.0f // maybe change value
 
 # define NC      "\033[0m"
 # define RED     "\033[31m"
