@@ -35,8 +35,8 @@ void	keyHook(void *param)
 	float		length;
 
 	dir = (t_vec2d){0.0f, 0.0f};
-	move_speed = MOVE_SPEED;
 	global = (t_global *)param;
+	move_speed = MOVE_SPEED * global->scale_factor / 8;
 	if (mlx_is_key_down(global->mlx, MLX_KEY_ESCAPE))
 		return (mlx_close_window(global->mlx));
 	if (mlx_is_key_down(global->mlx, MLX_KEY_LEFT_SHIFT))
