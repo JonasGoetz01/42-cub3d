@@ -101,9 +101,35 @@ void	draw_line(t_global *global, t_vec2d a, t_vec2d b, int color)
 	}
 }
 
-void	draw_circle(t_global *global, t_circle *circle, int color)
+void	plot_circle_points(t_global *global, t_circle *circle, int color, int x,
+		int y)
 {
-	int	radius;
+	int	img_width;
+	int	img_height;
+	int	cx;
+	int	cy;
+
+	img_width = (int)global->window_width;
+	img_height = (int)global->window_height;
+	cx = (int)circle->center.x;
+	cy = (int)circle->center.y;
+	if (cx + x >= 0 && cx + x < img_width && cy + y >= 0 && cy + y < img_height)
+		mlx_put_pixel(global->minimap, cx + x, cy + y, color);
+	if (cx + y >= 0 && cx + y < img_width && cy + x >= 0 && cy + x < img_height)
+		mlx_put_pixel(global->minimap, cx + y, cy + x, color);
+	if (cx - y >= 0 && cx - y < img_width && cy + x >= 0 && cy + x < img_height)
+		mlx_put_pixel(global->minimap, cx - y, cy + x, color);
+	if (cx - x >= 0 && cx - x < img_width && cy + y >= 0 && cy + y < img_height)
+		mlx_put_pixel(global->minimap, cx - x, cy + y, color);
+	if (cx - x >= 0 && cx - x < img_width && cy - y >= 0 && cy - y < img_height)
+		mlx_put_pixel(global->minimap, cx - x, cy - y, color);
+	if (cx - y >= 0 && cx - y < img_width && cy - x >= 0 && cy - x < img_height)
+		mlx_put_pixel(global->minimap, cx - y, cy - x, color);
+	if (cx + y >= 0 && cx + y < img_width && cy - x >= 0 && cy - x < img_height)
+		mlx_put_pixel(global->minimap, cx + y, cy - x, color);
+	if (cx + x >= 0 && cx + x < img_width && cy - y >= 0 && cy - y < img_height)
+		mlx_put_pixel(global->minimap, cx + x, cy - y, color);
+}
 	int	x;
 	int	y;
 	int	dx;
