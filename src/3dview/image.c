@@ -107,7 +107,8 @@ void	check_inactive_lines(t_global *global)
 	for (int i = 0; i < global->door_count; i++)
 	{
 		distance = point_line_distance(global->player->pos, global->door_line[i]);
-		if (distance < INTERACT_DISTANCE && distance > 2.0 && (tmp_ray.closest_collision->line->type == DOOR || tmp_ray.closest_collision->line->type == DOOR_SIDE))
+		// distance = get_distance(global->player->pos, tmp_ray.closest_collision->point);
+		if (distance < INTERACT_DISTANCE && distance > 3.0 && (tmp_ray.closest_collision->line->type == DOOR || tmp_ray.closest_collision->line->type == DOOR_SIDE))
 			global->door_line[i]->door->state = CLOSING;
 	}
 }
@@ -149,7 +150,7 @@ void	check_active_lines(t_global *global)
 	for (int i = 0; i < global->door_count; i++)
 	{
 		distance = point_line_distance(global->player->pos, global->door_line[i]);
-		if (distance < INTERACT_DISTANCE && distance > 2.0 && (tmp_ray.closest_collision->line->type == DOOR || tmp_ray.closest_collision->line->type == DOOR_SIDE))
+		if (distance < INTERACT_DISTANCE && distance > 3.0 && (tmp_ray.closest_collision->line->type == DOOR || tmp_ray.closest_collision->line->type == DOOR_SIDE))
 			global->door_line[i]->door->state = OPENING;
 	}
 }
@@ -158,10 +159,12 @@ void update_door_segments(t_global *global)
 {
 	float scaled_x;
 	float scaled_y;
+	float distance;
 
 	for (int i = 0; i < global->door_count; i++)
 	{
-		if (global->doors[i].state == OPENING)
+		distance = point_line_distance(global->player->pos, global->door_line[i]);
+		if (global->doors[i].state == OPENING && distance > 3.0)
 		{
 
 			if (global->door_line[i]->alignment == VERTICAL)
@@ -187,7 +190,7 @@ void update_door_segments(t_global *global)
 					global->doors[i].state = OPEN;
 			}
 		}
-		else if (global->doors[i].state == CLOSING)
+		else if (global->doors[i].state == CLOSING && distance > 3.0)
 		{
 			if (global->door_line[i]->alignment == VERTICAL)
 			{
