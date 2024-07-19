@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/18 17:42:01 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/19 10:56:52 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,6 @@ void	configure_map(t_global *global)
 			global->door_line[count++] = &global->lines[i];
 	}
 	global->door_line[count] = NULL;
-	get_opponents(global);
 }
 
 int	parse_and_validate(char *file, t_global *global)
