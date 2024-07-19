@@ -241,6 +241,12 @@ void	determine_face(t_vec2d ray_origin, t_vec2d collision_point,
 				*face = DOORS;
 		}
 }
+
+bool	is_collision(float t, float u)
+{
+	return (t >= 0 && u >= 0 && u <= 1);
+}
+
 		return (collision_point);
 	}
 	return ((t_vec2d){-1, -1});
