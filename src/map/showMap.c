@@ -145,10 +145,7 @@ void	map_to_line_segments(t_global *global, t_line **lines, int *line_count)
 						}
 					}
 					if (!door)
-					{
-						printf("no door found\n");
-						exit(1); // handle differently
-					}
+						ft_exit_free(global);
 					if (isWallLeft(global, x, y) && isWallRight(global, x, y))
 					{
 						left_middle = (t_vec2d){x, y + 0.5};

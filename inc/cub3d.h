@@ -133,6 +133,7 @@ typedef struct s_global
 	t_line **door_line;
 } t_global;
 
+void				ft_exit_free(t_global *global);
 void				loop(void *param);
 void				keyHook(void *param);
 void				initMap(t_global *global);
