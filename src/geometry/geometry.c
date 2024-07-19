@@ -302,49 +302,59 @@ t_collision	*new_collision(t_collision *collisions, int *collision_count,
 	return (new_collisions);
 }
 
+t_collision	*process_intersections(t_ray *ray, t_line *lines, int line_count)
+{
+    t_vec2d	intersection;
+    t_face	face;
+    t_collision	*new_collisions;
+
+    for (int j = 0; j < line_count; j++)
+    {
+        intersection = ray_line_collision(ray, &lines[j], &face);
+        if (intersection.x != -1)
+        {
+            new_collisions = new_collision(ray->collisions, &ray->collision_count,
+                                           intersection, &lines[j], face);
+            if (!new_collisions)
+                return (NULL);
+            ray->collisions = new_collisions;
+        }
+    }
+    return (ray->collisions);
+}
+
+t_collision	*find_closest_collision(t_ray *ray, t_vec2d player_pos)
+{
+    float	min_distance = 1000000;
+    float	distance;
+    t_collision	*closest_collision = NULL;
+
+    for (int j = 0; j < ray->collision_count; j++)
+    {
+        distance = sqrtf(powf(player_pos.x - ray->collisions[j].point.x, 2) +
+                         powf(player_pos.y - ray->collisions[j].point.y, 2));
+        if (distance < min_distance)
+        {
+            min_distance = distance;
+            closest_collision = &ray->collisions[j];
+        }
+    }
+    return (closest_collision);
+}
+
 void	raycast(t_global *global)
 {
-	t_vec2d		intersection;
-	t_face		face;
-	t_collision	*new_collisions;
-	float		min_distance;
-	float		distance;
+    t_collision	*new_collisions;
+    t_collision	*closest_collision;
+    t_ray		*ray;
 
-	global->i = 0;
-	while (global->i < (int)global->img->width)
-	{
-		global->j = 0;
-		while (global->j < global->line_count)
-		{
-			intersection = ray_line_collision(&global->player->rays[global->i],
-					&global->lines[global->j], &face);
-			if (intersection.x != -1)
-			{
-				new_collisions = new_collision(global->player->rays[global->i].collisions,
-						&global->player->rays[global->i].collision_count,
-						intersection, &global->lines[global->j], face);
-				if (!new_collisions)
-					return ;
-				global->player->rays[global->i].collisions = new_collisions;
-			}
-			global->j++;
-		}
-		min_distance = 1000000;
-		global->j = 0;
-		while (global->j < global->player->rays[global->i].collision_count)
-		{
-			distance = sqrtf(powf(global->player->pos.x
-						- global->player->rays[global->i].collisions[global->j].point.x,
-						2) + powf(global->player->pos.y
-						- global->player->rays[global->i].collisions[global->j].point.y,
-						2));
-			if (distance < min_distance)
-			{
-				min_distance = distance;
-				global->player->rays[global->i].closest_collision = &global->player->rays[global->i].collisions[global->j];
-			}
-			global->j++;
-		}
-		global->i++;
-	}
+    for (int i = 0; i < (int)global->img->width; i++)
+    {
+        ray = &global->player->rays[i];
+        new_collisions = process_intersections(ray, global->lines, global->line_count);
+        if (!new_collisions)
+            return ;
+        closest_collision = find_closest_collision(ray, global->player->pos);
+        ray->closest_collision = closest_collision;
+    }
 }
