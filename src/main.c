@@ -1,9 +1,41 @@
 #include "../inc/cub3d.h"
 
+void	init_to_null(t_global * global)
+{
+	global->map = NULL;
+	global->player = NULL;
+	global->doors = NULL;
+	global->door_line = NULL;
+	global->texture = NULL;
+	global->lines = NULL;
+}
+
+void	ft_exit_free(t_global *global)
+{
+	if (global->map != NULL)
+		ft_arr_free((void **)global->map);
+	if (global->player != NULL)
+	{
+		if (global->player->rays != NULL)
+			free(global->player->rays);
+		free(global->player);
+	}
+	if (global->doors != NULL)
+		free(global->doors);
+	if (global->door_line != NULL)
+		free(global->door_line);
+	if (global->texture != NULL)
+		free(global->texture);
+	if (global->lines != NULL)
+		free(global->lines);
+	exit (EXIT_FAILURE);
+}
+
 int	main(int argc, char **argv)
 {
 	t_global global;
 
+	init_to_null(&global);
 	if (argc != 2)
 		return (printf(ERR_ARG USAGE), EXIT_FAILURE);
 	global.window_height = HEIGHT;
@@ -13,26 +45,16 @@ int	main(int argc, char **argv)
 	global.open = false;
 	global.close = false;
 	if (parse_and_validate(argv[1], &global))
-	{
-		//call cleanup function (not implemented yet)
-		return (EXIT_FAILURE);
-	}
+		ft_exit_free(&global);
 	if (!(global.mlx = mlx_init(global.window_width, global.window_height,
 				"cub3d", false)))
-	{
-		printf("%s\n", mlx_strerror(mlx_errno));
-		return (EXIT_FAILURE);
-	}
+		ft_exit_free(&global);
 	global.minimap = mlx_new_image(global.mlx, global.window_width,
 			global.window_height);
 	global.img = mlx_new_image(global.mlx, global.window_width,
 			global.window_height);
 	if (!global.img || !global.minimap)
-	{
-		mlx_close_window(global.mlx);
-		printf("%s\n", mlx_strerror(mlx_errno));
-		return (EXIT_FAILURE);
-	}
+		ft_exit_free(&global);
 	global.free_mouse = false;
 	global.sprite_index = 0;
 	global.sprite_textures[0] = mlx_load_png("textures/gun1.png");

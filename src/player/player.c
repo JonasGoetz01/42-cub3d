@@ -18,12 +18,13 @@ t_player	*new_player(t_global *global, t_vec2d pos, t_vec2d dir)
 
 	player = malloc(sizeof(t_player));
 	if (!player)
-		return (NULL);
+		ft_exit_free(global);
+	player->rays = NULL;
 	player->pos = pos;
 	player->dir = dir;
 	player->rays = malloc(sizeof(t_ray) * global->img->width);
 	if (!player->rays)
-		return (free(player), NULL);
+		ft_exit_free(global);
 	angle_increment = FOV / (global->img->width - 1);
 	i = 0;
 	while (i < (int)global->img->width)
@@ -124,10 +125,8 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 	}
 	else
 		global->sprite_index = 0;
-	// Calculate new position
 	new_pos.x = global->player->pos.x + dir.x * speed * global->minimap_scale;
 	new_pos.y = global->player->pos.y + dir.y * speed * global->minimap_scale;
-	// Check collision for x-axis
 	temp_pos = global->player->pos;
 	temp_pos.x = new_pos.x;
     i = 0;
@@ -143,7 +142,6 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 	}
 	if (!collision_x)
 		global->player->pos.x = new_pos.x;
-	// Check collision for y-axis
 	temp_pos = global->player->pos;
 	temp_pos.y = new_pos.y;
     i = 0;
@@ -159,7 +157,6 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 	}
 	if (!collision_y)
 		global->player->pos.y = new_pos.y;
-	// Update ray origins
 	i = 0;
 	while (i < (int)global->img->width) {
         global->player->rays[i].origin = global->player->pos;
