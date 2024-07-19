@@ -130,64 +130,24 @@ void	plot_circle_points(t_global *global, t_circle *circle, int color, int x,
 	if (cx + x >= 0 && cx + x < img_width && cy - y >= 0 && cy - y < img_height)
 		mlx_put_pixel(global->minimap, cx + x, cy - y, color);
 }
+
+void	draw_circle_points(t_global *global, t_circle *circle, int color,
+		int radius)
+{
 	int	x;
 	int	y;
 	int	dx;
 	int	dy;
 	int	err;
-	int	img_width;
-	int	img_height;
 
-	radius = (int)circle->radius;
 	x = radius - 1;
 	y = 0;
 	dx = 1;
 	dy = 1;
 	err = dx - (radius << 1);
-	img_width = (int)global->window_width;
-	img_height = (int)global->window_height;
 	while (x >= y)
 	{
-		if ((int)circle->center.x + x >= 0 && (int)circle->center.x
-			+ x < img_width && (int)circle->center.y + y >= 0
-			&& (int)circle->center.y + y < img_height)
-			mlx_put_pixel(global->minimap, (int)circle->center.x + x,
-				(int)circle->center.y + y, color);
-		if ((int)circle->center.x + y >= 0 && (int)circle->center.x
-			+ y < img_width && (int)circle->center.y + x >= 0
-			&& (int)circle->center.y + x < img_height)
-			mlx_put_pixel(global->minimap, (int)circle->center.x + y,
-				(int)circle->center.y + x, color);
-		if ((int)circle->center.x - y >= 0 && (int)circle->center.x
-			- y < img_width && (int)circle->center.y + x >= 0
-			&& (int)circle->center.y + x < img_height)
-			mlx_put_pixel(global->minimap, (int)circle->center.x - y,
-				(int)circle->center.y + x, color);
-		if ((int)circle->center.x - x >= 0 && (int)circle->center.x
-			- x < img_width && (int)circle->center.y + y >= 0
-			&& (int)circle->center.y + y < img_height)
-			mlx_put_pixel(global->minimap, (int)circle->center.x - x,
-				(int)circle->center.y + y, color);
-		if ((int)circle->center.x - x >= 0 && (int)circle->center.x
-			- x < img_width && (int)circle->center.y - y >= 0
-			&& (int)circle->center.y - y < img_height)
-			mlx_put_pixel(global->minimap, (int)circle->center.x - x,
-				(int)circle->center.y - y, color);
-		if ((int)circle->center.x - y >= 0 && (int)circle->center.x
-			- y < img_width && (int)circle->center.y - x >= 0
-			&& (int)circle->center.y - x < img_height)
-			mlx_put_pixel(global->minimap, (int)circle->center.x - y,
-				(int)circle->center.y - x, color);
-		if ((int)circle->center.x + y >= 0 && (int)circle->center.x
-			+ y < img_width && (int)circle->center.y - x >= 0
-			&& (int)circle->center.y - x < img_height)
-			mlx_put_pixel(global->minimap, (int)circle->center.x + y,
-				(int)circle->center.y - x, color);
-		if ((int)circle->center.x + x >= 0 && (int)circle->center.x
-			+ x < img_width && (int)circle->center.y - y >= 0
-			&& (int)circle->center.y - y < img_height)
-			mlx_put_pixel(global->minimap, (int)circle->center.x + x,
-				(int)circle->center.y - y, color);
+		plot_circle_points(global, circle, color, x, y);
 		if (err <= 0)
 		{
 			y++;
