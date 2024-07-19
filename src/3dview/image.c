@@ -29,7 +29,7 @@ void	show_sky_and_floor(t_global *global)
 		x = 0;
 		while (x < global->window_width)
 		{
-			mlx_put_pixel(global->img, x, y, get_rgba(0, 255, 255, 255));
+			mlx_put_pixel(global->img, x, y, get_rgba(global->ceiling.r, global->ceiling.g, global->ceiling.b, 255));
 			x++;
 		}
 		y++;
@@ -39,7 +39,7 @@ void	show_sky_and_floor(t_global *global)
 		x = 0;
 		while (x < global->window_width)
 		{
-			mlx_put_pixel(global->img, x, y, get_rgba(255, 255, 0, 255));
+			mlx_put_pixel(global->img, x, y, get_rgba(global->floor.r, global->floor.g, global->floor.b, 255));
 			x++;
 		}
 		y++;
@@ -253,13 +253,13 @@ void	render_3d(t_global *global)
 
 	// Load textures once
 	if (!texture_north)
-		texture_north = mlx_load_png("textures/cobblestone.png");
+		texture_north = mlx_load_png(global->texture->north);
 	if (!texture_south)
-		texture_south = mlx_load_png("textures/dirt.png");
+		texture_south = mlx_load_png(global->texture->south);
 	if (!texture_east)
-		texture_east = mlx_load_png("textures/polished_granite.png");
+		texture_east = mlx_load_png(global->texture->east);
 	if (!texture_west)
-		texture_west = mlx_load_png("textures/piston_bottom.png");
+		texture_west = mlx_load_png(global->texture->west);
 	if (!door)
 		door = mlx_load_png("textures/diamond.png");
 	if (!texture_north || !texture_south || !texture_east || !texture_west || !door)
