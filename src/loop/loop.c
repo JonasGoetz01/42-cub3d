@@ -37,6 +37,18 @@ void	ft_texture_to_image(t_global *global, mlx_texture_t *texture)
 	}
 }
 
+// @TODO test if it works well on 42 mac
+void my_usleep(unsigned int microseconds) {
+    unsigned long start_time, current_time;
+    unsigned long wait_time = microseconds / 1000;
+
+    start_time = get_current_millis();
+    do {
+        current_time = get_current_millis();
+    } while ((current_time - start_time) < wait_time);
+}
+
+
 void	loop(void *param)
 {
 	t_global	*global;
@@ -45,21 +57,33 @@ void	loop(void *param)
 	double		elapsed_time;
 	int			fps;
 	t_line		crosshair[2];
+    const double max_fps = 60.0;
+    const double frame_duration = 1000.0 / max_fps;
 
-	global = (t_global *)param;
-	current_time = get_current_millis();
-	elapsed_time = current_time - global->time;
-	global->time = current_time;
-	if (fps_timer % 10 == 0)
-	{
-		fps = (int)((double)1000.0 / elapsed_time);
-		write(1, "FPS: ", 5);
-		ft_putnbr_fd(fps, 1);
-		write(1, "\r", 1);
-		fps_timer = 0;
-	}
-	fps_timer++;
-	update_door_segments(global);
+    global = (t_global *)param;
+    current_time = get_current_millis();
+    elapsed_time = current_time - global->time;
+    global->time = current_time;
+
+    // Ensure the frame time is at least 16.67 milliseconds
+    if (elapsed_time < frame_duration)
+    {
+        my_usleep((frame_duration - elapsed_time) * 1000); // usleep takes microseconds
+        current_time = get_current_millis();
+        elapsed_time = current_time - global->time;
+        global->time = current_time;
+    }
+
+    if (fps_timer % 10 == 0)
+    {
+        fps = (int)(1000.0 / elapsed_time);
+        write(1, "FPS: ", 5);
+        ft_putnbr_fd(fps, 1);
+        write(1, "\r", 1);
+        fps_timer = 0;
+    }
+    fps_timer++;
+    update_door_segments(global);
 	mlx_delete_image(global->mlx, global->minimap);
 	mlx_delete_image(global->mlx, global->img);
 	global->minimap = mlx_new_image(global->mlx, global->window_width
