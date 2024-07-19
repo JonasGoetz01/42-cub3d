@@ -247,6 +247,24 @@ bool	is_collision(float t, float u)
 	return (t >= 0 && u >= 0 && u <= 1);
 }
 
+t_vec2d	ray_line_intersection(t_ray *ray, t_line *line, float *t, float *u)
+{
+	float	x2;
+	float	y2;
+	float	denominator;
+
+	x2 = ray->origin.x + ray->direction.x;
+	y2 = ray->origin.y + ray->direction.y;
+	denominator = (ray->origin.x - x2) * (line->a.y - line->b.y)
+		- (ray->origin.y - y2) * (line->a.x - line->b.x);
+	if (denominator == 0)
+		return ((t_vec2d){-1, -1});
+	*t = ((ray->origin.x - line->a.x) * (line->a.y - line->b.y) - (ray->origin.y
+				- line->a.y) * (line->a.x - line->b.x)) / denominator;
+	*u = ((ray->origin.x - line->a.x) * (ray->origin.y - y2) - (ray->origin.y
+				- line->a.y) * (ray->origin.x - x2)) / denominator;
+	return ((t_vec2d){0, 0});
+}
 		return (collision_point);
 	}
 	return ((t_vec2d){-1, -1});
