@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   initMap.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/19 16:02:21 by cgerling          #+#    #+#             */
+/*   Updated: 2024/07/19 16:04:17 by cgerling         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/cub3d.h"
 
 t_vec2d	get_player_position(t_global *global)
@@ -56,7 +68,7 @@ t_vec2d	get_player_direction(t_global *global)
 	return (player_pos);
 }
 
-void	get_doors(t_global *global)
+int	get_door_amount(t_global *global)
 {
 	int	count;
 	int	y;
@@ -75,8 +87,17 @@ void	get_doors(t_global *global)
 		}
 		y++;
 	}
-	global->door_count = count;
-	global->doors = malloc(sizeof(t_door) * count);
+	return (count);
+}
+
+void	get_doors(t_global *global)
+{
+	int	y;
+	int	x;
+	int	count;
+
+	global->door_count = get_door_amount(global);
+	global->doors = malloc(sizeof(t_door) * global->door_count);
 	count = 0;
 	y = 0;
 	while (y < global->map->height)

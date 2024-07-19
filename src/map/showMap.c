@@ -205,8 +205,10 @@ void	draw_fov_lines(t_global *global)
 {
 	float		angle;
 	t_player	*player;
+	t_vec2d		start;
+	t_vec2d		left_end;
+	t_vec2d		right_end;
 
-	t_vec2d start, left_end, right_end;
 	player = global->player;
 	start = player->pos;
 	angle = atan2f(player->dir.y, player->dir.x) - (float)(FOV / 2);
