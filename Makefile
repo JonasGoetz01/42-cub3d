@@ -16,7 +16,8 @@ VPATH	:=	src \
 			src/hooks \
 			src/player \
 			src/3dview \
-			src/utils
+			src/utils \
+			src/parsing
 
 SRCS	:=  main.c \
 			loop.c \
@@ -29,8 +30,16 @@ SRCS	:=  main.c \
 			cursor.c \
 			image.c \
 			time.c \
+			parse.c \
+			parse2.c \
+			validate_file.c \
+			validate_map.c \
+			parse_utils.c \
+			parse_utils2.c \
+			validate_color.c \
+			map_size.c \
 			raycast.c \
-			raycast1.c 
+			raycast1.c
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
