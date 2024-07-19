@@ -47,31 +47,29 @@ void	scale_line_segments(t_line *lines, int line_count, float scale_factor)
 
 void	draw_line_crosshair(t_global *global, t_vec2d a, t_vec2d b, int color)
 {
-	int		dx;
-	int		dy;
 	int		steps;
 	float	x_inc;
 	float	y_inc;
 	float	x;
 	float	y;
-	int		i;
 
-	dx = b.x - a.x;
-	dy = b.y - a.y;
-	steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
-	x_inc = dx / (float)steps;
-	y_inc = dy / (float)steps;
+	if (abs((int)(b.x - a.x)) > abs((int)(b.y - a.y)))
+		steps = abs((int)(b.x - a.x));
+	else
+		steps = abs((int)(b.y - a.y));
+	x_inc = (int)(b.x - a.x) / (float)steps;
+	y_inc = (int)(b.y - a.y) / (float)steps;
 	x = a.x;
 	y = a.y;
-	i = 0;
-	while (i <= steps)
+	a.x = 0;
+	while ((int)a.x <= steps)
 	{
 		if (x >= 0 && x < global->img->width && y >= 0
 			&& y < global->img->height)
 			mlx_put_pixel(global->img, (int)x, (int)y, color);
 		x += x_inc;
 		y += y_inc;
-		i++;
+		a.x++;
 	}
 }
 
