@@ -13,8 +13,8 @@ t_vec2d	get_player_position(t_global *global)
 				|| global->map->map[y][x] == 'W'
 				|| global->map->map[y][x] == 'S')
 			{
-				player_pos.x = x;
-				player_pos.y = y;
+				player_pos.x = x + 0.5;
+				player_pos.y = y + 0.5;
 				return (player_pos);
 			}
 		}
