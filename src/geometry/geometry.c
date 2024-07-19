@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/07/19 14:06:04 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/19 14:39:46 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,8 +185,8 @@ double	point_line_distance(t_vec2d point, t_line *line)
 	double	dx;
 	double	dy;
 	double	t;
-	double	closestX;
-	double	closestY;
+	double	closest_x;
+	double	closest_y;
 
 	dx = line->b.x - line->a.x;
 	dy = line->b.y - line->a.y;
@@ -199,10 +199,10 @@ double	point_line_distance(t_vec2d point, t_line *line)
 	t = ((point.x - line->a.x) * dx + (point.y - line->a.y) * dy) / (dx * dx
 			+ dy * dy);
 	t = fmax(0, fmin(1, t));
-	closestX = line->a.x + t * dx;
-	closestY = line->a.y + t * dy;
-	dx = point.x - closestX;
-	dy = point.y - closestY;
+	closest_x = line->a.x + t * dx;
+	closest_y = line->a.y + t * dy;
+	dx = point.x - closest_x;
+	dy = point.y - closest_y;
 	return (sqrt(dx * dx + dy * dy));
 }
 
@@ -216,30 +216,30 @@ t_vec2d	calculate_collision_point(float t, t_vec2d ray_origin,
 void	determine_face(t_vec2d ray_origin, t_vec2d collision_point,
 		t_line *line, t_face *face)
 {
-		if (line->alignment == HORIZONTAL)
+	if (line->alignment == HORIZONTAL)
+	{
+		if (line->type == WALL)
 		{
-			if (line->type == WALL)
-			{
 			if (ray_origin.y < collision_point.y)
-					*face = SOUTH;
-				else
-					*face = NORTH;
-			}
+				*face = SOUTH;
 			else
-				*face = DOORS;
+				*face = NORTH;
 		}
+		else
+			*face = DOORS;
+	}
 	else
+	{
+		if (line->type == WALL)
 		{
-			if (line->type == WALL)
-			{
 			if (ray_origin.x < collision_point.x)
-					*face = EAST;
-				else
-					*face = WEST;
-			}
+				*face = EAST;
 			else
-				*face = DOORS;
+				*face = WEST;
 		}
+		else
+			*face = DOORS;
+	}
 }
 
 bool	is_collision(float t, float u)
