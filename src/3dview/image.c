@@ -159,6 +159,7 @@ void update_door_segments(t_global *global)
 	float scaled_x;
 	float scaled_y;
 	float distance;
+	float speed = (global->scale_factor / 40);
 
 	for (int i = 0; i < global->door_count; i++)
 	{
@@ -171,8 +172,8 @@ void update_door_segments(t_global *global)
 				scaled_y = global->door_line[i]->a.y / global->scale_factor;
 				if (scaled_y > global->door_line[i]->open_end.y - 2)
 				{
-					global->door_line[i]->a.y -= 0.1;
-					global->door_line[i]->b.y -= 0.1;
+					global->door_line[i]->a.y -= speed;
+					global->door_line[i]->b.y -= speed;
 				}
 				if (scaled_y <= global->door_line[i]->open_end.y - 2)
 					global->doors[i].state = OPEN;
@@ -182,8 +183,8 @@ void update_door_segments(t_global *global)
 				scaled_x = global->door_line[i]->a.x / global->scale_factor;
 				if (scaled_x < global->door_line[i]->open_end.x)
 				{
-					global->door_line[i]->a.x += 0.1;
-					global->door_line[i]->b.x += 0.1;
+					global->door_line[i]->a.x += speed;
+					global->door_line[i]->b.x += speed;
 				}
 				if (scaled_x >= global->door_line[i]->open_end.x)
 					global->doors[i].state = OPEN;
@@ -196,8 +197,8 @@ void update_door_segments(t_global *global)
 				scaled_y = global->door_line[i]->a.y / global->scale_factor;
 				if (scaled_y < global->door_line[i]->close_end.y)
 				{
-					global->door_line[i]->a.y += 0.1;
-					global->door_line[i]->b.y += 0.1;
+					global->door_line[i]->a.y += speed;
+					global->door_line[i]->b.y += speed;
 				}
 				if (scaled_y >= global->door_line[i]->close_end.y)
 					global->doors[i].state = CLOSED;
@@ -207,8 +208,8 @@ void update_door_segments(t_global *global)
 				scaled_x = global->door_line[i]->a.x / global->scale_factor;
 				if (scaled_x > global->door_line[i]->close_end.x)
 				{
-					global->door_line[i]->a.x -= 0.1;
-					global->door_line[i]->b.x -= 0.1;
+					global->door_line[i]->a.x -= speed;
+					global->door_line[i]->b.x -= speed;
 				}
 				if (scaled_x <= global->door_line[i]->close_end.x)
 					global->doors[i].state = CLOSED;
