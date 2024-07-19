@@ -206,37 +206,13 @@ double	point_line_distance(t_vec2d point, t_line *line)
 	return (sqrt(dx * dx + dy * dy));
 }
 
-t_vec2d	ray_line_collision(t_ray *ray, t_line *line, t_face *face)
+t_vec2d	calculate_collision_point(float t, t_vec2d ray_origin,
+		t_vec2d ray_direction)
 {
-	float	x1;
-	float	y1;
-	float	x2;
-	float	y2;
-	float	x3;
-	float	y3;
-	float	x4;
-	float	y4;
-	float	denominator;
-	float	t;
-	float	u;
-	t_vec2d	collision_point;
+	return ((t_vec2d){ray_origin.x + t * (ray_direction.x), ray_origin.y + t
+		* (ray_direction.y)});
+}
 
-	x1 = ray->origin.x;
-	y1 = ray->origin.y;
-	x2 = ray->origin.x + ray->direction.x;
-	y2 = ray->origin.y + ray->direction.y;
-	x3 = line->a.x;
-	y3 = line->a.y;
-	x4 = line->b.x;
-	y4 = line->b.y;
-	denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-	if (denominator == 0)
-		return ((t_vec2d){-1, -1});
-	t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
-	u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / denominator;
-	if (t >= 0 && u >= 0 && u <= 1)
-	{
-		collision_point = (t_vec2d){x1 + t * (x2 - x1), y1 + t * (y2 - y1)};
 		if (line->alignment == HORIZONTAL)
 		{
 			if (line->type == WALL)
