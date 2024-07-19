@@ -309,69 +309,42 @@ void	raycast(t_global *global)
 	t_collision	*new_collisions;
 	float		min_distance;
 	float		distance;
-	int			i;
-	int			j;
 
-	i = 0;
-	while (i < (int)global->img->width)
+	global->i = 0;
+	while (global->i < (int)global->img->width)
 	{
-		j = 0;
-		while (j < global->line_count)
+		global->j = 0;
+		while (global->j < global->line_count)
 		{
-			intersection = ray_line_collision(&global->player->rays[i],
-					&global->lines[j], &face);
+			intersection = ray_line_collision(&global->player->rays[global->i],
+					&global->lines[global->j], &face);
 			if (intersection.x != -1)
 			{
-				new_collisions = new_collision(global->player->rays[i].collisions,
-						&global->player->rays[i].collision_count, intersection,
-						&global->lines[j], face);
+				new_collisions = new_collision(global->player->rays[global->i].collisions,
+						&global->player->rays[global->i].collision_count,
+						intersection, &global->lines[global->j], face);
 				if (!new_collisions)
 					return ;
-				global->player->rays[i].collisions = new_collisions;
+				global->player->rays[global->i].collisions = new_collisions;
 			}
-			j++;
+			global->j++;
 		}
 		min_distance = 1000000;
-		j = 0;
-		while (j < global->player->rays[i].collision_count)
+		global->j = 0;
+		while (global->j < global->player->rays[global->i].collision_count)
 		{
 			distance = sqrtf(powf(global->player->pos.x
-						- global->player->rays[i].collisions[j].point.x, 2)
-					+ powf(global->player->pos.y
-						- global->player->rays[i].collisions[j].point.y, 2));
+						- global->player->rays[global->i].collisions[global->j].point.x,
+						2) + powf(global->player->pos.y
+						- global->player->rays[global->i].collisions[global->j].point.y,
+						2));
 			if (distance < min_distance)
 			{
 				min_distance = distance;
-				global->player->rays[i].closest_collision = &global->player->rays[i].collisions[j];
+				global->player->rays[global->i].closest_collision = &global->player->rays[global->i].collisions[global->j];
 			}
-			j++;
+			global->j++;
 		}
-		i++;
-	}
-}
-
-void	draw_bar(t_global *global, int x, int y, int width, int height,
-		int color)
-{
-	int draw_y;
-	int i;
-	int j;
-
-	i = 0;
-	while (i < width)
-	{
-		if (x + i < 0 || (uint32_t)x + (uint32_t)i >= global->img->width)
-			continue ;
-		j = 0;
-		while (j < height)
-		{
-			draw_y = y + j;
-			if (draw_y >= 0 && (uint32_t)draw_y < global->img->height)
-			{
-				mlx_put_pixel(global->img, x + i, draw_y, color);
-			}
-			j++;
-		}
-		i++;
+		global->i++;
 	}
 }
