@@ -10,21 +10,13 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 		global->free_mouse = !global->free_mouse;
 	}
 	if (keydata.key == MLX_KEY_LEFT_CONTROL && keydata.action == MLX_PRESS)
-	{
 		global->open = true;
-	}
 	if (keydata.key == MLX_KEY_LEFT_CONTROL && keydata.action == MLX_RELEASE)
-	{
 		global->open = false;
-	}
 	if (keydata.key == MLX_KEY_RIGHT_CONTROL && keydata.action == MLX_PRESS)
-	{
 		global->close = true;
-	}
 	if (keydata.key == MLX_KEY_RIGHT_CONTROL && keydata.action == MLX_RELEASE)
-	{
 		global->close = false;
-	}
 }
 
 void	keyHook(void *param)

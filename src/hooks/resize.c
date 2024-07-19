@@ -19,8 +19,9 @@ void	resize(int32_t width, int32_t height, void *param)
 		exit(EXIT_FAILURE);
 	}
 	global->scale_factor = calculate_scale_factor(global->map->width,
-			global->map->height, (int)global->window_width * (int)global->minimap_scale,
-                                                  (int)global->window_height * (int)global->minimap_scale);
+			global->map->height, (int)global->window_width
+			* (int)global->minimap_scale, (int)global->window_height
+			* (int)global->minimap_scale);
 	map_to_line_segments(global, &global->lines, &global->line_count);
 	scale_line_segments(global->lines, global->line_count,
 		global->scale_factor);

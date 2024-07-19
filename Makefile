@@ -37,9 +37,7 @@ SRCS	:=  main.c \
 			parse_utils.c \
 			parse_utils2.c \
 			validate_color.c \
-			map_size.c \
-			raycast.c \
-			raycast1.c
+			map_size.c
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
