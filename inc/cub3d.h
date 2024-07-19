@@ -122,9 +122,9 @@ typedef struct s_global
 	int				i;
 	int				j;
 	bool			free_mouse;
-	t_texture *texture;
-	t_color floor;
-	t_color ceiling;
+	t_texture 		*texture;
+	t_color 		floor;
+	t_color 		ceiling;
 	t_identifier_flag flags;
 	t_door *doors;
 	int door_count;
