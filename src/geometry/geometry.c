@@ -163,6 +163,14 @@ void	draw_circle_points(t_global *global, t_circle *circle, int color,
 	}
 }
 
+void	draw_circle(t_global *global, t_circle *circle, int color)
+{
+	int	radius;
+
+	radius = (int)circle->radius;
+	draw_circle_points(global, circle, color, radius);
+}
+
 void	draw_ray(t_global *global, t_ray *ray)
 {
 	t_vec2d	end;
