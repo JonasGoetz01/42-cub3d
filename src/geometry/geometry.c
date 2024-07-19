@@ -265,6 +265,21 @@ t_vec2d	ray_line_intersection(t_ray *ray, t_line *line, float *t, float *u)
 				- line->a.y) * (ray->origin.x - x2)) / denominator;
 	return ((t_vec2d){0, 0});
 }
+
+t_vec2d	ray_line_collision(t_ray *ray, t_line *line, t_face *face)
+{
+	t_vec2d	collision_point;
+	float	t;
+	float	u;
+
+	collision_point = ray_line_intersection(ray, line, &t, &u);
+	if (collision_point.x == -1 && collision_point.y == -1)
+		return (collision_point);
+	if (is_collision(t, u))
+	{
+		collision_point = calculate_collision_point(t, ray->origin,
+				ray->direction);
+		determine_face(ray->origin, collision_point, line, face);
 		return (collision_point);
 	}
 	return ((t_vec2d){-1, -1});
