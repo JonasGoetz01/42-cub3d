@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/07/19 10:53:26 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/19 11:00:52 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,100 +30,106 @@ float	calculate_scale_factor(int map_width, int map_height, int window_width,
 
 void	scale_line_segments(t_line *lines, int line_count, float scale_factor)
 {
-	int	i;
-
-	i = 0;
-	while (i < line_count)
+	for (int i = 0; i < line_count; i++)
 	{
 		lines[i].a.x *= scale_factor;
 		lines[i].a.y *= scale_factor;
 		lines[i].b.x *= scale_factor;
 		lines[i].b.y *= scale_factor;
-		i++;
 	}
 }
 
 void	draw_line(t_global *global, t_vec2d a, t_vec2d b, int color)
 {
-	float		steps;
+	int		dx;
+	int		dy;
+	int		steps;
 	float	x_inc;
 	float	y_inc;
 	float	x;
 	float	y;
+	int		i;
 
-	if (abs((int)(b.x - a.x)) > abs((int)(b.y - a.y)))
-		steps = fabsf((b.x - a.x));
-	else
-		steps = fabsf((b.y - a.y));
-	x_inc = (b.x - a.x) / steps;
-	y_inc = (b.y - a.y) / steps;
+	dx = b.x - a.x;
+	dy = b.y - a.y;
+	steps = abs(dx) > abs(dy) ? abs(dx) : abs(dy);
+	x_inc = dx / (float)steps;
+	y_inc = dy / (float)steps;
 	x = a.x;
 	y = a.y;
-	b.x = 0;
-	while (b.x <= steps)
+	for (i = 0; i <= steps; i++)
 	{
-		if ((uint32_t)x >= 0 && (uint32_t)x < global->minimap->width
-			&& (uint32_t)y >= 0 && (uint32_t)y < global->minimap->height)
+		if (x >= 0 && x < global->minimap->width && y >= 0
+			&& y < global->minimap->height)
 		{
 			mlx_put_pixel(global->minimap, (int)x, (int)y, color);
 		}
 		x += x_inc;
 		y += y_inc;
-		b.x++;
 	}
-}
-
-void	put_circle_pixels(t_global *global, t_circle *circle, int x, int y,
-		int color)
-{
-	int	img_width;
-	int	img_height;
-	int	cx;
-	int	cy;
-
-	img_width = (int)global->window_width;
-	img_height = (int)global->window_height;
-	cx = (int)circle->center.x;
-	cy = (int)circle->center.y;
-	if (cx + x >= 0 && cx + x < img_width && cy + y >= 0 && cy + y < img_height)
-		mlx_put_pixel(global->minimap, cx + x, cy + y, color);
-	if (cx + y >= 0 && cx + y < img_width && cy + x >= 0 && cy + x < img_height)
-		mlx_put_pixel(global->minimap, cx + y, cy + x, color);
-	if (cx - y >= 0 && cx - y < img_width && cy + x >= 0 && cy + x < img_height)
-		mlx_put_pixel(global->minimap, cx - y, cy + x, color);
-	if (cx - x >= 0 && cx - x < img_width && cy + y >= 0 && cy + y < img_height)
-		mlx_put_pixel(global->minimap, cx - x, cy + y, color);
-	if (cx - x >= 0 && cx - x < img_width && cy - y >= 0 && cy - y < img_height)
-		mlx_put_pixel(global->minimap, cx - x, cy - y, color);
-	if (cx - y >= 0 && cx - y < img_width && cy - x >= 0 && cy - x < img_height)
-		mlx_put_pixel(global->minimap, cx - y, cy - x, color);
-	if (cx + y >= 0 && cx + y < img_width && cy - x >= 0 && cy - x < img_height)
-		mlx_put_pixel(global->minimap, cx + y, cy - x, color);
-	if (cx + x >= 0 && cx + x < img_width && cy - y >= 0 && cy - y < img_height)
-		mlx_put_pixel(global->minimap, cx + x, cy - y, color);
-}
-
-void	init_values_draw_circle(int *x, int *y, int *dx, t_circle *circle)
-{
-	*x = (int)circle->radius - 1;
-	*y = 0;
-	*dx = 1;
 }
 
 void	draw_circle(t_global *global, t_circle *circle, int color)
 {
+	int	radius;
 	int	x;
 	int	y;
 	int	dx;
 	int	dy;
 	int	err;
+	int	img_width;
+	int	img_height;
 
-	init_values_draw_circle(&x, &y, &dx, circle);
+	radius = (int)circle->radius;
+	x = radius - 1;
+	y = 0;
+	dx = 1;
 	dy = 1;
-	err = dx - ((int)circle->radius << 1);
+	err = dx - (radius << 1);
+	img_width = (int)global->window_width;
+	img_height = (int)global->window_height;
 	while (x >= y)
 	{
-		put_circle_pixels(global, circle, x, y, color);
+		if ((int)circle->center.x + x >= 0 && (int)circle->center.x
+			+ x < img_width && (int)circle->center.y + y >= 0
+			&& (int)circle->center.y + y < img_height)
+			mlx_put_pixel(global->minimap, (int)circle->center.x + x,
+				(int)circle->center.y + y, color);
+		if ((int)circle->center.x + y >= 0 && (int)circle->center.x
+			+ y < img_width && (int)circle->center.y + x >= 0
+			&& (int)circle->center.y + x < img_height)
+			mlx_put_pixel(global->minimap, (int)circle->center.x + y,
+				(int)circle->center.y + x, color);
+		if ((int)circle->center.x - y >= 0 && (int)circle->center.x
+			- y < img_width && (int)circle->center.y + x >= 0
+			&& (int)circle->center.y + x < img_height)
+			mlx_put_pixel(global->minimap, (int)circle->center.x - y,
+				(int)circle->center.y + x, color);
+		if ((int)circle->center.x - x >= 0 && (int)circle->center.x
+			- x < img_width && (int)circle->center.y + y >= 0
+			&& (int)circle->center.y + y < img_height)
+			mlx_put_pixel(global->minimap, (int)circle->center.x - x,
+				(int)circle->center.y + y, color);
+		if ((int)circle->center.x - x >= 0 && (int)circle->center.x
+			- x < img_width && (int)circle->center.y - y >= 0
+			&& (int)circle->center.y - y < img_height)
+			mlx_put_pixel(global->minimap, (int)circle->center.x - x,
+				(int)circle->center.y - y, color);
+		if ((int)circle->center.x - y >= 0 && (int)circle->center.x
+			- y < img_width && (int)circle->center.y - x >= 0
+			&& (int)circle->center.y - x < img_height)
+			mlx_put_pixel(global->minimap, (int)circle->center.x - y,
+				(int)circle->center.y - x, color);
+		if ((int)circle->center.x + y >= 0 && (int)circle->center.x
+			+ y < img_width && (int)circle->center.y - x >= 0
+			&& (int)circle->center.y - x < img_height)
+			mlx_put_pixel(global->minimap, (int)circle->center.x + y,
+				(int)circle->center.y - x, color);
+		if ((int)circle->center.x + x >= 0 && (int)circle->center.x
+			+ x < img_width && (int)circle->center.y - y >= 0
+			&& (int)circle->center.y - y < img_height)
+			mlx_put_pixel(global->minimap, (int)circle->center.x + x,
+				(int)circle->center.y - y, color);
 		if (err <= 0)
 		{
 			y++;
@@ -134,7 +140,7 @@ void	draw_circle(t_global *global, t_circle *circle, int color)
 		{
 			x--;
 			dx += 2;
-			err += dx - ((int)circle->radius << 1);
+			err += dx - (radius << 1);
 		}
 	}
 }
@@ -253,8 +259,6 @@ void	raycast(t_global *global)
 	t_collision	*new_collisions;
 	float		min_distance;
 	float		distance;
-	float		base_angle;
-	float		angle;
 
 	for (int i = 0; i < (int)global->img->width; i++)
 	{
