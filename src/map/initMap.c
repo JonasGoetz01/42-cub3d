@@ -3,11 +3,14 @@
 t_vec2d	get_player_position(t_global *global)
 {
 	t_vec2d	player_pos;
+	int		y;
+	int		x;
 
 	player_pos = (t_vec2d){0, 0};
-	for (int y = 0; y < global->map->height; y++)
+	while (y < global->map->height)
 	{
-		for (int x = 0; x < global->map->width; x++)
+		x = 0;
+		while (x < global->map->width)
 		{
 			if (global->map->map[y][x] == 'N' || global->map->map[y][x] == 'E'
 				|| global->map->map[y][x] == 'W'
@@ -17,7 +20,9 @@ t_vec2d	get_player_position(t_global *global)
 				player_pos.y = y + 0.5;
 				return (player_pos);
 			}
+			x++;
 		}
+		y++;
 	}
 	return (player_pos);
 }
@@ -25,11 +30,15 @@ t_vec2d	get_player_position(t_global *global)
 t_vec2d	get_player_direction(t_global *global)
 {
 	t_vec2d	player_pos;
+	int		y;
+	int		x;
 
 	player_pos = (t_vec2d){0, 0};
-	for (int y = 0; y < global->map->height; y++)
+	y = 0;
+	while (y < global->map->height)
 	{
-		for (int x = 0; x < global->map->width; x++)
+		x = 0;
+		while (x < global->map->width)
 		{
 			if (global->map->map[y][x] == 'N')
 				return ((t_vec2d){0, -1});
@@ -39,30 +48,40 @@ t_vec2d	get_player_direction(t_global *global)
 				return ((t_vec2d){-1, 0});
 			else if (global->map->map[y][x] == 'S')
 				return ((t_vec2d){0, 1});
+			x++;
 		}
+		y++;
 	}
 	return (player_pos);
 }
 
 void	get_doors(t_global *global)
 {
-	int count;
+	int	count;
+	int	y;
+	int	x;
 
 	count = 0;
-	for (int y = 0; y < global->map->height; y++)
+	y = 0;
+	while (y < global->map->height)
 	{
-		for (int x = 0; x < global->map->width; x++)
+		x = 0;
+		while (x < global->map->width)
 		{
 			if (global->map->map[y][x] == 'D')
 				count++;
+			x++;
 		}
+		y++;
 	}
 	global->door_count = count;
 	global->doors = malloc(sizeof(t_door) * count);
 	count = 0;
-	for (int y = 0; y < global->map->height; y++)
+	y = 0;
+	while (y < global->map->height)
 	{
-		for (int x = 0; x < global->map->width; x++)
+		x = 0;
+		while (x < global->map->width)
 		{
 			if (global->map->map[y][x] == 'D')
 			{
@@ -71,6 +90,8 @@ void	get_doors(t_global *global)
 				global->doors[count].state = CLOSED;
 				count++;
 			}
+			x++;
 		}
+		y++;
 	}
 }

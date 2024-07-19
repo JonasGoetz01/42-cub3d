@@ -58,8 +58,6 @@ float	map_distance_to_height(float distance, t_global *global)
 		height = window_height;
 	else
 		height = (global->scale_factor / distance) * window_height;
-	// if (height > window_height)
-	// 	height = window_height;
 	return (height);
 }
 
@@ -71,6 +69,8 @@ float	get_distance(t_vec2d a, t_vec2d b)
 double		point_line_distance(t_vec2d point, t_line *line);
 t_collision	*new_collision(t_collision *collisions, int *collision_count,
 				t_vec2d point, t_line *line, t_face face);
+
+t_collision *find_closest_collision(t_vec2d player_pos)
 
 void	check_inactive_lines(t_global *global)
 {
@@ -265,6 +265,7 @@ void	render_3d(t_global *global)
 	int r;
 	int g;
 	int b;
+	int j;
 
 	if (!texture_north)
 		texture_north = mlx_load_png(global->texture->north);
@@ -302,27 +303,18 @@ void	render_3d(t_global *global)
 			top_y = center_y - (bar_height / 2);
 			bottom_y = center_y + (bar_height / 2);
 			x = i * bar_width;
-			switch (closest_collision->face)
-			{
-			case NORTH:
+			if (closest_collision->face == NORTH)
 				texture = texture_north;
-				break ;
-			case SOUTH:
+			else if (closest_collision->face == SOUTH)
 				texture = texture_south;
-				break ;
-			case EAST:
+			else if (closest_collision->face == EAST)
 				texture = texture_east;
-				break ;
-			case WEST:
+			else if (closest_collision->face == WEST)
 				texture = texture_west;
-				break ;
-			case DOORS:
+			else if (closest_collision->face == DOORS)
 				texture = door;
-				break ;
-			default:
+			else
 				texture = texture_north;
-				break ;
-			}
 			if (closest_collision->line->alignment == VERTICAL)
 			{
 				hit_percentage = (closest_collision->point.y
@@ -338,9 +330,9 @@ void	render_3d(t_global *global)
 						- closest_collision->line->a.x);
 			}
 			hit_percentage = fmax(fmin(hit_percentage, 1.0f), 0.0f);
-			// Clamp hit_percentage to [0, 1]
 			texture_x = (int)(hit_percentage * (texture->width));
-			for (int j = 0; j < bar_height; j++)
+			j = 0;
+			while (j < bar_height)
 			{
 				texture_y = (int)(((float)j / bar_height) * (texture->height));
 				if ((uint32_t)texture_y >= texture->height)
@@ -368,6 +360,7 @@ void	render_3d(t_global *global)
 						}
 					}
 				}
+				j++;
 			}
 			z_buffer[i] = perpendicular_distance;
 		}

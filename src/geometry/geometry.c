@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/07/19 13:48:31 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/19 14:06:04 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,16 @@ float	calculate_scale_factor(int map_width, int map_height, int window_width,
 
 void	scale_line_segments(t_line *lines, int line_count, float scale_factor)
 {
-	for (int i = 0; i < line_count; i++)
+	int	i;
+
+	i = 0;
+	while (i < line_count)
 	{
 		lines[i].a.x *= scale_factor;
 		lines[i].a.y *= scale_factor;
 		lines[i].b.x *= scale_factor;
 		lines[i].b.y *= scale_factor;
+		i++;
 	}
 }
 
@@ -57,15 +61,15 @@ void	draw_line_crosshair(t_global *global, t_vec2d a, t_vec2d b, int color)
 	y_inc = dy / (float)steps;
 	x = a.x;
 	y = a.y;
-	for (i = 0; i <= steps; i++)
+	i = 0;
+	while (i <= steps)
 	{
 		if (x >= 0 && x < global->img->width && y >= 0
 			&& y < global->img->height)
-		{
 			mlx_put_pixel(global->img, (int)x, (int)y, color);
-		}
 		x += x_inc;
 		y += y_inc;
+		i++;
 	}
 }
 
@@ -87,7 +91,8 @@ void	draw_line(t_global *global, t_vec2d a, t_vec2d b, int color)
 	y_inc = dy / (float)steps;
 	x = a.x;
 	y = a.y;
-	for (i = 0; i <= steps; i++)
+	i = 0;
+	while (i <= steps)
 	{
 		if (x >= 0 && x < global->minimap->width && y >= 0
 			&& y < global->minimap->height)
@@ -96,6 +101,7 @@ void	draw_line(t_global *global, t_vec2d a, t_vec2d b, int color)
 		}
 		x += x_inc;
 		y += y_inc;
+		i++;
 	}
 }
 
@@ -294,10 +300,14 @@ void	raycast(t_global *global)
 	t_collision	*new_collisions;
 	float		min_distance;
 	float		distance;
+	int			i;
+	int			j;
 
-	for (int i = 0; i < (int)global->img->width; i++)
+	i = 0;
+	while (i < (int)global->img->width)
 	{
-		for (int j = 0; j < global->line_count; j++)
+		j = 0;
+		while (j < global->line_count)
 		{
 			intersection = ray_line_collision(&global->player->rays[i],
 					&global->lines[j], &face);
@@ -310,9 +320,11 @@ void	raycast(t_global *global)
 					return ;
 				global->player->rays[i].collisions = new_collisions;
 			}
+			j++;
 		}
 		min_distance = 1000000;
-		for (int j = 0; j < global->player->rays[i].collision_count; j++)
+		j = 0;
+		while (j < global->player->rays[i].collision_count)
 		{
 			distance = sqrtf(powf(global->player->pos.x
 						- global->player->rays[i].collisions[j].point.x, 2)
@@ -323,27 +335,34 @@ void	raycast(t_global *global)
 				min_distance = distance;
 				global->player->rays[i].closest_collision = &global->player->rays[i].collisions[j];
 			}
+			j++;
 		}
+		i++;
 	}
 }
 
-// draw a bar from the center of the screen "width" pixels wide and "height" pixels tall
 void	draw_bar(t_global *global, int x, int y, int width, int height,
 		int color)
 {
 	int draw_y;
+	int i;
+	int j;
 
-	for (int i = 0; i < width; i++)
+	i = 0;
+	while (i < width)
 	{
 		if (x + i < 0 || (uint32_t)x + (uint32_t)i >= global->img->width)
 			continue ;
-		for (int j = 0; j < height; j++)
+		j = 0;
+		while (j < height)
 		{
 			draw_y = y + j;
 			if (draw_y >= 0 && (uint32_t)draw_y < global->img->height)
 			{
 				mlx_put_pixel(global->img, x + i, draw_y, color);
 			}
+			j++;
 		}
+		i++;
 	}
 }

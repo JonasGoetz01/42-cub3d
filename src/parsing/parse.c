@@ -6,13 +6,11 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/19 10:56:52 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/19 14:14:46 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../inc/cub3d.h"
-
-// clean exit function that frees all mallocs
 
 int	parse_configurations(int fd, t_global *global)
 {

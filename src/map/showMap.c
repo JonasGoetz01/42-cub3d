@@ -99,13 +99,16 @@ void	map_to_line_segments(t_global *global, t_line **lines, int *line_count)
 	t_door	*door;
 	float	scaled_x;
 	float	scaled_y;
+	int		i;
 
 	int x, y;
 	*lines = NULL;
 	*line_count = 0;
-	for (y = 0; y < global->map->height; y++)
+	y = 0;
+	while (y < global->map->height)
 	{
-		for (x = 0; x < global->map->width; x++)
+		x = 0;
+		while (x < global->map->width)
 		{
 			if (global->map->map[y][x] == '1' || global->map->map[y][x] == 'D')
 			{
@@ -147,7 +150,8 @@ void	map_to_line_segments(t_global *global, t_line **lines, int *line_count)
 				else
 				{
 					door = NULL;
-					for (int i = 0; i < global->door_count; i++)
+					i = 0;
+					while (i < global->door_count)
 					{
 						scaled_x = x * global->scale_factor;
 						scaled_y = y * global->scale_factor;
@@ -157,6 +161,7 @@ void	map_to_line_segments(t_global *global, t_line **lines, int *line_count)
 							door = &global->doors[i];
 							break ;
 						}
+						i++;
 					}
 					if (!door)
 						ft_exit_free(global);
@@ -190,7 +195,9 @@ void	map_to_line_segments(t_global *global, t_line **lines, int *line_count)
 					}
 				}
 			}
+			x++;
 		}
+		y++;
 	}
 }
 
@@ -209,14 +216,13 @@ void	draw_fov_lines(t_global *global)
 	right_end.x = start.x + cosf(angle) * 10;
 	right_end.y = start.y + sinf(angle) * 10;
 	draw_line(global, start, left_end, get_rgba(255, 255, 255, 255));
-	// white color
 	draw_line(global, start, right_end, get_rgba(255, 255, 255, 255));
-	// white color
 }
 
 void	showMap(t_global *global)
 {
 	int	i;
+	int	j;
 
 	i = 0;
 	while (i < global->line_count)
@@ -227,7 +233,8 @@ void	showMap(t_global *global)
 	}
 	draw_circle(global, &(t_circle){global->player->pos, 5}, get_rgba(255, 0, 0,
 			255));
-	for (i = 0; i < (int)global->img->width; i++)
+	i = 0;
+	while (i < (int)global->img->width)
 	{
 		if (global->player->rays[i].collisions)
 		{
@@ -235,23 +242,28 @@ void	showMap(t_global *global)
 		}
 		global->player->rays[i].collisions = NULL;
 		global->player->rays[i].collision_count = 0;
+		i++;
 	}
 	raycast(global);
-	for (uint32_t i = 0; i < global->img->width; i++)
+	i = 0;
+	while (i < global->img->width)
 	{
 		if (SHOW_RAYS)
 			draw_ray(global, &global->player->rays[i]);
-		for (int j = 0; j < global->player->rays[i].collision_count; j++)
+		j = 0;
+		while (j < global->player->rays[i].collision_count)
 		{
 			if (SHOW_COLLISIONS)
 				draw_circle(global,
 					&(t_circle){global->player->rays[i].collisions[j].point, 3},
 					get_rgba(0, 255, 0, 255));
+			j++;
 		}
 		if (SHOW_COLLISIONS)
 			draw_circle(global,
 				&(t_circle){global->player->rays[i].closest_collision->point,
 				3}, get_rgba(0, 0, 255, 255));
+		i++;
 	}
 	if (SHOW_FOV)
 		draw_fov_lines(global);
