@@ -18,14 +18,40 @@ typedef enum e_face
 	NORTH,
 	SOUTH,
 	EAST,
-	WEST
+	WEST,
+	DOORS,
 }				t_face;
+
+typedef enum e_type
+{
+	WALL,
+	DOOR,
+	DOOR_SIDE
+}			t_type;
+
+typedef enum e_state
+{
+	CLOSED,
+	OPENING,
+	OPEN,
+	CLOSING
+}				t_state;
+
+typedef struct s_door
+{
+	t_vec2d		pos;
+	t_state		state;
+}				t_door;
 
 typedef struct s_line
 {
 	t_vec2d		a;
 	t_vec2d		b;
+	t_vec2d		open_end;
+	t_vec2d		close_end;
 	t_alignment	alignment;
+	t_type		type;
+	t_door		*door;
 }				t_line;
 
 typedef struct s_collision
@@ -42,7 +68,6 @@ typedef struct s_ray
 	t_collision	*collisions;
 	int			collision_count;
 	t_collision	*closest_collision;
-	t_line		*collision_line;
 }				t_ray;
 
 typedef struct s_circle

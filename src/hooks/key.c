@@ -1,5 +1,32 @@
 #include "../../inc/cub3d.h"
 
+void	key_hook(mlx_key_data_t keydata, void *param)
+{
+	t_global	*global;
+
+	if (keydata.key == MLX_KEY_LEFT_ALT && keydata.action == MLX_PRESS)
+	{
+		global = (t_global *)param;
+		global->free_mouse = !global->free_mouse;
+	}
+	if (keydata.key == MLX_KEY_LEFT_CONTROL && keydata.action == MLX_PRESS)
+	{
+		global->open = true;
+	}
+	if (keydata.key == MLX_KEY_LEFT_CONTROL && keydata.action == MLX_RELEASE)
+	{
+		global->open = false;
+	}
+	if (keydata.key == MLX_KEY_RIGHT_CONTROL && keydata.action == MLX_PRESS)
+	{
+		global->close = true;
+	}
+	if (keydata.key == MLX_KEY_RIGHT_CONTROL && keydata.action == MLX_RELEASE)
+	{
+		global->close = false;
+	}
+}
+
 void	keyHook(void *param)
 {
 	t_global	*global;
@@ -8,8 +35,8 @@ void	keyHook(void *param)
 	float		length;
 
 	dir = (t_vec2d){0.0f, 0.0f};
-	move_speed = MOVE_SPEED;
 	global = (t_global *)param;
+	move_speed = MOVE_SPEED * global->scale_factor / 8;
 	if (mlx_is_key_down(global->mlx, MLX_KEY_ESCAPE))
 		return (mlx_close_window(global->mlx));
 	if (mlx_is_key_down(global->mlx, MLX_KEY_LEFT_SHIFT))
@@ -38,7 +65,7 @@ void	keyHook(void *param)
 		rotate_player(global, 0.03f);
 	if (mlx_is_key_down(global->mlx, MLX_KEY_Q))
 		rotate_player(global, -0.03f);
-	length = sqrt(dir.x * dir.x + dir.y * dir.y);
+	length = sqrtf(dir.x * dir.x + dir.y * dir.y);
 	if (length != 0)
 	{
 		dir.x /= length;

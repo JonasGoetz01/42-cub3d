@@ -28,7 +28,7 @@ t_player	*new_player(t_global *global, t_vec2d pos, t_vec2d dir)
 	i = 0;
 	while (i < (int)global->img->width)
 	{
-		ray_angle = atan2f(player->dir.y, player->dir.x) - (FOV / 2.0f) + (i
+		ray_angle = atan2f(player->dir.y, player->dir.x) - (float)(FOV / 2.0f) + ((float)i
 				* angle_increment);
 		collision_helper(&(player->rays[i]), player, dir, ray_angle);
 		i++;
@@ -48,7 +48,7 @@ t_vec2d	calculate_perpendicular_direction(t_line dir_line, t_line wall)
 	wall_dir.y = wall.b.y - wall.a.y;
 	perpendicular.x = -wall_dir.y;
 	perpendicular.y = wall_dir.x;
-	length = sqrt(perpendicular.x * perpendicular.x + perpendicular.y
+	length = sqrtf(perpendicular.x * perpendicular.x + perpendicular.y
 			* perpendicular.y);
 	perpendicular.x /= length;
 	perpendicular.y /= length;
@@ -88,16 +88,16 @@ bool	circle_line_collision(t_vec2d circle_center, float radius, t_line line)
 
 	line_vec.x = line.b.x - line.a.x;
 	line_vec.y = line.b.y - line.a.y;
-	line_length = sqrt(line_vec.x * line_vec.x + line_vec.y * line_vec.y);
+	line_length = sqrtf(line_vec.x * line_vec.x + line_vec.y * line_vec.y);
 	if (line_length == 0)
 		return (false);
 	t = ((circle_center.x - line.a.x) * line_vec.x + (circle_center.y
 				- line.a.y) * line_vec.y) / (line_length * line_length);
-	t = fmax(0, fmin(1, t));
+	t = fmaxf(0, fminf(1, t));
 	closest_point.x = line.a.x + t * line_vec.x;
 	closest_point.y = line.a.y + t * line_vec.y;
-	distance_squared = pow(circle_center.x - closest_point.x, 2)
-		+ pow(circle_center.y - closest_point.y, 2);
+	distance_squared = powf(circle_center.x - closest_point.x, (float)2)
+		+ powf(circle_center.y - closest_point.y, (float)2);
 	return (distance_squared <= (radius * radius));
 }
 
@@ -107,7 +107,6 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 	bool		collision_x;
 	bool		collision_y;
 	t_vec2d		temp_pos;
-	float		base_angle;
 	static int	sprite_counter = 0;
 	int			i;
 
@@ -131,7 +130,8 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 	// Check collision for x-axis
 	temp_pos = global->player->pos;
 	temp_pos.x = new_pos.x;
-	for (int i = 0; i < global->line_count; i++)
+    i = 0;
+    while (i < global->line_count)
 	{
 		if (circle_line_collision(temp_pos, PLAYER_RADIUS
 				* global->scale_factor, global->lines[i]))
@@ -139,13 +139,15 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 			collision_x = true;
 			break ;
 		}
+        i++;
 	}
 	if (!collision_x)
 		global->player->pos.x = new_pos.x;
 	// Check collision for y-axis
 	temp_pos = global->player->pos;
 	temp_pos.y = new_pos.y;
-	for (int i = 0; i < global->line_count; i++)
+    i = 0;
+    while (i < global->line_count)
 	{
 		if (circle_line_collision(temp_pos, PLAYER_RADIUS
 				* global->scale_factor, global->lines[i]))
@@ -153,18 +155,16 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 			collision_y = true;
 			break ;
 		}
+        i++;
 	}
 	if (!collision_y)
 		global->player->pos.y = new_pos.y;
 	// Update ray origins
 	i = 0;
-	while (i < (int)global->img->width)
-	{
-		global->player->rays[i].origin = global->player->pos;
-		i++;
-	}
-	base_angle = atan2f(global->player->dir.y, global->player->dir.x) - (FOV
-			/ 2.0f);
+	while (i < (int)global->img->width) {
+        global->player->rays[i].origin = global->player->pos;
+        i++;
+    }
 }
 
 void	rotate_player(t_global *global, float angle)
@@ -183,7 +183,7 @@ void	rotate_player(t_global *global, float angle)
 	i = 0;
 	while (i < (int)global->img->width)
 	{
-		new_angle = (atan2f(new_dir.y, new_dir.x) - (FOV / 2.0f)) + (i
+		new_angle = (atan2f(new_dir.y, new_dir.x) - (float)(FOV / 2.0f)) + ((float)i
 				* angle_increment);
 		global->player->rays[i].direction = (t_vec2d){cosf(new_angle),
 			sinf(new_angle)};

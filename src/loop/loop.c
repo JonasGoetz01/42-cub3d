@@ -9,11 +9,11 @@ void	ft_texture_to_image(t_global *global, mlx_texture_t *texture)
 	int		color;
 	uint8_t	*pixel;
 
-	i = global->window_height - texture->height;
+	i = (int)global->window_height - (int)texture->height;
 	i_start = i;
 	while (i < global->window_height)
 	{
-		j = global->window_width - texture->width;
+		j = (int)global->window_width - (int)texture->width;
 		j_start = j;
 		while (j < global->window_width)
 		{
@@ -51,12 +51,13 @@ void	loop(void *param)
 	global->time = current_time;
 	if (fps_timer % 10 == 0)
 	{
-		fps = 1000 / elapsed_time;
+		fps = (int)((double)1000.0 / elapsed_time);
 		printf("\rFPS: %d", fps);
 		fflush(stdout);
 		fps_timer = 0;
 	}
 	fps_timer++;
+	update_door_segments(global);
 	mlx_delete_image(global->mlx, global->minimap);
 	mlx_delete_image(global->mlx, global->img);
 	global->minimap = mlx_new_image(global->mlx, global->window_width
@@ -69,6 +70,17 @@ void	loop(void *param)
 	show_sky_and_floor(global);
 	render_3d(global);
 	ft_texture_to_image(global, global->sprite_textures[global->sprite_index]);
+	t_line crosshair[2];
+	crosshair[0].a = (t_vec2d){global->window_width / 2 - 10,
+		global->window_height / 2};
+	crosshair[0].b = (t_vec2d){global->window_width / 2 + 10,
+		global->window_height / 2};
+	crosshair[1].a = (t_vec2d){global->window_width / 2,
+		global->window_height / 2 - 10};
+	crosshair[1].b = (t_vec2d){global->window_width / 2,
+		global->window_height / 2 + 10};
+	draw_line_crosshair(global, crosshair[0].a, crosshair[0].b, 0x00FF00);
+	draw_line_crosshair(global, crosshair[1].a, crosshair[1].b, 0x00FF00);
 	mlx_image_to_window(global->mlx, global->minimap, 0, 0);
 	mlx_image_to_window(global->mlx, global->img, 0, 0);
 	if (SHOW_MINIMAP)
