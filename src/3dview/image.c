@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 12:09:55 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 12:10:59 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,7 +340,7 @@ void	process_ray(t_global *global, int i, float player_angle,
 	closest_collision = ray->closest_collision;
 	if (closest_collision)
 	{
-		bar_height = map_distance_to_height((float)fmaxf(get_distance(global->player->pos,
+		bar_height = map_distance_to_height(fmaxf(get_distance(global->player->pos,
 						closest_collision->point), 0.1f)
 				* cosf(atan2f(ray->direction.y, ray->direction.x)
 					- player_angle), global);
