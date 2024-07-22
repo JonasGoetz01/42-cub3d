@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   player.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
+/*   Updated: 2024/07/22 11:42:20 by jgotz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/cub3d.h"
 
 void	collision_helper(t_ray *ray, t_player *player, t_vec2d dir,
@@ -29,8 +41,8 @@ t_player	*new_player(t_global *global, t_vec2d pos, t_vec2d dir)
 	i = 0;
 	while (i < (int)global->img->width)
 	{
-		ray_angle = atan2f(player->dir.y, player->dir.x) - (float)(FOV / 2.0f) + ((float)i
-				* angle_increment);
+		ray_angle = atan2f(player->dir.y, player->dir.x) - (float)(FOV / 2.0f)
+			+ ((float)i * angle_increment);
 		collision_helper(&(player->rays[i]), player, dir, ray_angle);
 		i++;
 	}
@@ -129,8 +141,8 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 	new_pos.y = global->player->pos.y + dir.y * speed * global->minimap_scale;
 	temp_pos = global->player->pos;
 	temp_pos.x = new_pos.x;
-    i = 0;
-    while (i < global->line_count)
+	i = 0;
+	while (i < global->line_count)
 	{
 		if (circle_line_collision(temp_pos, PLAYER_RADIUS
 				* global->scale_factor, global->lines[i]))
@@ -138,14 +150,14 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 			collision_x = true;
 			break ;
 		}
-        i++;
+		i++;
 	}
 	if (!collision_x)
 		global->player->pos.x = new_pos.x;
 	temp_pos = global->player->pos;
 	temp_pos.y = new_pos.y;
-    i = 0;
-    while (i < global->line_count)
+	i = 0;
+	while (i < global->line_count)
 	{
 		if (circle_line_collision(temp_pos, PLAYER_RADIUS
 				* global->scale_factor, global->lines[i]))
@@ -153,15 +165,16 @@ void	update_position(t_global *global, t_vec2d dir, float speed)
 			collision_y = true;
 			break ;
 		}
-        i++;
+		i++;
 	}
 	if (!collision_y)
 		global->player->pos.y = new_pos.y;
 	i = 0;
-	while (i < (int)global->img->width) {
-        global->player->rays[i].origin = global->player->pos;
-        i++;
-    }
+	while (i < (int)global->img->width)
+	{
+		global->player->rays[i].origin = global->player->pos;
+		i++;
+	}
 }
 
 void	rotate_player(t_global *global, float angle)
@@ -180,8 +193,8 @@ void	rotate_player(t_global *global, float angle)
 	i = 0;
 	while (i < (int)global->img->width)
 	{
-		new_angle = (atan2f(new_dir.y, new_dir.x) - (float)(FOV / 2.0f)) + ((float)i
-				* angle_increment);
+		new_angle = (atan2f(new_dir.y, new_dir.x) - (float)(FOV / 2.0f))
+			+ ((float)i * angle_increment);
 		global->player->rays[i].direction = (t_vec2d){cosf(new_angle),
 			sinf(new_angle)};
 		i++;
