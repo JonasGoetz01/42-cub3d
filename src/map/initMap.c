@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 16:02:21 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 15:05:53 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 15:08:06 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,17 +87,6 @@ int	get_door_amount(t_global *global)
 		}
 		y++;
 	}
-	return (count);
-}
-
-void	get_doors(t_global *global)
-{
-	int	y;
-	int	x;
-	int	count;
-
-	global->door_count = get_door_amount(global);
-	global->doors = malloc(sizeof(t_door) * global->door_count);
 	return (count);
 }
 
