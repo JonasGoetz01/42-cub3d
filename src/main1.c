@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 18:42:33 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 18:55:21 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ void	free_map(t_global *global)
 		free(global->map);
 	}
 }
-
 
 void	free_player_rays(t_global *global)
 {
