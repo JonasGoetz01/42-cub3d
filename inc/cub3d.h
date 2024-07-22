@@ -163,7 +163,6 @@ void					resize(int32_t width, int32_t height, void *param);
 t_vec2d					get_player_position(t_global *global);
 t_vec2d					get_player_direction(t_global *global);
 void					cursor(double xpos, double ypos, void *param);
-void					show_sky_and_floor(t_global *global);
 void					make_background_transparent(t_global *global);
 void					render_3d(t_global *global);
 void					draw_bar(t_global *global, int x, int y, int width,
@@ -196,7 +195,8 @@ void					resize(int32_t width, int32_t height, void *param);
 t_vec2d					get_player_position(t_global *global);
 t_vec2d					get_player_direction(t_global *global);
 void					cursor(double xpos, double ypos, void *param);
-void					show_sky_and_floor(t_global *global);
+void					show_sky(t_global *global);
+void					show_floor(t_global *global);
 void					make_background_transparent(t_global *global);
 void					render_3d(t_global *global);
 void					draw_bar(t_global *global, int x, int y, int width,
@@ -241,4 +241,12 @@ t_collision				*process_intersections(t_ray *ray, t_line *lines,
 							int line_count);
 t_collision				*find_closest_collision(t_ray *ray, t_vec2d player_pos);
 double					point_line_distance(t_vec2d point, t_line *line);
+void					draw_crosshair(t_global *global);
+void					ft_texture_to_image(t_global *global,
+							mlx_texture_t *texture);
+void					my_usleep(unsigned int microseconds);
+void					cap_fps(double *elapsed_time, double frame_duration,
+							t_global *global);
+void					display_fps(int *fps_timer, double elapsed_time);
+void					update_images(t_global *global);
 #endif
