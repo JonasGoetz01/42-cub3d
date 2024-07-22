@@ -95,17 +95,3 @@ char	*ft_itoa(int n)
 	str[len + 1] = '\0';
 	return (str);
 }
-
-/* #include <stdio.h>
-
-int	main(void)
-{
-	printf("%s\n", ft_itoa(-2147483648));
-	printf("%s\n", ft_itoa(2147483647));
-	printf("%s\n", ft_itoa(-42));
-	printf("%s\n", ft_itoa(42));
-	printf("%s\n", ft_itoa(0));
-	printf("%s\n", ft_itoa(-0));
-	printf("%s\n", ft_itoa(1));
-	printf("%s\n", ft_itoa(-1));
-} */

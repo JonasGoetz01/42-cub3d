@@ -72,21 +72,3 @@ char	**ft_split(const char *s, char c)
 	}
 	return (result);
 }
-
-// #include <stdio.h>
-
-// int	main(void)
-// {
-// 	char	*str;
-// 	char	**strs;
-// 	int		i;
-
-// 	i = 0;
-// 	str = "Hello world!";
-// 	strs = ft_split(str, ' ');
-// 	while (i < 2)
-// 	{
-// 		printf("%s\n", strs[i]);
-// 		i++;
-// 	}
-// }

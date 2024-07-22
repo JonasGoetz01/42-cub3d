@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_arr_create.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pgrossma <pgrossma@student.42heilbronn.de> +#+  +:+       +#+        */
+/*   By: jgotz <jgotz@student.42heilbronn.de> +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/03 13:48:25 by pgrossma          #+#    #+#             */
-/*   Updated: 2024/04/25 13:15:58 by pgrossma         ###   ########.fr       */
+/*   Created: 2024/04/03 13:48:25 by jgotz          #+#    #+#             */
+/*   Updated: 2024/04/25 13:15:58 by jgotz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
