@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 11:50:12 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 16:52:59 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	init_global(t_global *global)
 {
 	init_to_null(global);
+	global->map = NULL;
 	global->window_height = HEIGHT;
 	global->window_width = WIDTH;
 	global->minimap_scale = MINIMAP_SCALE;
