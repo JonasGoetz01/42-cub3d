@@ -50,7 +50,6 @@ SRCS	:=  main.c \
 			parse_utils2.c \
 			validate_color.c \
 			map_size.c \
-			door.c \
 			add_segments.c \
 			add_segments_utils.c \
 			add_segments_utils2.c \
