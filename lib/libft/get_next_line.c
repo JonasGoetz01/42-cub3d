@@ -3,130 +3,85 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vscode <vscode@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 16:21:44 by vscode            #+#    #+#             */
-/*   Updated: 2024/05/11 16:21:44 by vscode           ###   ########.fr       */
+/*   Updated: 2024/07/22 18:36:37 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*buff_to_line(char *buffer, char *buf)
+static char	*ft_get_line(char *str)
+{
+	char	*line;
+	size_t	i;
+
+	i = 0;
+	while (str[i] != '\n' && str[i] != '\0')
+		i++;
+	if (str[i] == '\n')
+		line = ft_substr(str, 0, i + 1);
+	else
+		line = ft_strdup(str);
+	return (line);
+}
+
+static int	ft_reset_save(char *save)
+{
+	int	i;
+
+	i = 0;
+	while (save[i] != '\n' && save[i] != '\0')
+		i++;
+	if (save[i] == '\n')
+	{
+		ft_memcpy(save, ft_strchr(save, '\n') + 1, ft_strlen(ft_strchr(save,
+					'\n')));
+		return (1);
+	}
+	return (0);
+}
+
+static char	*ft_read_loop(int fd, char *save, char *line, int *bytes_read)
 {
 	char	*temp;
 
-	temp = ft_strjoin(buffer, buf);
-	free(buffer);
-	return (temp);
-}
-
-/**
- * move pointer to next line and keep everything that
- * was alredy in the buffer from new line in memory
- */
-char	*next(char *buffer)
-{
-	int		i;
-	int		j;
-	char	*line;
-
-	i = 0;
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	if (!buffer[i])
+	*bytes_read = 1;
+	while (!ft_strchr(line, '\n') && *bytes_read != 0)
 	{
-		free(buffer);
-		return (NULL);
+		*bytes_read = read(fd, save, BUFFER_SIZE);
+		if (*bytes_read == -1)
+			return (free(line), NULL);
+		save[*bytes_read] = '\0';
+		temp = ft_strjoin(line, save);
+		if (temp == NULL)
+			return (free(line), NULL);
+		free(line);
+		line = temp;
 	}
-	line = ft_calloc((ft_strlen(buffer) - i + 1), sizeof(char));
-	if (!line)
-	{
-		free(buffer);
-		return (NULL);
-	}
-	i++;
-	j = 0;
-	while (buffer[i])
-		line[j++] = buffer[i++];
-	free(buffer);
 	return (line);
-}
-
-/**
-	* Extracts the content of the buffer until
-	the first newline character ('\n') encountered.
- */
-char	*get_line_mine(char *buffer)
-{
-	char	*line;
-	int		i;
-
-	i = 0;
-	if (!buffer[i])
-		return (NULL);
-	while (buffer[i] && buffer[i] != '\n')
-		i++;
-	line = ft_calloc(i + 2, sizeof(char));
-	if (!line)
-		return (NULL);
-	i = 0;
-	while (buffer[i] && buffer[i] != '\n')
-	{
-		line[i] = buffer[i];
-		i++;
-	}
-	if (buffer[i] && buffer[i] == '\n')
-		line[i++] = '\n';
-	return (line);
-}
-
-/**
- * read out file and put into buffer
- */
-char	*fill_buffer(int fd, char *res)
-{
-	char	*buffer;
-	size_t	byte_read;
-
-	if (!res)
-		res = ft_calloc(1, 1);
-	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-	if (!buffer)
-		return (NULL);
-	byte_read = read(fd, buffer, BUFFER_SIZE);
-	while (byte_read > 0)
-	{
-		buffer[byte_read] = '\0';
-		res = buff_to_line(res, buffer);
-		if (ft_strchr(buffer, '\n') || byte_read == 0)
-			break ;
-		byte_read = (size_t)read(fd, buffer, BUFFER_SIZE);
-	}
-	free(buffer);
-	if (byte_read <= 0 && res[0] == '\0')
-	{
-		free(res);
-		return (NULL);
-	}
-	return (res);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*buffer;
+	static char	save[32767][BUFFER_SIZE + 1];
 	char		*line;
+	char		*temp;
+	int			bytes_read;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
-	{
-		free(buffer);
-		buffer = NULL;
+	if (fd < 0)
 		return (NULL);
-	}
-	buffer = fill_buffer(fd, buffer);
-	if (!buffer)
+	if (BUFFER_SIZE <= 0 || read(fd, save, 0) == -1)
+		return (ft_memcpy(save[fd], "\0", 1), NULL);
+	line = ft_strdup(save[fd]);
+	if (line == NULL)
 		return (NULL);
-	line = get_line_mine(buffer);
-	buffer = next(buffer);
-	return (line);
+	line = ft_read_loop(fd, save[fd], line, &bytes_read);
+	if (line == NULL)
+		return (NULL);
+	if (ft_strlen(line) == 0 && bytes_read == 0)
+		return (free(line), NULL);
+	temp = ft_get_line(line);
+	return (ft_reset_save(save[fd]), free(line), temp);
 }
