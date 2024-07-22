@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 15:55:48 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 15:10:54 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 15:28:28 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@
 
 # define WIDTH 1080
 # define HEIGHT 720
-# define FOV 60.0f * (M_PI / 180.0f)
-# define BPP sizeof(int32_t)
+# define FOV 1.0471975512
+# define BPP 32
 # define MOVE_SPEED 0.7f
 # define MINIMAP_SCALE 0.3f
 # define SHOW_MINIMAP 1
@@ -35,8 +35,8 @@
 # define SHOW_FOV 1
 # define WALL_BUFFER_DISTANCE 0.2f
 # define PLAYER_RADIUS 0.2f
-# define INTERACT_MAX 2.0f // maybe change value
-# define INTERACT_MIN 0.3f // maybe change value
+# define INTERACT_MAX 2.0f
+# define INTERACT_MIN 0.3f
 
 # define NC "\033[0m"
 # define RED "\033[31m"
@@ -48,22 +48,24 @@
 # define BOLD "\033[1m"
 # define LINE "\033[4m"
 
-# define ERR_MALLOC RED BOLD "ERROR: Malloc failed\n" NC
-# define ERR_OPEN RED BOLD "ERROR: Could not open file "
-# define ERR_DIR RED BOLD "ERROR: File is a directory\n" NC
-# define ERR_PLAYER RED BOLD "ERROR: Multiple players or no player in map\n" NC
-# define ERR_CHAR RED BOLD "ERROR: Invalid character in map\n" NC
-# define ERR_MAP RED BOLD "ERROR: Map is not closed correctly\n" NC
-# define ERR_RANGE RED BOLD "ERROR: Color value out of range\n" NC
-# define ERR RED BOLD "ERROR: Error\n" NC
-# define ERR_NO_ID RED BOLD "ERROR: Unrecognized identifier\n" NC
-# define ERR_D_ID RED BOLD "ERROR: Double identifier\n" NC
-# define ERR_COMMA RED BOLD "ERROR: Invalid position of commas\n" NC
-# define ERR_FORMAT RED BOLD "ERROR: Invalid color format\n" NC
-# define ERR_EMPTY RED BOLD "ERROR: Empty line in map\n" NC
-# define ERR_ARG RED BOLD "ERROR: Invalid number of arguments\n" NC
-# define ERR_DOOR RED BOLD "ERROR: Invalid door position\n" NC
-# define USAGE BLUE BOLD "USAGE: ./cub3D <[file].cub>\n" NC
+# define ERR_MALLOC "\033[31m \033[1m ERROR: Malloc failed\n\033[0m"
+# define ERR_OPEN "\033[31m \033[1m ERROR: Could not open file \033[0m"
+# define ERR_DIR "\033[31m \033[1m ERROR: File is a directory\n\033[0m"
+# define ERR_PLAYER \
+	"\033[31m \033\
+[1m ERROR: Multiple players or no player in map\n\033[0m"
+# define ERR_CHAR "\033[31m \033[1m ERROR: Invalid character in map\n\033[0m"
+# define ERR_MAP "\033[31m \033[1m ERROR: Map is not closed correctly\n\033[0m"
+# define ERR_RANGE "\033[31m \033[1m ERROR: Color value out of range\n\033[0m"
+# define ERR "\033[31m \033[1m ERROR: Error\n\033[0m"
+# define ERR_NO_ID "\033[31m \033[1m ERROR: Unrecognized identifier\n\033[0m"
+# define ERR_D_ID "\033[31m \033[1m ERROR: Double identifier\n\033[0m"
+# define ERR_COMMA "\033[31m \033[1m ERROR: Invalid position of commas\n\033[0m"
+# define ERR_FORMAT "\033[31m \033[1m ERROR: Invalid color format\n\033[0m"
+# define ERR_EMPTY "\033[31m \033[1m ERROR: Empty line in map\n\033[0m"
+# define ERR_ARG "\033[31m \033[1m ERROR: Invalid number of arguments\n\033[0m"
+# define ERR_DOOR "\033[31m \033[1m ERROR: Invalid door position\n\033[0m"
+# define USAGE "\033[34m \033[1m USAGE: ./cub3D <[file].cub>\n\033[0m"
 
 typedef struct s_map
 {
@@ -207,15 +209,12 @@ typedef struct s_global
 
 void					ft_exit_free(t_global *global);
 void					loop(void *param);
-void					keyHook(void *param);
-void					initMap(t_global *global);
 void					map_to_line_segments(t_global *global, t_line **lines,
 							int *line_count);
 void					draw_line(t_global *global, t_vec2d a, t_vec2d b,
 							int color);
 void					draw_line_crosshair(t_global *global, t_vec2d a,
 							t_vec2d b, int color);
-void					showMap(t_global *global);
 float					calculate_scale_factor(int map_width, int map_height,
 							int window_width, int window_height);
 void					scale_line_segments(t_line *lines, int line_count,
@@ -237,8 +236,6 @@ t_vec2d					get_player_direction(t_global *global);
 void					cursor(double xpos, double ypos, void *param);
 void					make_background_transparent(t_global *global);
 void					render_3d(t_global *global);
-void					draw_bar(t_global *global, int x, int y, int width,
-							int height, int color);
 double					get_current_millis(void);
 void					key_hook(mlx_key_data_t keydata, void *param);
 
@@ -270,8 +267,6 @@ void					show_sky(t_global *global);
 void					show_floor(t_global *global);
 void					make_background_transparent(t_global *global);
 void					render_3d(t_global *global);
-void					draw_bar(t_global *global, int x, int y, int width,
-							int height, int color);
 double					get_current_millis(void);
 void					get_opponents(t_global *global);
 int						parse_and_validate(char *file, t_global *global);
@@ -330,7 +325,8 @@ void					process_ray(t_global *global, int i, float player_angle,
 							float *z_buffer);
 mlx_texture_t			*load_texture(t_global *global,
 							t_collision *closest_collision);
-float					calculate_hit_percentage(t_collision *closest_collision);
+float					calculate_hit_percentage(
+							t_collision *closest_collision);
 void					draw_texture_column(t_global *global, t_vec2d position,
 							mlx_texture_t *texture, t_vec2d texture_coords);
 void					check_close_door(t_global *global);
