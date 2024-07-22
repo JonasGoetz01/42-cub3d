@@ -6,7 +6,12 @@ LIBMLX	:= ./lib/MLX42
 
 HEADERS	:= -I ./inc -I $(LIBMLX)/include -I ./lib/libft
 
-LIBS	:= $(LIBMLX)/build/libmlx42.a -ldl -lglfw -pthread -lm
+LIBS	:= $(LIBMLX)/build/libmlx42.a
+ifeq ($(shell uname),Darwin)
+	LIBS += $(LIBMLX)/build/libmlx42.a -framework Cocoa -framework OpenGL -framework IOKit -lglfw
+else ifeq ($(shell uname),Linux)
+	LIBS += $(LIBMLX)/build/libmlx42.a -Iinc -Ilib/libft -ldl -lglfw -pthread -lm
+endif
 # LIBS	+= -L"/opt/homebrew/Cellar/glfw/3.4/lib/"
 
 VPATH	:=	src \
@@ -87,6 +92,9 @@ fclean: clean
 	make -C ./lib/libft fclean
 	rm -rf $(NAME)
 
-re: clean all
+re: fclean all
 
 .PHONY: all, clean, fclean, re, libmlx
+
+
+# export DISPLAY=:99 && Xvfb :99 -screen 0 1024x768x16 & vgf ./cub3D test.cub & sleep 1 && xdotool search --name "cub3D" key w && sleep 1 && xdotool search --name "cub3D" key right && sleep 1 && xdotool search --name "cub3D" key escape
