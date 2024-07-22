@@ -20,6 +20,7 @@ VPATH	:=	src \
 			src/parsing
 
 SRCS	:=  main.c \
+			main1.c \
 			loop.c \
 			loop1.c \
 			loop2.c \
