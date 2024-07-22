@@ -24,6 +24,8 @@
 # define WALL_BUFFER_DISTANCE 0.2f
 # define PLAYER_RADIUS 0.2f
 # define INTERACT_DISTANCE 2.0f // maybe change value
+# define INTERACT_MAX 2.0f
+# define INTERACT_MIN 1.0f
 
 # define NC "\033[0m"
 # define RED "\033[31m"
@@ -254,4 +256,16 @@ void					check_inactive_lines(t_global *global);
 float					map_distance_to_height(float distance,
 							t_global *global);
 void					check_active_lines(t_global *global);
+void					detect_collisions(t_global *global, t_ray *tmp_ray);
+void					process_ray(t_global *global, int i, float player_angle,
+							float *z_buffer);
+mlx_texture_t			*load_texture(t_global *global,
+							t_collision *closest_collision);
+float					calculate_hit_percentage(t_collision *closest_collision);
+void					draw_texture_column(t_global *global, t_vec2d position,
+							mlx_texture_t *texture, t_vec2d texture_coords);
+void					check_close_door(t_global *global);
+void					check_open_door(t_global *global);
+void					update_door_lines(t_global *global);
+void					find_closest_collision_door(t_ray *tmp_ray);
 #endif
