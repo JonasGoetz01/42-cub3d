@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/07/22 15:05:33 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 15:08:34 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	update_graphics(t_global *global)
 	update_door_lines(global);
 	update_images(global);
 	make_background_transparent(global);
-	showMap(global);
+	show_map(global);
 	show_sky(global);
 	show_floor(global);
 	render_3d(global);
