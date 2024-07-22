@@ -18,7 +18,7 @@ void	make_background_transparent(t_global *global)
 	}
 }
 
-void	show_sky_and_floor(t_global *global)
+void	show_sky(t_global *global)
 {
 	int	x;
 	int	y;
@@ -35,6 +35,14 @@ void	show_sky_and_floor(t_global *global)
 		}
 		y++;
 	}
+}
+
+void	show_floor(t_global *global)
+{
+	int	x;
+	int	y;
+
+	y = global->window_height / 2;
 	while (y < global->window_height)
 	{
 		x = 0;
