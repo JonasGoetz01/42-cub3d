@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 11:42:42 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 13:46:52 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ t_vec2d	get_player_direction(t_global *global)
 	return (player_pos);
 }
 
-void	get_doors(t_global *global)
+int	get_door_amount(t_global *global)
 {
 	int	count;
 	int	y;
@@ -87,8 +87,17 @@ void	get_doors(t_global *global)
 		}
 		y++;
 	}
-	global->door_count = count;
-	global->doors = malloc(sizeof(t_door) * count);
+	return (count);
+}
+
+void	get_doors(t_global *global)
+{
+	int	y;
+	int	x;
+	int	count;
+
+	global->door_count = get_door_amount(global);
+	global->doors = malloc(sizeof(t_door) * global->door_count);
 	count = 0;
 	y = 0;
 	while (y < global->map->height)
