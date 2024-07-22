@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   key.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
+/*   Updated: 2024/07/22 11:44:37 by jgotz            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../inc/cub3d.h"
 
 void	key_hook(mlx_key_data_t keydata, void *param)
@@ -19,7 +31,7 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 		global->close = false;
 }
 
-void	keyHook(void *param)
+void	key_hook_movement(void *param)
 {
 	t_global	*global;
 	t_vec2d		dir;
