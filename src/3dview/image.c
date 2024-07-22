@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 15:05:16 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 15:14:18 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	show_sky(t_global *global)
 	int	x;
 	int	y;
 
-	y = -1;
-	while (++y < global->window_height / 2)
+	y = 0;
+	while (y < global->window_height / 2)
 	{
 		x = 0;
 		while (x < global->window_width)
