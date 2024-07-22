@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/07/22 11:39:06 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 13:31:15 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	draw_crosshair(t_global *global)
 
 void	update_graphics(t_global *global)
 {
-	update_door_segments(global);
+	update_door_lines(global);
 	update_images(global);
 	make_background_transparent(global);
 	showMap(global);
