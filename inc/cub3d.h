@@ -171,7 +171,7 @@ double					get_current_millis(void);
 void					key_hook(mlx_key_data_t keydata, void *param);
 
 void					loop(void *param);
-void					keyHook(void *param);
+void					key_hook_movement(void *param);
 void					initMap(t_global *global);
 void					map_to_line_segments(t_global *global, t_line **lines,
 							int *line_count);
@@ -249,4 +249,5 @@ void					cap_fps(double *elapsed_time, double frame_duration,
 							t_global *global);
 void					display_fps(int *fps_timer, double elapsed_time);
 void					update_images(t_global *global);
+void					init_to_null(t_global *global);
 #endif
