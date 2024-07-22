@@ -12,21 +12,6 @@
 
 #include "../../inc/cub3d.h"
 
-void	display_fps(int *fps_timer, double elapsed_time)
-{
-	int	fps;
-
-	if (*fps_timer % 10 == 0)
-	{
-		fps = (int)(1000.0 / elapsed_time);
-		write(1, "FPS: ", 5);
-		ft_putnbr_fd(fps, 1);
-		write(1, "\r", 1);
-		*fps_timer = 0;
-	}
-	(*fps_timer)++;
-}
-
 void	update_images(t_global *global)
 {
 	mlx_delete_image(global->mlx, global->minimap);

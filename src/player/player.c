@@ -49,48 +49,6 @@ t_player	*new_player(t_global *global, t_vec2d pos, t_vec2d dir)
 	return (player);
 }
 
-t_vec2d	calculate_perpendicular_direction(t_line dir_line, t_line wall)
-{
-	t_vec2d	wall_dir;
-	t_vec2d	perpendicular;
-	t_vec2d	dir_vector;
-	t_vec2d	new_dir;
-	float	length;
-
-	wall_dir.x = wall.b.x - wall.a.x;
-	wall_dir.y = wall.b.y - wall.a.y;
-	perpendicular.x = -wall_dir.y;
-	perpendicular.y = wall_dir.x;
-	length = sqrtf(perpendicular.x * perpendicular.x + perpendicular.y
-			* perpendicular.y);
-	perpendicular.x /= length;
-	perpendicular.y /= length;
-	dir_vector.x = dir_line.b.x - dir_line.a.x;
-	dir_vector.y = dir_line.b.y - dir_line.a.y;
-	new_dir.x = dir_vector.x * perpendicular.x + dir_vector.y * perpendicular.y
-		* perpendicular.x;
-	new_dir.y = dir_vector.x * perpendicular.x + dir_vector.y * perpendicular.y
-		* perpendicular.y;
-	return (new_dir);
-}
-
-bool	line_line_collision(t_line *a, t_line *b)
-{
-	float	denominator;
-	float	ua;
-	float	ub;
-
-	denominator = ((b->b.y - b->a.y) * (a->b.x - a->a.x) - (b->b.x - b->a.x)
-			* (a->b.y - a->a.y));
-	if (denominator == 0)
-		return (false);
-	ua = ((b->b.x - b->a.x) * (a->a.y - b->a.y) - (b->b.y - b->a.y) * (a->a.x
-				- b->a.x)) / denominator;
-	ub = ((a->b.x - a->a.x) * (a->a.y - b->a.y) - (a->b.y - a->a.y) * (a->a.x
-				- b->a.x)) / denominator;
-	return (ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1);
-}
-
 bool	circle_line_collision(t_vec2d circle_center, float radius, t_line line)
 {
 	t_vec2d	line_vec;

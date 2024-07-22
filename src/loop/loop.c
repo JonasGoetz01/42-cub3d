@@ -59,7 +59,6 @@ void	display_minimap(t_global *global)
 void	loop(void *param)
 {
 	t_global		*global;
-	static int		fps_timer = 0;
 	double			current_time;
 	double			elapsed_time;
 	const double	max_fps = 60.0;
@@ -69,7 +68,6 @@ void	loop(void *param)
 	elapsed_time = current_time - global->time;
 	global->time = current_time;
 	cap_fps(&elapsed_time, (1000.0 / max_fps), global);
-	display_fps(&fps_timer, elapsed_time);
 	update_graphics(global);
 	display_minimap(global);
 }
