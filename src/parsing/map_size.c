@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 12:42:05 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 17:29:19 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 17:35:14 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ int	process_file(t_map_size *var, t_global *global)
 		if (var->i < 6)
 		{
 			if (!check_identifier(var->line, global))
-				return (free_and_null((void **)&(var->line)), free(var->tmp), 1);
+				return (free_and_null((void **)&(var->line)),
+					free(var->tmp), 1);
 			var->i++;
 		}
 		else
