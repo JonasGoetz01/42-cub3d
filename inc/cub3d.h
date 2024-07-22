@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 15:55:48 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 15:02:23 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 15:10:54 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,7 +334,6 @@ float					calculate_hit_percentage(t_collision *closest_collision);
 void					draw_texture_column(t_global *global, t_vec2d position,
 							mlx_texture_t *texture, t_vec2d texture_coords);
 void					check_close_door(t_global *global);
-void					check_open_door(t_global *global);
 void					update_door_lines(t_global *global);
 void					find_closest_collision_door(t_ray *tmp_ray);
 bool					circle_line_collision(t_vec2d circle_center,
@@ -390,16 +389,10 @@ bool					parse_map(char *line, t_global *global);
 bool					parse_line(char *line, t_global *global);
 void					get_doors(t_global *global);
 float					get_distance(t_vec2d a, t_vec2d b);
-void					update_door_lines(t_global *global);
 double					point_line_distance(t_vec2d point, t_line *line);
-t_collision				*new_collision(t_collision *collisions,
-							int *collision_count, t_vec2d point, t_line *line,
-							t_face face);
-void					update_door_lines(t_global *global);
-void					check_close_door(t_global *global);
 void					check_open_door(t_global *global);
 void					detect_collisions(t_global *global, t_ray *tmp_ray);
-void					find_closest_collision(t_ray *tmp_ray);
+void					find_closest_collision_door(t_ray *tmp_ray);
 void					map_to_line_segments(t_global *global, t_line **lines,
 							int *line_count);
 bool					is_wall_above(t_global *global, int x, int y);
