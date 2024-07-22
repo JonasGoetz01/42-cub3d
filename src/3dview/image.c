@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 11:43:09 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 12:09:55 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ float	get_distance(t_vec2d a, t_vec2d b)
 	return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)));
 }
 
-double	point_line_distance(t_vec2d point, t_line *line);
+double			point_line_distance(t_vec2d point, t_line *line);
 
 void	check_inactive_lines(t_global *global)
 {
@@ -249,38 +249,13 @@ void	update_door_segments(t_global *global)
 	}
 }
 
-void	render_3d(t_global *global)
+mlx_texture_t	*load_texture(t_global *global, t_collision *closest_collision)
 {
-	int bar_width;
-	int i;
-	t_ray *ray;
-	t_collision *closest_collision;
-	float distance;
-	int bar_height;
-	int center_y;
-	int top_y;
-	int x;
-	float hit_percentage;
-	int color;
-	mlx_texture_t *texture;
-	uint8_t *pixel;
-	int draw_y;
-	int texture_x;
-	int texture_y;
-	float z_buffer[global->img->width];
-	float perpendicular_distance;
-	float ray_angle;
-	float player_angle;
-	float angle_diff;
-	static mlx_texture_t *texture_north = NULL;
-	static mlx_texture_t *texture_south = NULL;
-	static mlx_texture_t *texture_east = NULL;
-	static mlx_texture_t *texture_west = NULL;
-	static mlx_texture_t *door = NULL;
-	int r;
-	int g;
-	int b;
-	int j;
+	static mlx_texture_t	*texture_north = NULL;
+	static mlx_texture_t	*texture_south = NULL;
+	static mlx_texture_t	*texture_east = NULL;
+	static mlx_texture_t	*texture_west = NULL;
+	static mlx_texture_t	*door = NULL;
 
 	if (!texture_north)
 		texture_north = mlx_load_png(global->texture->north);
@@ -295,88 +270,107 @@ void	render_3d(t_global *global)
 	if (!texture_north || !texture_south || !texture_east || !texture_west
 		|| !door)
 		ft_exit_free(global);
+	if (closest_collision->face == NORTH)
+		return (texture_north);
+	else if (closest_collision->face == SOUTH)
+		return (texture_south);
+	else if (closest_collision->face == EAST)
+		return (texture_east);
+	else if (closest_collision->face == WEST)
+		return (texture_west);
+	else
+		return (door);
+}
+
+float	calculate_hit_percentage(t_collision *closest_collision)
+{
+	if (closest_collision->line->alignment == VERTICAL)
+	{
+		return ((closest_collision->point.y - closest_collision->line->a.y)
+			/ (closest_collision->line->b.y - closest_collision->line->a.y));
+	}
+	else
+	{
+		return ((closest_collision->point.x - closest_collision->line->a.x)
+			/ (closest_collision->line->b.x - closest_collision->line->a.x));
+	}
+}
+
+void	draw_texture_column(t_global *global, int bar_height, int top_y, int x,
+		mlx_texture_t *texture, int texture_x)
+{
+	int		texture_y;
+	int		color;
+	uint8_t	*pixel;
+	int		j;
+
+	j = 0;
+	while (j < bar_height)
+	{
+		texture_y = (int)(((float)j / bar_height) * (texture->height));
+		texture_y = fmax(fmin(texture_y, texture->height - 1), 0);
+		texture_x = fmax(fmin(texture_x, texture->width - 1), 0);
+		pixel = &(texture->pixels[(texture_y * texture->width + texture_x)
+				* texture->bytes_per_pixel]);
+		if (pixel != NULL)
+		{
+			color = get_rgba(pixel[0], pixel[1], pixel[2], 255);
+			if (top_y + j >= 0 && (uint32_t)top_y + j < global->img->height)
+			{
+				if (x >= 0 && (uint32_t)x < global->img->width)
+				{
+					mlx_put_pixel(global->img, x, top_y + j, color);
+				}
+			}
+		}
+		j++;
+	}
+}
+
+void	process_ray(t_global *global, int i, float player_angle,
+		float *z_buffer)
+{
+	t_ray			*ray;
+	t_collision		*closest_collision;
+	int				bar_height;
+	float			hit_percentage;
+	mlx_texture_t	*texture;
+
+	ray = &global->player->rays[i];
+	closest_collision = ray->closest_collision;
+	if (closest_collision)
+	{
+		bar_height = map_distance_to_height((float)fmaxf(get_distance(global->player->pos,
+						closest_collision->point), 0.1f)
+				* cosf(atan2f(ray->direction.y, ray->direction.x)
+					- player_angle), global);
+		texture = load_texture(global, closest_collision);
+		hit_percentage = calculate_hit_percentage(closest_collision);
+		hit_percentage = fmax(fmin(hit_percentage, 1.0f), 0.0f);
+		draw_texture_column(global, bar_height, global->img->height / 2
+			- (bar_height / 2), i, texture, (int)(hit_percentage
+				* (texture->width)));
+		z_buffer[i] = (float)fmaxf(get_distance(global->player->pos,
+					closest_collision->point), 0.1f)
+			* cosf(atan2f(ray->direction.y, ray->direction.x) - player_angle);
+	}
+}
+
+void	render_3d(t_global *global)
+{
+	int		i;
+	float	player_angle;
+	float	z_buffer[WIDTH];
+
 	player_angle = atan2(global->player->dir.y, global->player->dir.x);
-	bar_width = 1;
 	if (global->close)
 		check_inactive_lines(global);
 	if (global->open)
 		check_active_lines(global);
-	for (i = 0; i < (int)global->img->width; i++)
+	i = 0;
+	while (i < (int)global->img->width)
 	{
-		ray = &global->player->rays[i];
-		closest_collision = ray->closest_collision;
-		if (closest_collision)
-		{
-			distance = get_distance(global->player->pos,
-					closest_collision->point);
-			distance = fmaxf(distance, 0.1f);
-			ray_angle = atan2f(ray->direction.y, ray->direction.x);
-			angle_diff = ray_angle - player_angle;
-			perpendicular_distance = (float)distance * cosf(angle_diff);
-			bar_height = map_distance_to_height(perpendicular_distance, global);
-			center_y = global->img->height / 2;
-			top_y = center_y - (bar_height / 2);
-			x = i * bar_width;
-			if (closest_collision->face == NORTH)
-				texture = texture_north;
-			else if (closest_collision->face == SOUTH)
-				texture = texture_south;
-			else if (closest_collision->face == EAST)
-				texture = texture_east;
-			else if (closest_collision->face == WEST)
-				texture = texture_west;
-			else if (closest_collision->face == DOORS)
-				texture = door;
-			else
-				texture = texture_north;
-			if (closest_collision->line->alignment == VERTICAL)
-			{
-				hit_percentage = (closest_collision->point.y
-						- closest_collision->line->a.y)
-					/ (closest_collision->line->b.y
-						- closest_collision->line->a.y);
-			}
-			else
-			{
-				hit_percentage = (closest_collision->point.x
-						- closest_collision->line->a.x)
-					/ (closest_collision->line->b.x
-						- closest_collision->line->a.x);
-			}
-			hit_percentage = fmax(fmin(hit_percentage, 1.0f), 0.0f);
-			texture_x = (int)(hit_percentage * (texture->width));
-			j = 0;
-			while (j < bar_height)
-			{
-				texture_y = (int)(((float)j / bar_height) * (texture->height));
-				if ((uint32_t)texture_y >= texture->height)
-					texture_y = texture->height - 1;
-				if (texture_y < 0)
-					texture_y = 0;
-				if ((uint32_t)texture_x >= texture->width)
-					texture_x = texture->width - 1;
-				if (texture_x < 0)
-					texture_x = 0;
-				pixel = &(texture->pixels[(texture_y * texture->width
-							+ texture_x) * texture->bytes_per_pixel]);
-				if (pixel != NULL)
-				{
-					r = pixel[0];
-					g = pixel[1];
-					b = pixel[2];
-					color = get_rgba(r, g, b, 255);
-					draw_y = top_y + j;
-					if (draw_y >= 0 && (uint32_t)draw_y < global->img->height)
-					{
-						if (x >= 0 && (uint32_t)x < global->img->width)
-						{
-							mlx_put_pixel(global->img, x, draw_y, color);
-						}
-					}
-				}
-				j++;
-			}
-			z_buffer[i] = perpendicular_distance;
-		}
+		process_ray(global, i, player_angle, z_buffer);
+		i++;
 	}
 }
