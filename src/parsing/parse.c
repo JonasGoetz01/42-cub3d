@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 17:13:43 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 17:37:17 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,27 +116,22 @@ void	configure_map(t_global *global)
 
 int	parse_and_validate(char *file, t_global *global)
 {
-	int i;
-	
 	if (!valid_file(file, 0))
 		return (1);
 	global->texture = malloc(sizeof(t_texture));
-	global->texture->north = NULL;
-	global->texture->south = NULL;
-	global->texture->west = NULL;
-	global->texture->east = NULL;
 	global->map = malloc(sizeof(t_map));
 	if (!global->texture || !global->map)
 		return (printf(ERR_MALLOC), 1);
+	init_texture(global);
 	global->map->map = NULL;
 	global->flags = (t_identifier_flag){0, 0, 0, 0, 0, 0};
 	if (map_size(file, global))
 		return (1);
 	global->map->count = 0;
 	global->map->map = malloc(sizeof(char *) * (global->map->height + 1));
-	i = 0;
-	while (i < global->map->height)
-		global->map->map[i++] = NULL;
+	global->i = 0;
+	while (global->i < global->map->height)
+		global->map->map[global->i++] = NULL;
 	if (!global->map->map)
 		return (printf(ERR_MALLOC), 1);
 	if (parse_file(file, global))
