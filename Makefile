@@ -21,6 +21,7 @@ VPATH	:=	src \
 
 SRCS	:=  main.c \
 			loop.c \
+			loop1.c \
 			initMap.c \
 			showMap.c \
 			key.c \
