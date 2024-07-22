@@ -191,7 +191,6 @@ t_vec2d					ray_line_collision(t_ray *ray, t_line *line,
 							t_face *face);
 void					update_position(t_global *global, t_vec2d dir,
 							float speed);
-void					rotate_player(t_global *global, float angle);
 void					raycast(t_global *global);
 void					resize(int32_t width, int32_t height, void *param);
 t_vec2d					get_player_position(t_global *global);
@@ -268,4 +267,7 @@ void					check_close_door(t_global *global);
 void					check_open_door(t_global *global);
 void					update_door_lines(t_global *global);
 void					find_closest_collision_door(t_ray *tmp_ray);
+bool					circle_line_collision(t_vec2d circle_center,
+							float radius, t_line line);
+
 #endif
