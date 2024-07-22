@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_size.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 12:42:05 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/11 12:47:36 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/22 17:29:19 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,16 @@ int	process_map_line(t_map_size *var)
 	if (var->line[0] == '\n')
 	{
 		var->empty_line = 1;
-		return (free(var->line), 0);
+		free_and_null((void **)&(var->line));
+		return (0);
 	}
 	if (var->empty_line && var->line[0] != '\n')
-		return (printf(ERR_EMPTY), free(var->line), 1);
+	{
+		free_and_null((void **)&(var->line));
+		return (printf(ERR_EMPTY), 1);
+	}
 	var->tmp = ft_strtrim(var->line, "\n");
-	free(var->line);
+	free_and_null((void **)&(var->line));
 	var->height++;
 	if (strlen_tab_to_space(var->tmp) > var->max_width)
 		var->max_width = strlen_tab_to_space(var->tmp);
@@ -41,13 +45,13 @@ int	process_file(t_map_size *var, t_global *global)
 			break ;
 		if (var->line[0] == '\n' && !var->in_map)
 		{
-			free(var->line);
+			free_and_null((void **)&(var->line));
 			continue ;
 		}
 		if (var->i < 6)
 		{
 			if (!check_identifier(var->line, global))
-				return (free(var->line), free(var->tmp), 1);
+				return (free_and_null((void **)&(var->line)), free(var->tmp), 1);
 			var->i++;
 		}
 		else
@@ -55,6 +59,7 @@ int	process_file(t_map_size *var, t_global *global)
 			if (process_map_line(var))
 				return (1);
 		}
+		free_and_null((void **)&(var->line));
 	}
 	return (0);
 }
