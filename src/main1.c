@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 17:10:01 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 17:34:39 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,4 +81,3 @@ void	ft_exit_free(t_global *global)
 		free(global->lines);
 	exit(EXIT_FAILURE);
 }
-
