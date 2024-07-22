@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 13:03:03 by jgotz             #+#    #+#             */
-/*   Updated: 2024/07/22 11:18:12 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 11:39:06 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,21 +28,8 @@ void	draw_crosshair(t_global *global)
 	draw_line_crosshair(global, crosshair[1].a, crosshair[1].b, 0x00FF00);
 }
 
-void	loop(void *param)
+void	update_graphics(t_global *global)
 {
-	t_global		*global;
-	static int		fps_timer = 0;
-	double			current_time;
-	double			elapsed_time;
-	const double	max_fps = 60.0;
-	const double	frame_duration = 1000.0 / max_fps;
-
-	global = (t_global *)param;
-	current_time = get_current_millis();
-	elapsed_time = current_time - global->time;
-	global->time = current_time;
-	cap_fps(&elapsed_time, frame_duration, global);
-	display_fps(&fps_timer, elapsed_time);
 	update_door_segments(global);
 	update_images(global);
 	make_background_transparent(global);
@@ -54,6 +41,10 @@ void	loop(void *param)
 	draw_crosshair(global);
 	mlx_image_to_window(global->mlx, global->minimap, 0, 0);
 	mlx_image_to_window(global->mlx, global->img, 0, 0);
+}
+
+void	display_minimap(t_global *global)
+{
 	if (SHOW_MINIMAP)
 	{
 		mlx_image_to_window(global->mlx, global->minimap, 100, 100);
@@ -63,4 +54,22 @@ void	loop(void *param)
 	mlx_image_to_window(global->mlx, global->img, 0, 0);
 	if (global->img->count > 0)
 		mlx_set_instance_depth(global->img->instances, 0);
+}
+
+void	loop(void *param)
+{
+	t_global		*global;
+	static int		fps_timer = 0;
+	double			current_time;
+	double			elapsed_time;
+	const double	max_fps = 60.0;
+
+	global = (t_global *)param;
+	current_time = get_current_millis();
+	elapsed_time = current_time - global->time;
+	global->time = current_time;
+	cap_fps(&elapsed_time, (1000.0 / max_fps), global);
+	display_fps(&fps_timer, elapsed_time);
+	update_graphics(global);
+	display_minimap(global);
 }
