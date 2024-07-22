@@ -46,7 +46,7 @@ SRCS	:=  main.c \
 			image2.c \
 			door.c \
 			door1.c \
-			time.c \
+			utils.c \
 			parse.c \
 			parse2.c \
 			validate_file.c \
