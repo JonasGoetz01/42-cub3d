@@ -20,15 +20,27 @@ VPATH	:=	src \
 			src/parsing
 
 SRCS	:=  main.c \
+			main1.c \
 			loop.c \
+			loop1.c \
+			loop2.c \
 			initMap.c \
 			showMap.c \
 			key.c \
 			player.c \
+			player1.c \
+			player2.c \
 			geometry.c \
+			geometry1.c \
+			geometry2.c \
+			geometry3.c \
 			resize.c \
 			cursor.c \
 			image.c \
+			image1.c \
+			image2.c \
+			door.c \
+			door1.c \
 			time.c \
 			parse.c \
 			parse2.c \
@@ -37,9 +49,7 @@ SRCS	:=  main.c \
 			parse_utils.c \
 			parse_utils2.c \
 			validate_color.c \
-			map_size.c \
-			raycast.c \
-			raycast1.c
+			map_size.c
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))

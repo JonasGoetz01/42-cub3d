@@ -45,7 +45,8 @@ ft_strtok.c \
 ft_arr_rm.c \
 get_next_line.c \
 ft_lower_str.c \
-ft_arr_sort.c
+ft_arr_sort.c \
+ft_realloc.c
 
 
 

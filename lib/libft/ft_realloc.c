@@ -1,18 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   time.c                                             :+:      :+:    :+:   */
+/*   ft_realloc.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 11:42:13 by jgotz            ###   ########.fr       */
+/*   Created: 2023/10/05 10:54:28 by jgotz             #+#    #+#             */
+/*   Updated: 2024/07/19 13:47:29 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../inc/cub3d.h"
+#include "libft.h"
 
-double	get_current_millis(void)
+void	*ft_realloc(void *ptr, size_t old_size, size_t new_size)
 {
-	return (mlx_get_time() * 1000.0);
+	void	*new_ptr;
+
+	if (ptr)
+	{
+		new_ptr = malloc(new_size);
+		if (new_ptr)
+		{
+			ft_memcpy(new_ptr, ptr, old_size);
+			free(ptr);
+			return (new_ptr);
+		}
+		else
+		{
+			return (NULL);
+		}
+	}
+	else
+	{
+		return (malloc(new_size));
+	}
 }
