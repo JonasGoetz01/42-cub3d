@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 13:44:22 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 14:07:42 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@ void	handle_movement_keys(t_global *global, t_vec2d *dir)
 
 void	handle_rotation_keys(t_global *global)
 {
-	if (mlx_is_key_down(global->mlx, MLX_KEY_E))
+	if (mlx_is_key_down(global->mlx, MLX_KEY_RIGHT))
 		rotate_player(global, 0.03f);
-	if (mlx_is_key_down(global->mlx, MLX_KEY_Q))
+	if (mlx_is_key_down(global->mlx, MLX_KEY_LEFT))
 		rotate_player(global, -0.03f);
 }
 
