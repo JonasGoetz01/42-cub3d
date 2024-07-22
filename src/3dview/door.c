@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/22 11:11:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 11:12:35 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/22 13:01:37 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,8 @@ void	update_door_lines(t_global *global)
 	while (++i < global->door_count)
 	{
 		distance = point_line_distance(global->player->pos,
-				global->door_line[i]);
-		if (distance > INTERACT_MIN / global->scale_factor)
+				global->door_line[i]) / global->scale_factor;
+		if (distance > INTERACT_MIN)
 		{
 			if (global->door_line[i]->door->state == OPENING)
 				update_door_opening(global, i, speed);

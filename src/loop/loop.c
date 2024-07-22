@@ -68,7 +68,7 @@ void	loop(void *param)
 	global->img = mlx_new_image(global->mlx, global->window_width,
 			global->window_height);
 	make_background_transparent(global);
-	showMap(global);
+	show_map(global);
 	show_sky_and_floor(global);
 	render_3d(global);
 	ft_texture_to_image(global, global->sprite_textures[global->sprite_index]);

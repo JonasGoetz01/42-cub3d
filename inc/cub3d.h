@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 15:55:48 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 11:14:18 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/22 14:32:38 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 # define WALL_BUFFER_DISTANCE 0.2f
 # define PLAYER_RADIUS 0.2f
 # define INTERACT_MAX 2.0f // maybe change value
-# define INTERACT_MIN 1.0f // maybe change value
+# define INTERACT_MIN 0.3f // maybe change value
 
 # define NC      "\033[0m"
 # define RED     "\033[31m"
@@ -117,6 +117,33 @@ typedef struct s_player
 	t_ray			*rays;
 }	t_player;
 
+typedef struct s_segment
+{
+	t_vec2d		a;
+	t_vec2d		b;
+	t_alignment	alignment;
+	t_type		type;
+	t_door		*door;
+	t_vec2d		open_end;
+	t_vec2d		close_end;
+}	t_segment;
+
+typedef struct s_add_segments
+{
+	t_vec2d	top_left;
+	t_vec2d	top_right;
+	t_vec2d	bottom_left;
+	t_vec2d	bottom_right;
+	t_vec2d	left_middle;
+	t_vec2d	right_middle;
+	t_door	*door;
+	float	scaled_x;
+	float	scaled_y;
+	int		i;
+	int		x;
+	int		y;
+}	t_add_segments;
+
 typedef struct s_render
 {
 	int				bar_width;
@@ -187,7 +214,7 @@ void				draw_line(t_global *global, t_vec2d a, t_vec2d b,
 						int color);
 void				draw_line_crosshair(t_global *global, t_vec2d a, t_vec2d b,
 						int color);
-void				showMap(t_global *global);
+void				show_map(t_global *global);
 float				calculate_scale_factor(int map_width, int map_height,
 						int window_width, int window_height);
 void				scale_line_segments(t_line *lines, int line_count,
@@ -236,4 +263,22 @@ void				check_close_door(t_global *global);
 void				check_open_door(t_global *global);
 void				detect_collisions(t_global *global, t_ray *tmp_ray);
 void				find_closest_collision(t_ray *tmp_ray);
+void				map_to_line_segments(t_global *global, t_line **lines,
+						int *line_count);
+bool				is_wall_above(t_global *global, int x, int y);
+bool				is_wall_below(t_global *global, int x, int y);
+bool				is_wall_left(t_global *global, int x, int y);
+bool				is_wall_right(t_global *global, int x, int y);
+void				add_line_segment(t_line **lines, int *count,
+						t_segment segment);
+bool				is_door_left(t_global *global, int x, int y);
+bool				is_door_right(t_global *global, int x, int y);
+bool				is_door_above(t_global *global, int x, int y);
+bool				is_door_below(t_global *global, int x, int y);
+t_segment			set_wall_segment(t_vec2d a, t_vec2d b,
+						t_alignment alignment);
+t_segment			set_door_side_segment(t_vec2d a, t_vec2d b,
+						t_alignment alignment, t_door *door);
+t_segment			set_door_segment(t_vec2d a, t_vec2d b,
+						t_alignment alignment, t_door *door);
 #endif
