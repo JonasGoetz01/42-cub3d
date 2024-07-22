@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 11:46:34 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 17:10:01 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,23 +22,63 @@ void	init_to_null(t_global *global)
 	global->lines = NULL;
 }
 
+void	free_map(t_global *global)
+{
+	int	i;
+
+	if (global->map != NULL && global->map->map != NULL)
+	{
+		i = 0;
+		while (i < global->map->height)
+		{
+			free(global->map->map[i]);
+			i++;
+		}
+		free(global->map);
+	}
+}
+
+void	free_player_rays(t_global *global)
+{
+	int	i;
+
+	if (global->player != NULL && global->player->rays != NULL)
+	{
+		i = 0;
+		while (i < WIDTH)
+			free(&(global->player->rays[i++]));
+	}
+}
+
+void	free_textures(t_global *global)
+{
+	if (global->texture != NULL)
+	{
+		if (global->texture->west != NULL)
+			free(global->texture->west);
+		if (global->texture->east != NULL)
+			free(global->texture->east);
+		if (global->texture->north != NULL)
+			free(global->texture->north);
+		if (global->texture->south != NULL)
+			free(global->texture->south);
+		free(global->texture);
+	}
+}
+
 void	ft_exit_free(t_global *global)
 {
-	if (global->map != NULL)
-		ft_arr_free((void **)global->map);
+	free_map(global);
+	free_player_rays(global);
 	if (global->player != NULL)
-	{
-		if (global->player->rays != NULL)
-			free(global->player->rays);
 		free(global->player);
-	}
 	if (global->doors != NULL)
 		free(global->doors);
 	if (global->door_line != NULL)
 		free(global->door_line);
-	if (global->texture != NULL)
-		free(global->texture);
+	free_textures(global);
 	if (global->lines != NULL)
 		free(global->lines);
 	exit(EXIT_FAILURE);
 }
+
