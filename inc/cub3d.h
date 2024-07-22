@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 15:55:48 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 17:28:37 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 17:38:56 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -281,4 +281,5 @@ t_segment				set_door_segment(t_vec2d a, t_vec2d b,
 							t_alignment alignment, t_door *door);
 void					free_map(t_global *global);
 void					free_and_null(void **ptr);
+void					init_texture(t_global *global);
 #endif
