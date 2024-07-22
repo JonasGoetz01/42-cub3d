@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 17:34:39 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 18:42:33 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,25 @@ void	free_map(t_global *global)
 {
 	int	i;
 
-	if (global->map != NULL && global->map->map != NULL)
+	if (global->map != NULL)
 	{
-		i = 0;
-		while (i < global->map->height)
+		if (global->map->map != NULL)
 		{
-			free(global->map->map[i]);
-			i++;
+			i = 0;
+			while (i < global->map->height)
+			{
+				if (global->map->map[i] != NULL)
+				{
+					free(global->map->map[i]);
+				}
+				i++;
+			}
+			free(global->map->map);
 		}
 		free(global->map);
 	}
 }
+
 
 void	free_player_rays(t_global *global)
 {
