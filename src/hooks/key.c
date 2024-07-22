@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 14:07:42 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 16:15:46 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,9 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 {
 	t_global	*global;
 
+	global = (t_global *)param;
 	if (keydata.key == MLX_KEY_LEFT_ALT && keydata.action == MLX_PRESS)
-	{
-		global = (t_global *)param;
 		global->free_mouse = !global->free_mouse;
-	}
 	if (keydata.key == MLX_KEY_LEFT_CONTROL && keydata.action == MLX_PRESS)
 		global->open = true;
 	if (keydata.key == MLX_KEY_LEFT_CONTROL && keydata.action == MLX_RELEASE)
