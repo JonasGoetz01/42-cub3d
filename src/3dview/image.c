@@ -70,6 +70,8 @@ double		point_line_distance(t_vec2d point, t_line *line);
 t_collision	*new_collision(t_collision *collisions, int *collision_count,
 				t_vec2d point, t_line *line, t_face face);
 
+t_collision	*find_closest_collision(t_vec2d player_pos);
+
 void	check_inactive_lines(t_global *global)
 {
 	float		distance;
@@ -241,7 +243,6 @@ void	render_3d(t_global *global)
 	int bar_height;
 	int center_y;
 	int top_y;
-	int bottom_y;
 	int x;
 	float hit_percentage;
 	int color;
@@ -292,14 +293,13 @@ void	render_3d(t_global *global)
 		{
 			distance = get_distance(global->player->pos,
 					closest_collision->point);
-			distance = fmax(distance, 0.1f);
-			ray_angle = atan2(ray->direction.y, ray->direction.x);
+			distance = fmaxf(distance, 0.1f);
+			ray_angle = atan2f(ray->direction.y, ray->direction.x);
 			angle_diff = ray_angle - player_angle;
-			perpendicular_distance = distance * cos(angle_diff);
+			perpendicular_distance = (float)distance * cosf(angle_diff);
 			bar_height = map_distance_to_height(perpendicular_distance, global);
 			center_y = global->img->height / 2;
 			top_y = center_y - (bar_height / 2);
-			bottom_y = center_y + (bar_height / 2);
 			x = i * bar_width;
 			if (closest_collision->face == NORTH)
 				texture = texture_north;
