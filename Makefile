@@ -26,6 +26,9 @@ SRCS	:=  main.c \
 			key.c \
 			player.c \
 			geometry.c \
+			geometry1.c \
+			geometry2.c \
+			geometry3.c \
 			resize.c \
 			cursor.c \
 			image.c \
