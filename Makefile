@@ -36,6 +36,9 @@ SRCS	:=  main.c \
 			cursor.c \
 			image.c \
 			image1.c \
+			image2.c \
+			door.c \
+			door1.c \
 			time.c \
 			parse.c \
 			parse2.c \
