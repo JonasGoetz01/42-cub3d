@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 17:37:17 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 18:53:47 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ int	parse_configurations(int fd, t_global *global)
 			continue ;
 		}
 		tmp = ft_strtrim(line, "\n");
-		if (!tmp)
-			return (printf(ERR_MALLOC), free(line), 1);
 		free(line);
+		if (!tmp)
+			return (printf(ERR_MALLOC), 1);
 		if (!parse_line(tmp, global))
 			return (free(tmp), 1);
 		free(tmp);
@@ -123,15 +123,11 @@ int	parse_and_validate(char *file, t_global *global)
 	if (!global->texture || !global->map)
 		return (printf(ERR_MALLOC), 1);
 	init_texture(global);
-	global->map->map = NULL;
 	global->flags = (t_identifier_flag){0, 0, 0, 0, 0, 0};
 	if (map_size(file, global))
 		return (1);
 	global->map->count = 0;
-	global->map->map = malloc(sizeof(char *) * (global->map->height + 1));
-	global->i = 0;
-	while (global->i < global->map->height)
-		global->map->map[global->i++] = NULL;
+	global->map->map = ft_calloc(sizeof(char *), (global->map->height + 1));
 	if (!global->map->map)
 		return (printf(ERR_MALLOC), 1);
 	if (parse_file(file, global))
