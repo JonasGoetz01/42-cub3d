@@ -70,8 +70,6 @@ double		point_line_distance(t_vec2d point, t_line *line);
 t_collision	*new_collision(t_collision *collisions, int *collision_count,
 				t_vec2d point, t_line *line, t_face face);
 
-t_collision *find_closest_collision(t_vec2d player_pos)
-
 void	check_inactive_lines(t_global *global)
 {
 	float		distance;
