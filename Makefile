@@ -28,6 +28,8 @@ SRCS	:=  main.c \
 			showMap.c \
 			key.c \
 			player.c \
+			player1.c \
+			player2.c \
 			geometry.c \
 			geometry1.c \
 			geometry2.c \
