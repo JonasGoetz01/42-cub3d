@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 11:42:20 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 13:55:45 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,91 +112,4 @@ bool	circle_line_collision(t_vec2d circle_center, float radius, t_line line)
 	distance_squared = powf(circle_center.x - closest_point.x, (float)2)
 		+ powf(circle_center.y - closest_point.y, (float)2);
 	return (distance_squared <= (radius * radius));
-}
-
-void	update_position(t_global *global, t_vec2d dir, float speed)
-{
-	t_vec2d		new_pos;
-	bool		collision_x;
-	bool		collision_y;
-	t_vec2d		temp_pos;
-	static int	sprite_counter = 0;
-	int			i;
-
-	collision_x = false;
-	collision_y = false;
-	if (dir.x != 0 && dir.y != 0)
-	{
-		if (sprite_counter % 10 == 0)
-		{
-			global->sprite_index++;
-			global->sprite_index %= 4;
-			sprite_counter = 1;
-		}
-		sprite_counter++;
-	}
-	else
-		global->sprite_index = 0;
-	new_pos.x = global->player->pos.x + dir.x * speed * global->minimap_scale;
-	new_pos.y = global->player->pos.y + dir.y * speed * global->minimap_scale;
-	temp_pos = global->player->pos;
-	temp_pos.x = new_pos.x;
-	i = 0;
-	while (i < global->line_count)
-	{
-		if (circle_line_collision(temp_pos, PLAYER_RADIUS
-				* global->scale_factor, global->lines[i]))
-		{
-			collision_x = true;
-			break ;
-		}
-		i++;
-	}
-	if (!collision_x)
-		global->player->pos.x = new_pos.x;
-	temp_pos = global->player->pos;
-	temp_pos.y = new_pos.y;
-	i = 0;
-	while (i < global->line_count)
-	{
-		if (circle_line_collision(temp_pos, PLAYER_RADIUS
-				* global->scale_factor, global->lines[i]))
-		{
-			collision_y = true;
-			break ;
-		}
-		i++;
-	}
-	if (!collision_y)
-		global->player->pos.y = new_pos.y;
-	i = 0;
-	while (i < (int)global->img->width)
-	{
-		global->player->rays[i].origin = global->player->pos;
-		i++;
-	}
-}
-
-void	rotate_player(t_global *global, float angle)
-{
-	t_vec2d	old_dir;
-	t_vec2d	new_dir;
-	float	angle_increment;
-	float	new_angle;
-	int		i;
-
-	old_dir = global->player->dir;
-	new_dir.x = old_dir.x * cosf(angle) - old_dir.y * sinf(angle);
-	new_dir.y = old_dir.x * sinf(angle) + old_dir.y * cosf(angle);
-	global->player->dir = new_dir;
-	angle_increment = FOV / (global->img->width - 1);
-	i = 0;
-	while (i < (int)global->img->width)
-	{
-		new_angle = (atan2f(new_dir.y, new_dir.x) - (float)(FOV / 2.0f))
-			+ ((float)i * angle_increment);
-		global->player->rays[i].direction = (t_vec2d){cosf(new_angle),
-			sinf(new_angle)};
-		i++;
-	}
 }
