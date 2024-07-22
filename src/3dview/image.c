@@ -66,11 +66,7 @@ float	get_distance(t_vec2d a, t_vec2d b)
 	return (sqrt(pow(b.x - a.x, 2) + pow(b.y - a.y, 2)));
 }
 
-double		point_line_distance(t_vec2d point, t_line *line);
-t_collision	*new_collision(t_collision *collisions, int *collision_count,
-				t_vec2d point, t_line *line, t_face face);
-
-t_collision	*find_closest_collision(t_vec2d player_pos);
+double	point_line_distance(t_vec2d point, t_line *line);
 
 void	check_inactive_lines(t_global *global)
 {
@@ -92,7 +88,7 @@ void	check_inactive_lines(t_global *global)
 		if (intersection.x != -1)
 		{
 			tmp = new_collision(tmp_ray.collisions, &tmp_ray.collision_count,
-					intersection, &global->lines[i], face);
+					(t_collision){intersection, &global->lines[i], face});
 			if (!tmp)
 				return ;
 			tmp_ray.collisions = tmp;
@@ -139,7 +135,7 @@ void	check_active_lines(t_global *global)
 		if (intersection.x != -1)
 		{
 			tmp = new_collision(tmp_ray.collisions, &tmp_ray.collision_count,
-					intersection, &global->lines[i], face);
+					(t_collision){intersection, &global->lines[i], face});
 			if (!tmp)
 				return ;
 			tmp_ray.collisions = tmp;
