@@ -49,7 +49,12 @@ SRCS	:=  main.c \
 			parse_utils.c \
 			parse_utils2.c \
 			validate_color.c \
-			map_size.c
+			map_size.c \
+			door.c \
+			add_segments.c \
+			add_segments_utils.c \
+			add_segments_utils2.c \
+			add_segments_utils3.c \
 
 OBJDIR	:=	obj
 OBJECTS	:=	$(addprefix $(OBJDIR)/, $(SRCS:.c=.o))
