@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 15:55:48 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/19 15:55:51 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/22 11:14:18 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,36 @@ typedef struct s_player
 	t_ray			*rays;
 }	t_player;
 
+typedef struct s_render
+{
+	int				bar_width;
+	int				bar_height;
+	int				i;
+	t_ray			*ray;
+	t_collision		*closest_collision;
+	float			distance;
+	int				center_y;
+	int				bottom_y;
+	int				top_y;
+	int				x;
+	float			hit_percentage;
+	int				color;
+	mlx_texture_t	texture;
+	uint8_t			*pixel;
+	int				draw_y;
+	int				texture_x;
+	int				texture_y;
+	float			perpendicular_distance;
+	float			z_buffer[WIDTH];
+	float			ray_angle;
+	float			player_angle;
+	float			angle_diff;
+	int				r;
+	int				g;
+	int				b;
+	int				j;
+}	t_render;
+
 typedef struct s_global
 {
 	double				time;
@@ -145,6 +175,7 @@ typedef struct s_global
 	bool				open;
 	bool				close;
 	t_line				**door_line;
+	t_render			ren;
 }	t_global;
 
 void				ft_exit_free(t_global *global);
@@ -200,4 +231,9 @@ double				point_line_distance(t_vec2d point, t_line *line);
 t_collision			*new_collision(t_collision *collisions,
 						int *collision_count, t_vec2d point, t_line *line,
 						t_face face);
+void				update_door_lines(t_global *global);
+void				check_close_door(t_global *global);
+void				check_open_door(t_global *global);
+void				detect_collisions(t_global *global, t_ray *tmp_ray);
+void				find_closest_collision(t_ray *tmp_ray);
 #endif
