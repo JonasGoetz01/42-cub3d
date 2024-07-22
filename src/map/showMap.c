@@ -1,3 +1,5 @@
+
+
 #include "../../inc/cub3d.h"
 
 bool	isWallAbove(t_global *global, int x, int y)
