@@ -243,7 +243,6 @@ void					ft_texture_to_image(t_global *global,
 void					my_usleep(unsigned int microseconds);
 void					cap_fps(double *elapsed_time, double frame_duration,
 							t_global *global);
-void					display_fps(int *fps_timer, double elapsed_time);
 void					update_images(t_global *global);
 void					init_to_null(t_global *global);
 float					map_distance_to_height(float distance,
