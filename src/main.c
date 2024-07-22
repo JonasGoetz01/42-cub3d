@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 11:46:10 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 11:50:12 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,9 @@ void	load_textures(t_global *global)
 
 void	init_mlx(t_global *global)
 {
-	if (!(global->mlx = mlx_init(global->window_width, global->window_height,
-				"cub3d", false)))
+	global->mlx = mlx_init(global->window_width, global->window_height, "cub3d",
+			false);
+	if (!global->mlx)
 		ft_exit_free(global);
 	global->minimap = mlx_new_image(global->mlx, global->window_width,
 			global->window_height);
