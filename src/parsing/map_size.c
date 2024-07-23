@@ -6,7 +6,7 @@
 /*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 12:42:05 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/23 12:41:21 by cgerling         ###   ########.fr       */
+/*   Updated: 2024/07/23 13:05:30 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,13 @@ int	process_file(t_map_size *var, t_global *global)
 			free_and_null((void **)&(var->line));
 			continue ;
 		}
-		if (!check_identifier(var->line, global))
-			return (free_and_null((void **)&(var->line)),
-				free(var->tmp), 1);
 		if (var->i < 6)
+		{
+			if (!check_identifier(var->line, global))
+				return (free_and_null((void **)&(var->line)),
+					free(var->tmp), 1);
 			var->i++;
+		}
 		else
 		{
 			if (process_map_line(var))
