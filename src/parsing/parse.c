@@ -6,7 +6,7 @@
 /*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 18:53:47 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/23 12:22:46 by jgotz            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,9 +124,12 @@ int	parse_and_validate(char *file, t_global *global)
 		return (printf(ERR_MALLOC), 1);
 	init_texture(global);
 	global->flags = (t_identifier_flag){0, 0, 0, 0, 0, 0};
+	global->map->map = NULL;
+	global->map->width = 0;
+	global->map->height = 0;
+	global->map->count = 0;
 	if (map_size(file, global))
 		return (1);
-	global->map->count = 0;
 	global->map->map = ft_calloc(sizeof(char *), (global->map->height + 1));
 	if (!global->map->map)
 		return (printf(ERR_MALLOC), 1);
