@@ -4,9 +4,9 @@ SO textures/dirt.png
 WE textures/piston_bottom.png
 EA textures/polished_granite.png
 
-F 220,100,0
+F 194, 178, 128
 
-C 225, 30, 0
+C 3, 37, 76
 
 
 1111111111111
