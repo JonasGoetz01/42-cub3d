@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cub3d.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/19 15:55:48 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 17:38:56 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/23 12:41:07 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@
 # define ERR_EMPTY "\033[31m \033[1m ERROR: Empty line in map\n\033[0m"
 # define ERR_ARG "\033[31m \033[1m ERROR: Invalid number of arguments\n\033[0m"
 # define ERR_DOOR "\033[31m \033[1m ERROR: Invalid door position\n\033[0m"
+# define ERR_NO_DATA "\033[31m \033[1m ERROR: Config file is empty\n\033[0m"
 # define USAGE "\033[34m \033[1m USAGE: ./cub3D <[file].cub>\n\033[0m"
 
 typedef struct s_map
