@@ -1,6 +1,6 @@
 NAME	:= cub3D
 
-CFLAGS	:= -Wextra -Wall -Werror -g -fsanitize=address -O1
+CFLAGS	:= -Wextra -Wall -Werror -Ofast # -g -fsanitize=address -O1
 
 LIBMLX	:= ./lib/MLX42
 
