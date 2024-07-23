@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 15:27:52 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 18:53:47 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/23 12:38:30 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,9 @@ int	parse_file(char *file, t_global *global)
 		return (printf(ERR_OPEN), 1);
 	ret = parse_configurations(fd, global);
 	if (ret)
-		return (close(fd), 1);
+		return (close(fd), get_next_line(-1), 1);
 	ret = parse_map_data(fd, global, count);
+	get_next_line(-1);
 	close(fd);
 	return (ret);
 }

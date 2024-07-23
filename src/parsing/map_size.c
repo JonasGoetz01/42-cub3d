@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   map_size.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 12:42:05 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 17:35:14 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/23 12:41:21 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,13 +48,11 @@ int	process_file(t_map_size *var, t_global *global)
 			free_and_null((void **)&(var->line));
 			continue ;
 		}
+		if (!check_identifier(var->line, global))
+			return (free_and_null((void **)&(var->line)),
+				free(var->tmp), 1);
 		if (var->i < 6)
-		{
-			if (!check_identifier(var->line, global))
-				return (free_and_null((void **)&(var->line)),
-					free(var->tmp), 1);
 			var->i++;
-		}
 		else
 		{
 			if (process_map_line(var))
@@ -85,7 +83,12 @@ int	map_size(char *file, t_global *global)
 	if (var.fd < 0)
 		return (printf(ERR_MALLOC), 1);
 	if (process_file(&var, global))
+	{
+		get_next_line(-1);
 		return (close(var.fd), 1);
+	}
+	if (var.i == 0)
+		return (printf(ERR_NO_DATA), 1);
 	global->map->height = var.height;
 	global->map->width = var.max_width;
 	return (0);
