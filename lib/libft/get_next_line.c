@@ -3,85 +3,115 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/11 16:21:44 by vscode            #+#    #+#             */
-/*   Updated: 2024/07/22 18:36:37 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/23 12:24:19 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static char	*ft_get_line(char *str)
+static void	ft_free(char **arg1, char **arg2, char	**arg3)
+{
+	if (arg1 && *arg1)
+	{
+		free(*arg1);
+		*arg1 = NULL;
+	}
+	if (arg2 && *arg2)
+	{
+		free(*arg2);
+		*arg2 = NULL;
+	}
+	if (arg3 && *arg3)
+	{
+		free(*arg3);
+		*arg3 = NULL;
+	}
+}
+
+static int	read_from_fd(int fd, char **buffer, char *temp)
+{
+	char	*old_buffer;
+	ssize_t	bytes_read;
+
+	bytes_read = read(fd, temp, BUFFER_SIZE);
+	if (bytes_read == -1)
+		return (ft_free(buffer, NULL, NULL), -1);
+	temp[bytes_read] = '\0';
+	if (*buffer == NULL)
+		*buffer = ft_strdup("\0");
+	if (!*buffer)
+		return (-1);
+	old_buffer = *buffer;
+	*buffer = ft_strjoin(old_buffer, temp);
+	if (!*buffer)
+		return (ft_free(&old_buffer, buffer, NULL), -1);
+	ft_free(&old_buffer, NULL, NULL);
+	return (bytes_read);
+}
+
+static char	*get_line(char **buffer)
 {
 	char	*line;
 	size_t	i;
 
 	i = 0;
-	while (str[i] != '\n' && str[i] != '\0')
+	if (*buffer && *buffer[0] == '\0')
+		return (ft_free(buffer, NULL, NULL), NULL);
+	while ((*buffer)[i] && (*buffer)[i] != '\n')
 		i++;
-	if (str[i] == '\n')
-		line = ft_substr(str, 0, i + 1);
-	else
-		line = ft_strdup(str);
+	if ((*buffer)[i] == '\n')
+		i++;
+	line = ft_substr(*buffer, 0, i);
+	if (!line)
+		return (NULL);
 	return (line);
 }
 
-static int	ft_reset_save(char *save)
-{
-	int	i;
-
-	i = 0;
-	while (save[i] != '\n' && save[i] != '\0')
-		i++;
-	if (save[i] == '\n')
-	{
-		ft_memcpy(save, ft_strchr(save, '\n') + 1, ft_strlen(ft_strchr(save,
-					'\n')));
-		return (1);
-	}
-	return (0);
-}
-
-static char	*ft_read_loop(int fd, char *save, char *line, int *bytes_read)
+static char	*update_buffer(char	*buffer)
 {
 	char	*temp;
+	size_t	i;
 
-	*bytes_read = 1;
-	while (!ft_strchr(line, '\n') && *bytes_read != 0)
-	{
-		*bytes_read = read(fd, save, BUFFER_SIZE);
-		if (*bytes_read == -1)
-			return (free(line), NULL);
-		save[*bytes_read] = '\0';
-		temp = ft_strjoin(line, save);
-		if (temp == NULL)
-			return (free(line), NULL);
-		free(line);
-		line = temp;
-	}
-	return (line);
+	i = 0;
+	while (buffer[i] && buffer[i] != '\n')
+		i++;
+	if (buffer[i] == '\n')
+		i++;
+	temp = ft_substr(buffer, i, ft_strlen(buffer) - i);
+	if (!temp)
+		return (ft_free(&buffer, NULL, NULL), NULL);
+	ft_free(&buffer, NULL, NULL);
+	return (temp);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	save[32767][BUFFER_SIZE + 1];
-	char		*line;
+	static char	*buffer = NULL;
 	char		*temp;
-	int			bytes_read;
+	char		*line;
+	ssize_t		bytes_read;
 
-	if (fd < 0)
-		return (NULL);
-	if (BUFFER_SIZE <= 0 || read(fd, save, 0) == -1)
-		return (ft_memcpy(save[fd], "\0", 1), NULL);
-	line = ft_strdup(save[fd]);
-	if (line == NULL)
-		return (NULL);
-	line = ft_read_loop(fd, save[fd], line, &bytes_read);
-	if (line == NULL)
-		return (NULL);
-	if (ft_strlen(line) == 0 && bytes_read == 0)
-		return (free(line), NULL);
-	temp = ft_get_line(line);
-	return (ft_reset_save(save[fd]), free(line), temp);
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (free(buffer), NULL);
+	bytes_read = 1;
+	temp = malloc(BUFFER_SIZE + 1);
+	if (!temp)
+		return (ft_free(&buffer, NULL, NULL), NULL);
+	while (bytes_read != 0)
+	{
+		bytes_read = read_from_fd(fd, &buffer, temp);
+		if (bytes_read == -1 || (bytes_read == 0 && !buffer))
+			return (ft_free(&buffer, &temp, NULL), NULL);
+		if (ft_strchr(buffer, '\n'))
+			break ;
+	}
+	line = get_line(&buffer);
+	if (!line)
+		return (ft_free(&buffer, &temp, NULL), NULL);
+	ft_free(&temp, NULL, NULL);
+	buffer = update_buffer(buffer);
+	return (line);
 }
