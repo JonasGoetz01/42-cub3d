@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   door.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jgotz <jgotz@student.42.fr>                +#+  +:+       +#+        */
+/*   By: cgerling <cgerling@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/10 14:26:41 by cgerling          #+#    #+#             */
-/*   Updated: 2024/07/22 15:03:17 by jgotz            ###   ########.fr       */
+/*   Updated: 2024/07/22 19:07:02 by cgerling         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,23 +68,23 @@ void	update_door_opening(t_global *global, int i, float speed)
 	if (global->door_line[i]->alignment == VERTICAL)
 	{
 		scaled_y = global->door_line[i]->a.y / global->scale_factor;
-		if (scaled_y > global->door_line[i]->open_end.y - 2)
+		if (scaled_y > global->door_line[i]->open_end.y - 1.99)
 		{
 			global->door_line[i]->a.y -= speed;
 			global->door_line[i]->b.y -= speed;
 		}
-		if (scaled_y <= global->door_line[i]->open_end.y - 2)
+		if (scaled_y <= global->door_line[i]->open_end.y - 1.99)
 			global->door_line[i]->door->state = OPEN;
 	}
 	else
 	{
 		scaled_x = global->door_line[i]->a.x / global->scale_factor;
-		if (scaled_x < global->door_line[i]->open_end.x)
+		if (scaled_x < global->door_line[i]->open_end.x - 0.01)
 		{
 			global->door_line[i]->a.x += speed;
 			global->door_line[i]->b.x += speed;
 		}
-		if (scaled_x >= global->door_line[i]->open_end.x)
+		if (scaled_x >= global->door_line[i]->open_end.x - 0.01)
 			global->door_line[i]->door->state = OPEN;
 	}
 }
